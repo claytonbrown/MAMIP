@@ -1,0 +1,97 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-16T22:04:02Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "redshift-data:BatchExecuteStatement", 
+                        "redshift-data:DescribeTable", 
+                        "redshift-data:ExecuteStatement", 
+                        "redshift-data:ListTables", 
+                        "redshift-data:ListSchemas", 
+                        "redshift-data:ListDatabases"
+                    ], 
+                    "Resource": [
+                        "arn:aws:redshift-serverless:*:*:workgroup/*", 
+                        "arn:aws:redshift:*:*:cluster:*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "redshiftDataScopeDownPermissions"
+                }, 
+                {
+                    "Action": "secretsmanager:ListSecrets", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "listSecretsPermission"
+                }, 
+                {
+                    "Action": "redshift-serverless:GetWorkgroup", 
+                    "Resource": [
+                        "arn:aws:redshift-serverless:*:*:workgroup/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "getWorkgroupPermission"
+                }, 
+                {
+                    "Action": "redshift-serverless:GetNamespace", 
+                    "Resource": [
+                        "arn:aws:redshift-serverless:*:*:namespace/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "getNamespacePermission"
+                }, 
+                {
+                    "Action": [
+                        "redshift-data:DescribeStatement", 
+                        "redshift-data:GetStatementResult", 
+                        "redshift:DescribeClusters"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "redshiftDataPermissions"
+                }, 
+                {
+                    "Action": [
+                        "redshift:AuthorizeDataShare", 
+                        "redshift:DescribeDataShares"
+                    ], 
+                    "Resource": [
+                        "arn:aws:redshift:*:*:datashare:*/datazone*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "dataSharesPermissions"
+                }, 
+                {
+                    "Action": "redshift:AssociateDataShareConsumer", 
+                    "Resource": "arn:aws:redshift:*:*:datashare:*/datazone*", 
+                    "Effect": "Allow", 
+                    "Sid": "associateDataShareConsumerPermission"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

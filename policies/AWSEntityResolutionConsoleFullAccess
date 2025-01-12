@@ -1,0 +1,118 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-10-16T18:46:10Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "entityresolution:*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "EntityResolutionAccess"
+                }, 
+                {
+                    "Action": [
+                        "glue:GetSchema", 
+                        "glue:SearchTables", 
+                        "glue:GetSchemaByDefinition", 
+                        "glue:GetSchemaVersion", 
+                        "glue:GetSchemaVersionsDiff", 
+                        "glue:GetDatabase", 
+                        "glue:GetDatabases", 
+                        "glue:GetTable", 
+                        "glue:GetTables", 
+                        "glue:GetTableVersion", 
+                        "glue:GetTableVersions"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "GlueSourcesConsoleDisplay"
+                }, 
+                {
+                    "Action": [
+                        "s3:ListAllMyBuckets"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "S3BucketsConsoleDisplay"
+                }, 
+                {
+                    "Action": [
+                        "s3:ListBucket", 
+                        "s3:GetBucketLocation", 
+                        "s3:ListBucketVersions", 
+                        "s3:GetBucketVersioning"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "S3SourcesConsoleDisplay"
+                }, 
+                {
+                    "Action": [
+                        "tag:GetTagKeys", 
+                        "tag:GetTagValues"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "TaggingConsoleDisplay"
+                }, 
+                {
+                    "Action": [
+                        "kms:DescribeKey", 
+                        "kms:ListAliases"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "KMSConsoleDisplay"
+                }, 
+                {
+                    "Action": [
+                        "iam:ListRoles"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ListRolesToPickRoleForPassing"
+                }, 
+                {
+                    "Action": [
+                        "iam:PassRole"
+                    ], 
+                    "Resource": "arn:aws:iam::*:role/*entityresolution*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:PassedToService": [
+                                "entityresolution.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "PassRoleToEntityResolutionService"
+                }, 
+                {
+                    "Action": [
+                        "events:DeleteRule", 
+                        "events:PutTargets", 
+                        "events:PutRule"
+                    ], 
+                    "Resource": [
+                        "arn:aws:events:*:*:rule/entity-resolution-automatic*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "ManageEventBridgeRules"
+                }, 
+                {
+                    "Action": [
+                        "dataexchange:GetDataSet"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ADXReadAccess"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-04-20T16:49:12Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "codecatalyst:Get*", 
+                        "codecatalyst:List*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

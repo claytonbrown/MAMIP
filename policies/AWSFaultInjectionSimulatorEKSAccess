@@ -1,0 +1,50 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-13T16:44:51Z", 
+        "VersionId": "v3", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": "ec2:DescribeInstances", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeInstances"
+                }, 
+                {
+                    "Action": "ec2:TerminateInstances", 
+                    "Resource": "arn:aws:ec2:*:*:instance/*", 
+                    "Effect": "Allow", 
+                    "Sid": "TerminateInstances"
+                }, 
+                {
+                    "Action": "ec2:DescribeSubnets", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeSubnets"
+                }, 
+                {
+                    "Action": "eks:DescribeCluster", 
+                    "Resource": "arn:aws:eks:*:*:cluster/*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeCluster"
+                }, 
+                {
+                    "Action": "eks:DescribeNodegroup", 
+                    "Resource": "arn:aws:eks:*:*:nodegroup/*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeNodeGroup"
+                }, 
+                {
+                    "Action": [
+                        "tag:GetResources"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "TargetResolutionByTags"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

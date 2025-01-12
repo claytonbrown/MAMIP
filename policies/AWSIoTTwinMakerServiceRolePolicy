@@ -1,0 +1,69 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-13T18:59:42Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "iotsitewise:DescribeAsset"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iotsitewise:*:*:asset/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "SiteWiseAssetReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "iotsitewise:DescribeAssetModel"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iotsitewise:*:*:asset-model/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "SiteWiseAssetModelReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "iotsitewise:ListAssets", 
+                        "iotsitewise:ListAssetModels"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "SiteWiseAssetModelAndAssetListAccess"
+                }, 
+                {
+                    "Action": [
+                        "iottwinmaker:GetEntity", 
+                        "iottwinmaker:CreateEntity", 
+                        "iottwinmaker:UpdateEntity", 
+                        "iottwinmaker:DeleteEntity", 
+                        "iottwinmaker:ListEntities", 
+                        "iottwinmaker:GetComponentType", 
+                        "iottwinmaker:CreateComponentType", 
+                        "iottwinmaker:UpdateComponentType", 
+                        "iottwinmaker:DeleteComponentType", 
+                        "iottwinmaker:ListComponentTypes"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iottwinmaker:*:*:workspace/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "iottwinmaker:linkedServices": [
+                                "IOTSITEWISE"
+                            ]
+                        }
+                    }, 
+                    "Sid": "TwinMakerAccess"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

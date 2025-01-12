@@ -1,0 +1,48 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-11-13T21:30:27Z", 
+        "VersionId": "v3", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "q:StartConversation", 
+                        "q:SendMessage", 
+                        "q:GetConversation", 
+                        "q:ListConversations", 
+                        "q:PassRequest", 
+                        "q:StartTroubleshootingAnalysis", 
+                        "q:StartTroubleshootingResolutionExplanation", 
+                        "q:GetTroubleshootingResults", 
+                        "q:UpdateTroubleshootingCommandResult", 
+                        "q:GetIdentityMetaData", 
+                        "q:GenerateCodeFromCommands", 
+                        "q:UsePlugin"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowAmazonQDeveloperAccess"
+                }, 
+                {
+                    "Action": [
+                        "cloudformation:GetResource", 
+                        "cloudformation:ListResources"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowCloudControlReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "sts:SetContext"
+                    ], 
+                    "Resource": "arn:aws:sts::*:self", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowSetTrustedIdentity"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

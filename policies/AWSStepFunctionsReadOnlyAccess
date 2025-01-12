@@ -1,26 +1,34 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-04-26T18:53:54Z", 
+        "VersionId": "v4", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "states:ListStateMachines",
-                        "states:ListActivities",
-                        "states:DescribeStateMachine",
-                        "states:DescribeStateMachineForExecution",
-                        "states:ListExecutions",
-                        "states:DescribeExecution",
-                        "states:GetExecutionHistory",
-                        "states:DescribeActivity"
-                    ],
-                    "Resource": "*"
+                        "states:ListStateMachines", 
+                        "states:ListActivities", 
+                        "states:DescribeStateMachine", 
+                        "states:DescribeStateMachineForExecution", 
+                        "states:ListExecutions", 
+                        "states:DescribeExecution", 
+                        "states:GetExecutionHistory", 
+                        "states:DescribeActivity", 
+                        "states:ListTagsForResource", 
+                        "states:DescribeMapRun", 
+                        "states:ListMapRuns", 
+                        "states:DescribeStateMachineAlias", 
+                        "states:ListStateMachineAliases", 
+                        "states:ListStateMachineVersions", 
+                        "states:ValidateStateMachineDefinition"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ReadOnlyAccess"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2017-11-10T22:03:49Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

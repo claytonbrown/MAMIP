@@ -9,13 +9,10 @@ variable "env" {
 }
 
 variable "tags" {
-  type    = map(string)
+  type = map(string)
   default = {
-    aws_region      = "eu-west-1"
-    Project         = "mamip"
-    Terraform       = "true"
-    Service-Owner   = "Victor GRENU"
-    }
+    Service-Owner = "Victor GRENU"
+  }
 }
 
 variable "project" {
@@ -30,6 +27,14 @@ variable "description" {
 
 variable "qtweeter_sqs_name" {
   default = "qtweet-mamip-sqs-queue"
+}
+
+variable "qbsky_sqs_name" {
+  default = "qbsky-mamip-prod-sqs-queue"
+}
+
+variable "qmasto_sqs_name" {
+  default = "qmasto-development-sqs-queue"
 }
 
 variable "log_group_retention" {
@@ -64,7 +69,8 @@ variable "security_groups" {
 }
 
 variable "schedule" {
-  default     = "cron(0 */2 * * ? *)"
+  #default     = "cron(0 */2 ? * MON-FRI *)"
+  default     = "cron(0 * ? * * *)"
   description = "Schedule for your job"
 }
 
@@ -74,11 +80,11 @@ variable "assign_public_ip" {
 }
 
 variable "ecs_cpu_units" {
-  default     = "1024"
+  default     = "2048"
   description = "Container: Number of CPU Units"
 }
 
 variable "ecs_memory" {
-  default     = "2048"
+  default     = "8192"
   description = "Container: Memory Units"
 }

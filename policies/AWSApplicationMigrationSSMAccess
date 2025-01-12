@@ -1,0 +1,82 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-03-20T10:57:51Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ssm:GetCommandInvocation", 
+                        "ssm:DescribeInstanceInformation"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "mgn.amazonaws.com"
+                            ]
+                        }
+                    }
+                }, 
+                {
+                    "Action": [
+                        "ssm:SendCommand", 
+                        "ssm:DescribeDocument", 
+                        "ssm:StartAutomationExecution"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:document/*", 
+                        "arn:aws:ssm:*:*:automation-definition/*:*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "mgn.amazonaws.com"
+                            ]
+                        }
+                    }
+                }, 
+                {
+                    "Action": [
+                        "ssm:SendCommand"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:instance/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "mgn.amazonaws.com"
+                            ]
+                        }, 
+                        "Null": {
+                            "aws:ResourceTag/AWSApplicationMigrationServiceManaged": "false"
+                        }
+                    }
+                }, 
+                {
+                    "Action": [
+                        "ssm:ListDocuments"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }, 
+                {
+                    "Action": [
+                        "ssm:ListDocumentVersions", 
+                        "ssm:GetDocument"
+                    ], 
+                    "Resource": "arn:aws:ssm:*:*:document/*", 
+                    "Effect": "Allow"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

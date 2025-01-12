@@ -1,22 +1,23 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-02-22T23:45:59Z", 
+        "VersionId": "v4", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "securityhub:Get*",
-                        "securityhub:List*",
-                        "securityhub:BatchGet*",
+                        "securityhub:Get*", 
+                        "securityhub:List*", 
+                        "securityhub:BatchGet*", 
                         "securityhub:Describe*"
-                    ],
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AWSSecurityHubReadOnlyAccess"
                 }
             ]
-        },
-        "VersionId": "v3",
-        "IsDefaultVersion": true,
-        "CreateDate": "2022-04-04T17:46:51Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }
