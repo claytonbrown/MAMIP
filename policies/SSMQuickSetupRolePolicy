@@ -1,0 +1,128 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-11-18T13:06:59Z", 
+        "VersionId": "v3", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ssm:ListResourceDataSync"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "SSMResourceDataSyncPermissions"
+                }, 
+                {
+                    "Action": [
+                        "ssm:GetOpsSummary"
+                    ], 
+                    "Resource": "arn:aws:ssm:*:*:resource-data-sync/AWS-QuickSetup-*", 
+                    "Effect": "Allow", 
+                    "Sid": "SSMResourceDataSyncGetOpsSummaryPermissions"
+                }, 
+                {
+                    "Action": [
+                        "ssm:DeleteResourceDataSync"
+                    ], 
+                    "Resource": "arn:aws:ssm:*:*:resource-data-sync/AWS-QuickSetup-*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "ssm:SyncType": "SyncFromSource"
+                        }
+                    }, 
+                    "Sid": "SSMResourceDataSyncManagePermissions"
+                }, 
+                {
+                    "Action": [
+                        "ssm:ListAssociations", 
+                        "ssm:DescribeAssociationExecutions"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "SSMAssociationsReadOnlyPermissions"
+                }, 
+                {
+                    "Action": [
+                        "ssm:DescribeDocument", 
+                        "ssm:GetDocument"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:document/AWSQuickSetupType-*", 
+                        "arn:aws:ssm:*:*:document/*-AWSQuickSetupType-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "QuickSetupSSMDocumentsReadOnlyPermissions"
+                }, 
+                {
+                    "Action": [
+                        "organizations:ListAccounts", 
+                        "organizations:ListRoots", 
+                        "organizations:ListAWSServiceAccessForOrganization", 
+                        "organizations:ListDelegatedAdministrators", 
+                        "organizations:ListAccountsForParent", 
+                        "organizations:ListOrganizationalUnitsForParent", 
+                        "organizations:ListDelegatedServicesForAccount"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "OrganizationReadOnlyPermissions"
+                }, 
+                {
+                    "Action": [
+                        "cloudformation:DescribeStackInstance", 
+                        "cloudformation:DescribeStackSet", 
+                        "cloudformation:DescribeStackSetOperation", 
+                        "cloudformation:ListStackInstances", 
+                        "cloudformation:ListStackSetOperations", 
+                        "cloudformation:ListStackSetOperationResults", 
+                        "cloudformation:GetTemplate"
+                    ], 
+                    "Resource": [
+                        "arn:aws:cloudformation:*:*:stackset/AWS-QuickSetup-*", 
+                        "arn:aws:cloudformation:*:*:stackset/SSMQuickSetup*", 
+                        "arn:aws:cloudformation:*:*:stack/StackSet-AWS-QuickSetup-*", 
+                        "arn:aws:cloudformation:*:*:stack/StackSet-SSMQuickSetup*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "QuickSetupStackSetReadOnlyPermissions"
+                }, 
+                {
+                    "Action": [
+                        "cloudformation:DeleteStackInstances", 
+                        "cloudformation:DeleteStackSet"
+                    ], 
+                    "Resource": [
+                        "arn:aws:cloudformation:*:*:stackset/AWS-QuickSetup-*", 
+                        "arn:aws:cloudformation:*:*:stackset/SSMQuickSetup*", 
+                        "arn:aws:cloudformation:*:*:stack/StackSet-AWS-QuickSetup-*", 
+                        "arn:aws:cloudformation:*:*:stack/StackSet-SSMQuickSetup*", 
+                        "arn:aws:cloudformation:*:*:stackset-target/AWS-QuickSetup-*", 
+                        "arn:aws:cloudformation:*:*:stackset-target/SSMQuickSetup*", 
+                        "arn:aws:cloudformation:*:*:type/resource/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "QuickSetupStackSetDeletePermissions"
+                }, 
+                {
+                    "Action": [
+                        "cloudformation:DescribeStacks", 
+                        "cloudformation:ListStacks"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "QuickSetupCfnStacksDescribePermissions"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

@@ -1,84 +1,98 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-12-01T16:21:07Z", 
+        "VersionId": "v3", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
                         "ec2:CreateTags"
-                    ],
-                    "Resource": "arn:aws:ec2:*:*:network-interface/*",
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:network-interface/*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "StringEquals": {
                             "ec2:CreateAction": "CreateNetworkInterface"
-                        },
+                        }, 
                         "ForAllValues:StringEquals": {
                             "aws:TagKeys": [
                                 "AmazonMemoryDBManaged"
                             ]
                         }
-                    }
-                },
+                    }, 
+                    "Sid": "CreateMemoryDBTagsOnNetworkInterfaces"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
                         "ec2:CreateNetworkInterface"
-                    ],
+                    ], 
                     "Resource": [
-                        "arn:aws:ec2:*:*:network-interface/*",
-                        "arn:aws:ec2:*:*:subnet/*",
+                        "arn:aws:ec2:*:*:network-interface/*", 
+                        "arn:aws:ec2:*:*:subnet/*", 
                         "arn:aws:ec2:*:*:security-group/*"
-                    ]
-                },
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "CreateNetworkInterfaces"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ec2:DeleteNetworkInterface",
+                        "ec2:DeleteNetworkInterface", 
                         "ec2:ModifyNetworkInterfaceAttribute"
-                    ],
-                    "Resource": "arn:aws:ec2:*:*:network-interface/*",
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:network-interface/*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "StringEquals": {
                             "ec2:ResourceTag/AmazonMemoryDBManaged": "true"
                         }
-                    }
-                },
+                    }, 
+                    "Sid": "DeleteMemoryDBTaggedNetworkInterfaces"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ec2:DeleteNetworkInterface",
+                        "ec2:DeleteNetworkInterface", 
                         "ec2:ModifyNetworkInterfaceAttribute"
-                    ],
-                    "Resource": "arn:aws:ec2:*:*:security-group/*"
-                },
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:security-group/*", 
+                    "Effect": "Allow", 
+                    "Sid": "DeleteNetworkInterfaces"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ec2:DescribeSecurityGroups",
-                        "ec2:DescribeNetworkInterfaces",
-                        "ec2:DescribeAvailabilityZones",
-                        "ec2:DescribeSubnets",
+                        "ec2:DescribeSecurityGroups", 
+                        "ec2:DescribeNetworkInterfaces", 
+                        "ec2:DescribeAvailabilityZones", 
+                        "ec2:DescribeSubnets", 
                         "ec2:DescribeVpcs"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeEC2Resources"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
                         "cloudwatch:PutMetricData"
-                    ],
-                    "Resource": "*",
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "StringEquals": {
                             "cloudwatch:namespace": "AWS/MemoryDB"
                         }
-                    }
+                    }, 
+                    "Sid": "PutCloudWatchMetricData"
+                }, 
+                {
+                    "Action": [
+                        "memorydb:ReplicateMultiRegionClusterData"
+                    ], 
+                    "Resource": "arn:aws:memorydb:*:*:cluster/*", 
+                    "Effect": "Allow", 
+                    "Sid": "ReplicateMemoryDBMultiRegionClusterData"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-08-18T23:48:16Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

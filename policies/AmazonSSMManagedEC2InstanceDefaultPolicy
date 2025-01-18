@@ -1,0 +1,56 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-07-16T18:14:07Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ssm:DescribeAssociation", 
+                        "ssm:GetDeployablePatchSnapshotForInstance", 
+                        "ssm:GetDocument", 
+                        "ssm:DescribeDocument", 
+                        "ssm:GetManifest", 
+                        "ssm:ListAssociations", 
+                        "ssm:ListInstanceAssociations", 
+                        "ssm:PutInventory", 
+                        "ssm:PutComplianceItems", 
+                        "ssm:PutConfigurePackageResult", 
+                        "ssm:UpdateAssociationStatus", 
+                        "ssm:UpdateInstanceAssociationStatus", 
+                        "ssm:UpdateInstanceInformation"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowSSMAgentPermissions"
+                }, 
+                {
+                    "Action": [
+                        "ssmmessages:CreateControlChannel", 
+                        "ssmmessages:CreateDataChannel", 
+                        "ssmmessages:OpenControlChannel", 
+                        "ssmmessages:OpenDataChannel"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowSSMChannelMessaging"
+                }, 
+                {
+                    "Action": [
+                        "ec2messages:AcknowledgeMessage", 
+                        "ec2messages:DeleteMessage", 
+                        "ec2messages:FailMessage", 
+                        "ec2messages:GetEndpoint", 
+                        "ec2messages:GetMessages", 
+                        "ec2messages:SendReply"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowSSMLegacyMessaging"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

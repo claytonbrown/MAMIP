@@ -1,0 +1,347 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-06-26T09:57:02Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "cloudformation:DescribeStacks", 
+                        "cloudformation:DescribeStackDriftDetectionStatus", 
+                        "cloudformation:ListStacks"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "CfnRead"
+                }, 
+                {
+                    "Action": [
+                        "cloudformation:CreateStack", 
+                        "cloudformation:UpdateStack", 
+                        "cloudformation:DeleteStack", 
+                        "cloudformation:CreateChangeSet", 
+                        "cloudformation:DeleteChangeSet", 
+                        "cloudformation:ExecuteChangeSet", 
+                        "cloudformation:DescribeChangeSet", 
+                        "cloudformation:DescribeStackResourceDrifts", 
+                        "cloudformation:DetectStackDrift", 
+                        "cloudformation:DetectStackResourceDrift"
+                    ], 
+                    "Resource": [
+                        "arn:aws:cloudformation:*:*:stack/StackSet-AWS-QuickSetup-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "CfnManage"
+                }, 
+                {
+                    "Action": [
+                        "resource-groups:GetGroupQuery"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "RGroupsGet"
+                }, 
+                {
+                    "Action": [
+                        "s3:ListAllMyBuckets"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "S3BucketsList"
+                }, 
+                {
+                    "Action": [
+                        "s3:CreateBucket", 
+                        "s3:DeleteBucket", 
+                        "s3:DeleteBucketPolicy", 
+                        "s3:Put*", 
+                        "s3:Get*", 
+                        "s3:List*"
+                    ], 
+                    "Resource": [
+                        "arn:aws:s3:::aws-quicksetup-patchpolicy-access-log-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "cloudformation.amazonaws.com"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "AccessLogsBucketManage"
+                }, 
+                {
+                    "Action": [
+                        "lambda:CreateFunction", 
+                        "lambda:UpdateFunction*", 
+                        "lambda:GetFunction", 
+                        "lambda:ListTags", 
+                        "lambda:TagResource", 
+                        "lambda:DeleteFunction", 
+                        "lambda:InvokeFunction", 
+                        "lambda:UntagResource"
+                    ], 
+                    "Resource": [
+                        "arn:aws:lambda:*:*:function:baseline-overrides-*", 
+                        "arn:aws:lambda:*:*:function:delete-name-tags-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "cloudformation.amazonaws.com"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "aws:ResourceAccount": [
+                                "${aws:PrincipalAccount}"
+                            ]
+                        }
+                    }, 
+                    "Sid": "LambdaManage"
+                }, 
+                {
+                    "Action": [
+                        "logs:DescribeLogGroups"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "LogGroupsDescribe"
+                }, 
+                {
+                    "Action": [
+                        "logs:CreateLogGroup", 
+                        "logs:TagResource", 
+                        "logs:PutRetentionPolicy", 
+                        "logs:DeleteLogGroup", 
+                        "logs:ListTagsForResource", 
+                        "logs:UntagResource"
+                    ], 
+                    "Resource": [
+                        "arn:aws:logs:*:*:log-group:/aws/lambda/baseline-overrides-*", 
+                        "arn:aws:logs:*:*:log-group:/aws/lambda/delete-name-tags-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "cloudformation.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "LogGroupsManage"
+                }, 
+                {
+                    "Action": [
+                        "ssm:CreateDocument", 
+                        "ssm:UpdateDocument", 
+                        "ssm:DescribeDocument", 
+                        "ssm:UpdateDocumentDefaultVersion", 
+                        "ssm:DeleteDocument", 
+                        "ssm:AddTagsToResource", 
+                        "ssm:RemoveTagsFromResource", 
+                        "ssm:ListTagsForResource"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:document/AWSQuickSetup-*", 
+                        "arn:aws:ssm:*:*:document/QuickSetup-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "cloudformation.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "QSDocsManage"
+                }, 
+                {
+                    "Action": [
+                        "ssm:GetDocument"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:document/AWSQuickSetup-*", 
+                        "arn:aws:ssm:*:*:document/QuickSetup-*", 
+                        "arn:aws:ssm:*::document/AWS-EnableExplorer", 
+                        "arn:aws:ssm:*::document/AWS-RunPatchBaseline"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "QSDocsGet"
+                }, 
+                {
+                    "Action": [
+                        "ssm:CreateAssociation", 
+                        "ssm:UpdateAssociation", 
+                        "ssm:DeleteAssociation", 
+                        "ssm:DescribeAssociation"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:document/AWSQuickSetup-*", 
+                        "arn:aws:ssm:*:*:document/QuickSetup-*", 
+                        "arn:aws:ssm:*::document/AWS-EnableExplorer", 
+                        "arn:aws:ssm:*::document/AWS-RunPatchBaseline", 
+                        "arn:aws:ec2:*:*:instance/*", 
+                        "arn:aws:ssm:*:*:managed-instance/*", 
+                        "arn:aws:ssm:*:*:association/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "cloudformation.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "QSAssociationsManage"
+                }, 
+                {
+                    "Action": [
+                        "iam:CreateServiceLinkedRole"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:AWSServiceName": "ssm.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "SSMSLRCreate"
+                }, 
+                {
+                    "Action": [
+                        "iam:TagRole", 
+                        "iam:UntagRole", 
+                        "iam:GetRole", 
+                        "iam:UpdateRole", 
+                        "iam:DeleteRole", 
+                        "iam:GetRolePolicy", 
+                        "iam:ListAttachedRolePolicies", 
+                        "iam:ListRolePolicies", 
+                        "iam:ListRoleTags"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/AWS-QuickSetup-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "cloudformation.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "ConfigRoleManage"
+                }, 
+                {
+                    "Action": [
+                        "iam:PassRole"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/AWS-QuickSetup-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:PassedToService": [
+                                "ssm.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "ConfigRolePassToSSM"
+                }, 
+                {
+                    "Action": [
+                        "iam:PassRole"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/AWS-QuickSetup-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:PassedToService": [
+                                "lambda.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "ConfigRolePassToLambda"
+                }, 
+                {
+                    "Action": [
+                        "ssm:DescribeDocument"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DocDescribe"
+                }, 
+                {
+                    "Action": [
+                        "ssm:DeleteDocument"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "aws:ResourceTag/QuickSetupID": "*"
+                        }
+                    }, 
+                    "Sid": "LegacyDocClean"
+                }, 
+                {
+                    "Action": [
+                        "iam:DeleteRole", 
+                        "iam:DeleteRolePolicy"
+                    ], 
+                    "Resource": "arn:aws:iam::*:role/*QuickSetup-*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "aws:ResourceTag/QuickSetupID": "*"
+                        }
+                    }, 
+                    "Sid": "LegacyIAMClean"
+                }, 
+                {
+                    "Action": [
+                        "iam:CreateRole", 
+                        "iam:AttachRolePolicy", 
+                        "iam:DeleteRolePolicy", 
+                        "iam:DetachRolePolicy", 
+                        "iam:PutRolePolicy", 
+                        "iam:PutRolePermissionsBoundary"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/AWS-QuickSetup-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "cloudformation.amazonaws.com"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "iam:PermissionsBoundary": "arn:aws:iam::aws:policy/AWSQuickSetupPatchPolicyPermissionsBoundary"
+                        }
+                    }, 
+                    "Sid": "ConfigRoleBoundedManage"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

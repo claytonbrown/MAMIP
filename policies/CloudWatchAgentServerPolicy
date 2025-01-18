@@ -1,33 +1,41 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-02-06T16:37:37Z", 
+        "VersionId": "v3", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "cloudwatch:PutMetricData",
-                        "ec2:DescribeVolumes",
-                        "ec2:DescribeTags",
-                        "logs:PutLogEvents",
-                        "logs:DescribeLogStreams",
-                        "logs:DescribeLogGroups",
-                        "logs:CreateLogStream",
-                        "logs:CreateLogGroup"
-                    ],
-                    "Resource": "*"
-                },
+                        "cloudwatch:PutMetricData", 
+                        "ec2:DescribeVolumes", 
+                        "ec2:DescribeTags", 
+                        "logs:PutLogEvents", 
+                        "logs:PutRetentionPolicy", 
+                        "logs:DescribeLogStreams", 
+                        "logs:DescribeLogGroups", 
+                        "logs:CreateLogStream", 
+                        "logs:CreateLogGroup", 
+                        "xray:PutTraceSegments", 
+                        "xray:PutTelemetryRecords", 
+                        "xray:GetSamplingRules", 
+                        "xray:GetSamplingTargets", 
+                        "xray:GetSamplingStatisticSummaries"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CWACloudWatchServerPermissions"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
                         "ssm:GetParameter"
-                    ],
-                    "Resource": "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*"
+                    ], 
+                    "Resource": "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*", 
+                    "Effect": "Allow", 
+                    "Sid": "CWASSMServerPermissions"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2019-10-17T23:08:51Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

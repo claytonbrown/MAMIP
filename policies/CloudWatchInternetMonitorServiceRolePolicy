@@ -1,0 +1,47 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-07-20T04:46:37Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "cloudfront:GetDistribution", 
+                        "ec2:DescribeNetworkInterfaces", 
+                        "ec2:DescribeVpcs", 
+                        "elasticloadbalancing:DescribeLoadBalancers", 
+                        "workspaces:DescribeWorkspaceDirectories"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }, 
+                {
+                    "Action": "logs:CreateLogGroup", 
+                    "Resource": "arn:aws:logs:*:*:log-group:/aws/internet-monitor/*", 
+                    "Effect": "Allow"
+                }, 
+                {
+                    "Action": [
+                        "logs:CreateLogStream", 
+                        "logs:DescribeLogStreams", 
+                        "logs:PutLogEvents"
+                    ], 
+                    "Resource": "arn:aws:logs:*:*:log-group:/aws/internet-monitor/*:log-stream:*", 
+                    "Effect": "Allow"
+                }, 
+                {
+                    "Action": "cloudwatch:PutMetricData", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "cloudwatch:namespace": "AWS/InternetMonitor"
+                        }
+                    }
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

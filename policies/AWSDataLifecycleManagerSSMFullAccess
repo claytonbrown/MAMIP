@@ -1,0 +1,62 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-16T22:31:54Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ssm:GetCommandInvocation", 
+                        "ssm:ListCommands", 
+                        "ssm:DescribeInstanceInformation"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowSSMReadOnlyAccess"
+                }, 
+                {
+                    "Action": [
+                        "ssm:SendCommand", 
+                        "ssm:DescribeDocument", 
+                        "ssm:GetDocument"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:document/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/DLMScriptsAccess": "true"
+                        }
+                    }, 
+                    "Sid": "AllowTaggedSSMDocumentsOnly"
+                }, 
+                {
+                    "Action": [
+                        "ssm:SendCommand", 
+                        "ssm:DescribeDocument", 
+                        "ssm:GetDocument"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:document/AWSEC2-CreateVssSnapshot", 
+                        "arn:aws:ssm:*:*:document/AWSSystemsManagerSAP-CreateDLMSnapshotForSAPHANA"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AllowSpecificAWSOwnedSSMDocuments"
+                }, 
+                {
+                    "Action": [
+                        "ssm:SendCommand"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:instance/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AllowAllEC2Instances"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

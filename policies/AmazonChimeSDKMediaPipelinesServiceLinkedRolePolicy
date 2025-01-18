@@ -1,21 +1,57 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2023-12-08T19:14:31Z", 
+        "VersionId": "v3", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
+                    "Action": "cloudwatch:PutMetricData", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "cloudwatch:namespace": "AWS/ChimeSDK"
+                        }
+                    }, 
+                    "Sid": "AllowPutMetricsForChimeSDKNamespace"
+                }, 
+                {
                     "Action": [
-                        "chime:GetMeeting",
-                        "chime:CreateAttendee",
+                        "kinesisvideo:GetDataEndpoint", 
+                        "kinesisvideo:PutMedia", 
+                        "kinesisvideo:UpdateDataRetention", 
+                        "kinesisvideo:DescribeStream", 
+                        "kinesisvideo:CreateStream"
+                    ], 
+                    "Resource": [
+                        "arn:aws:kinesisvideo:*:*:stream/ChimeMediaPipelines-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AllowKinesisVideoStreamsAccess"
+                }, 
+                {
+                    "Action": [
+                        "kinesisvideo:ListStreams"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AllowKinesisVideoStreamsListAccess"
+                }, 
+                {
+                    "Action": [
+                        "chime:GetMeeting", 
+                        "chime:CreateAttendee", 
                         "chime:DeleteAttendee"
-                    ],
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowChimeMeetingAccess"
                 }
             ]
-        },
-        "VersionId": "v1",
-        "IsDefaultVersion": true,
-        "CreateDate": "2022-04-04T22:02:05Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

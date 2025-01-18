@@ -1,19 +1,21 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2023-11-26T18:12:09Z", 
+        "VersionId": "v2", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
                     "Action": [
-                        "logs:*"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
+                        "logs:*", 
+                        "cloudwatch:GenerateQuery"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchLogsFullAccess"
                 }
             ]
-        },
-        "VersionId": "v1",
-        "IsDefaultVersion": true,
-        "CreateDate": "2015-02-06T18:40:02Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

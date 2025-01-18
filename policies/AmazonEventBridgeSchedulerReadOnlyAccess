@@ -1,0 +1,23 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2022-11-10T18:50:12Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "scheduler:ListSchedules", 
+                        "scheduler:ListScheduleGroups", 
+                        "scheduler:GetSchedule", 
+                        "scheduler:GetScheduleGroup", 
+                        "scheduler:ListTagsForResource"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

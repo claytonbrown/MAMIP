@@ -1,0 +1,365 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-12-11T22:51:34Z", 
+        "VersionId": "v10", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ec2:DescribeInstances", 
+                        "ec2:DescribeRouteTables", 
+                        "ec2:DescribeInstanceTypes", 
+                        "ec2:DescribeVolumes", 
+                        "ec2:DescribeInstanceAttribute", 
+                        "ec2:DescribeSnapshots", 
+                        "ssm:GetCommandInvocation", 
+                        "ssm:DescribeInstanceInformation"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeInstanceActions"
+                }, 
+                {
+                    "Action": "ec2:DescribeInstanceStatus", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeInstanceStatus"
+                }, 
+                {
+                    "Action": [
+                        "events:DeleteRule", 
+                        "events:PutTargets", 
+                        "events:DescribeRule", 
+                        "events:PutRule", 
+                        "events:RemoveTargets"
+                    ], 
+                    "Resource": [
+                        "arn:*:events:*:*:rule/SSMSAPManagedRule*", 
+                        "arn:*:events:*:*:event-bus/default"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "TargetRuleActions"
+                }, 
+                {
+                    "Action": [
+                        "ssm:DescribeDocument", 
+                        "ssm:SendCommand"
+                    ], 
+                    "Resource": [
+                        "arn:*:ssm:*:*:document/AWSSystemsManagerSAP-*", 
+                        "arn:*:ssm:*:*:document/AWSSSMSAP*", 
+                        "arn:*:ssm:*:*:document/AWSSAP*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "DocumentActions"
+                }, 
+                {
+                    "Action": "ssm:SendCommand", 
+                    "Resource": "arn:*:ec2:*:*:instance/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEqualsIgnoreCase": {
+                            "ssm:resourceTag/SSMForSAPManaged": "True"
+                        }
+                    }, 
+                    "Sid": "CustomerSendCommand"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags", 
+                        "ec2:DeleteTags"
+                    ], 
+                    "Resource": "arn:*:ec2:*:*:instance/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "aws:RequestTag/awsApplication": "false"
+                        }, 
+                        "StringEqualsIgnoreCase": {
+                            "ec2:ResourceTag/SSMForSAPManaged": "True"
+                        }
+                    }, 
+                    "Sid": "InstanceTagActions"
+                }, 
+                {
+                    "Action": "ec2:DescribeTags", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeTag"
+                }, 
+                {
+                    "Action": "servicecatalog:GetApplication", 
+                    "Resource": "arn:*:servicecatalog:*:*:*", 
+                    "Effect": "Allow", 
+                    "Sid": "GetApplication"
+                }, 
+                {
+                    "Action": [
+                        "servicecatalog:DeleteApplication", 
+                        "servicecatalog:UpdateApplication"
+                    ], 
+                    "Resource": "arn:*:servicecatalog:*:*:*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/SSMForSAPCreated": "True"
+                        }
+                    }, 
+                    "Sid": "UpdateOrDeleteApplication"
+                }, 
+                {
+                    "Action": [
+                        "servicecatalog:TagResource", 
+                        "servicecatalog:CreateApplication"
+                    ], 
+                    "Resource": "arn:*:servicecatalog:*:*:*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/SSMForSAPCreated": "True"
+                        }
+                    }, 
+                    "Sid": "CreateApplication"
+                }, 
+                {
+                    "Action": "iam:CreateServiceLinkedRole", 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/servicecatalog-appregistry.amazonaws.com/AWSServiceRoleForAWSServiceCatalogAppRegistry", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:AWSServiceName": "servicecatalog-appregistry.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "CreateServiceLinkedRole"
+                }, 
+                {
+                    "Action": "cloudwatch:PutMetricData", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "cloudwatch:namespace": [
+                                "AWS/Usage", 
+                                "AWS/SSMForSAP"
+                            ]
+                        }
+                    }, 
+                    "Sid": "PutMetricData"
+                }, 
+                {
+                    "Action": "servicecatalog:CreateAttributeGroup", 
+                    "Resource": "arn:*:servicecatalog:*:*:/attribute-groups/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/SSMForSAPCreated": "True"
+                        }
+                    }, 
+                    "Sid": "CreateAttributeGroup"
+                }, 
+                {
+                    "Action": "servicecatalog:GetAttributeGroup", 
+                    "Resource": "arn:*:servicecatalog:*:*:/attribute-groups/*", 
+                    "Effect": "Allow", 
+                    "Sid": "GetAttributeGroup"
+                }, 
+                {
+                    "Action": "servicecatalog:DeleteAttributeGroup", 
+                    "Resource": "arn:*:servicecatalog:*:*:/attribute-groups/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/SSMForSAPCreated": "True"
+                        }
+                    }, 
+                    "Sid": "DeleteAttributeGroup"
+                }, 
+                {
+                    "Action": [
+                        "servicecatalog:AssociateAttributeGroup", 
+                        "servicecatalog:DisassociateAttributeGroup"
+                    ], 
+                    "Resource": "arn:*:servicecatalog:*:*:*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/SSMForSAPCreated": "True"
+                        }
+                    }, 
+                    "Sid": "AttributeGroupActions"
+                }, 
+                {
+                    "Action": "servicecatalog:ListAssociatedAttributeGroups", 
+                    "Resource": "arn:*:servicecatalog:*:*:*", 
+                    "Effect": "Allow", 
+                    "Sid": "ListAssociatedAttributeGroups"
+                }, 
+                {
+                    "Action": [
+                        "resource-groups:CreateGroup", 
+                        "resource-groups:Tag"
+                    ], 
+                    "Resource": "arn:*:resource-groups:*:*:group/SystemsManagerForSAP-*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/SSMForSAPCreated": "True"
+                        }, 
+                        "ForAllValues:StringEquals": {
+                            "aws:TagKeys": [
+                                "SSMForSAPCreated"
+                            ]
+                        }
+                    }, 
+                    "Sid": "CreateGroup"
+                }, 
+                {
+                    "Action": "resource-groups:GetGroup", 
+                    "Resource": "arn:*:resource-groups:*:*:group/SystemsManagerForSAP-*", 
+                    "Effect": "Allow", 
+                    "Sid": "GetGroup"
+                }, 
+                {
+                    "Action": "resource-groups:DeleteGroup", 
+                    "Resource": "arn:*:resource-groups:*:*:group/SystemsManagerForSAP-*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/SSMForSAPCreated": "True"
+                        }
+                    }, 
+                    "Sid": "DeleteGroup"
+                }, 
+                {
+                    "Action": [
+                        "resource-groups:CreateGroup"
+                    ], 
+                    "Resource": "arn:*:resource-groups:*:*:group/AWS_AppRegistry_AppTag_*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/EnableAWSServiceCatalogAppRegistry": "true"
+                        }
+                    }, 
+                    "Sid": "CreateAppTagResourceGroup"
+                }, 
+                {
+                    "Action": [
+                        "resource-groups:Tag"
+                    ], 
+                    "Resource": "arn:*:resource-groups:*:*:group/AWS_AppRegistry_AppTag_*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/EnableAWSServiceCatalogAppRegistry": "true"
+                        }
+                    }, 
+                    "Sid": "TagAppTagResourceGroup"
+                }, 
+                {
+                    "Action": [
+                        "resource-groups:GetGroupConfiguration"
+                    ], 
+                    "Resource": [
+                        "arn:*:resource-groups:*:*:group/AWS_AppRegistry_AppTag_*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "GetAppTagResourceGroupConfig"
+                }, 
+                {
+                    "Action": [
+                        "ec2:StartInstances", 
+                        "ec2:StopInstances"
+                    ], 
+                    "Resource": "arn:*:ec2:*:*:instance/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEqualsIgnoreCase": {
+                            "ec2:resourceTag/SSMForSAPManaged": "True"
+                        }
+                    }, 
+                    "Sid": "StartStopInstances"
+                }, 
+                {
+                    "Action": [
+                        "resource-groups:Tag", 
+                        "resource-groups:CreateGroup"
+                    ], 
+                    "Resource": "arn:aws:resource-groups:*:*:group/SystemsManagerForSAP-*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ArnLike": {
+                            "aws:RequestTag/awsApplication": "arn:aws:resource-groups:*:*:group/*/*"
+                        }, 
+                        "StringEquals": {
+                            "aws:RequestTag/SSMForSAPCreated": "True"
+                        }, 
+                        "ForAllValues:StringEquals": {
+                            "aws:TagKeys": [
+                                "SSMForSAPCreated", 
+                                "awsApplication"
+                            ]
+                        }
+                    }, 
+                    "Sid": "SsmSapResourceGroup"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags", 
+                        "ec2:DeleteTags"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:instance/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAllValues:StringLike": {
+                            "aws:TagKeys": [
+                                "SystemsManagerForSAP-*"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "aws:ResourceTag/SSMForSAPManaged": "True"
+                        }
+                    }, 
+                    "Sid": "ManageSsmSapTagsOnEc2Instances"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags", 
+                        "ec2:DeleteTags"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:volume/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAllValues:StringLike": {
+                            "aws:TagKeys": [
+                                "SystemsManagerForSAP-*"
+                            ]
+                        }
+                    }, 
+                    "Sid": "ManageSsmSapTagsOnEbsVolumes"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags", 
+                        "ec2:DeleteTags"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:volume/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ArnLike": {
+                            "aws:RequestTag/awsApplication": "arn:aws:resource-groups:*:*:group/*/*"
+                        }, 
+                        "ForAllValues:StringEquals": {
+                            "aws:TagKeys": [
+                                "awsApplication"
+                            ]
+                        }
+                    }, 
+                    "Sid": "ManageAppTagsOnEbsVolumes"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

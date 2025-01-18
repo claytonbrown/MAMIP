@@ -1,19 +1,48 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2023-11-26T20:16:13Z", 
+        "VersionId": "v2", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
                     "Action": [
                         "aps:*"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllPrometheusActions"
+                }, 
+                {
+                    "Action": [
+                        "eks:DescribeCluster", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribeSecurityGroups"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "aps.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "DescribeCluster"
+                }, 
+                {
+                    "Action": "iam:CreateServiceLinkedRole", 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/scraper.aps.amazonaws.com/AWSServiceRoleForAmazonPrometheusScraper*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:AWSServiceName": "scraper.aps.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "CreateServiceLinkedRole"
                 }
             ]
-        },
-        "VersionId": "v1",
-        "IsDefaultVersion": true,
-        "CreateDate": "2020-12-15T18:10:46Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

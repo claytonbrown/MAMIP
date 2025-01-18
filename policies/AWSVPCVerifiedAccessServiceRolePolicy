@@ -1,0 +1,71 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-17T21:03:13Z", 
+        "VersionId": "v3", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ec2:ModifyNetworkInterfaceAttribute", 
+                        "ec2:DeleteNetworkInterface"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:network-interface/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/VerifiedAccessManaged": "true"
+                        }
+                    }, 
+                    "Sid": "VerifiedAccessRoleModifyTaggedNetworkInterfaceActions"
+                }, 
+                {
+                    "Action": [
+                        "ec2:ModifyNetworkInterfaceAttribute"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:security-group/*", 
+                    "Effect": "Allow", 
+                    "Sid": "VerifiedAccessRoleModifyNetworkInterfaceActions"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateNetworkInterface"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:subnet/*", 
+                        "arn:aws:ec2:*:*:security-group/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "VerifiedAccessRoleNetworkInterfaceActions"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateNetworkInterface"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:network-interface/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/VerifiedAccessManaged": "true"
+                        }
+                    }, 
+                    "Sid": "VerifiedAccessRoleTaggedNetworkInterfaceActions"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:network-interface/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "ec2:CreateAction": "CreateNetworkInterface"
+                        }
+                    }, 
+                    "Sid": "VerifiedAccessRoleTaggingActions"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}
