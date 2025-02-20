@@ -1,278 +1,437 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-09-26T19:18:54Z", 
+        "VersionId": "v18", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
-                    "Action": "backup:*",
-                    "Resource": "*"
-                },
+                    "Action": "backup:*", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AwsBackupAllAccessPermissions"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "backup-storage:*",
-                    "Resource": "*"
-                },
-                {
-                    "Action": [
-                        "rds:DescribeDBSnapshots",
-                        "rds:ListTagsForResource",
-                        "rds:DescribeDBInstances",
-                        "rds:describeDBEngineVersions",
-                        "rds:describeOptionGroups",
-                        "rds:describeOrderableDBInstanceOptions",
-                        "rds:describeDBSubnetGroups",
-                        "rds:describeDBClusterSnapshots",
-                        "rds:describeDBClusters",
-                        "rds:describeDBParameterGroups",
-                        "rds:DescribeDBClusterParameterGroups",
-                        "rds:DescribeDBInstanceAutomatedBackups"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    "Action": "backup-storage:*", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AwsBackupStorageAllAccessPermissions"
+                }, 
                 {
                     "Action": [
-                        "rds:DeleteDBSnapshot",
+                        "rds:DescribeDBSnapshots", 
+                        "rds:ListTagsForResource", 
+                        "rds:DescribeDBInstances", 
+                        "rds:describeDBEngineVersions", 
+                        "rds:describeOptionGroups", 
+                        "rds:describeOrderableDBInstanceOptions", 
+                        "rds:describeDBSubnetGroups", 
+                        "rds:describeDBClusterSnapshots", 
+                        "rds:describeDBClusters", 
+                        "rds:describeDBParameterGroups", 
+                        "rds:DescribeDBClusterParameterGroups", 
+                        "rds:DescribeDBInstanceAutomatedBackups", 
+                        "rds:DescribeDBClusterAutomatedBackups"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "RdsPermissions"
+                }, 
+                {
+                    "Action": [
+                        "rds:DeleteDBSnapshot", 
                         "rds:DeleteDBClusterSnapshot"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*",
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "ForAnyValue:StringEquals": {
                             "aws:CalledVia": [
                                 "backup.amazonaws.com"
                             ]
                         }
-                    }
-                },
+                    }, 
+                    "Sid": "RdsDeletePermissions"
+                }, 
                 {
                     "Action": [
-                        "dynamodb:ListBackups",
+                        "dynamodb:ListBackups", 
                         "dynamodb:ListTables"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DynamoDbPermissions"
+                }, 
                 {
                     "Action": [
                         "dynamodb:DeleteBackup"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*",
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "ForAnyValue:StringEquals": {
                             "aws:CalledVia": [
                                 "backup.amazonaws.com"
                             ]
                         }
-                    }
-                },
+                    }, 
+                    "Sid": "DynamoDbDeleteBackupPermissions"
+                }, 
                 {
                     "Action": [
                         "elasticfilesystem:DescribeFilesystems"
-                    ],
-                    "Resource": "arn:aws:elasticfilesystem:*:*:file-system/*",
-                    "Effect": "Allow"
-                },
+                    ], 
+                    "Resource": "arn:aws:elasticfilesystem:*:*:file-system/*", 
+                    "Effect": "Allow", 
+                    "Sid": "EfsFileSystemPermissions"
+                }, 
                 {
                     "Action": [
-                        "ec2:DescribeSnapshots",
-                        "ec2:DescribeVolumes",
-                        "ec2:describeAvailabilityZones",
-                        "ec2:DescribeVpcs",
-                        "ec2:DescribeAccountAttributes",
-                        "ec2:DescribeSecurityGroups",
-                        "ec2:DescribeImages",
-                        "ec2:DescribeSubnets",
-                        "ec2:DescribePlacementGroups",
-                        "ec2:DescribeInstances",
-                        "ec2:DescribeInstanceTypes"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                        "ec2:DescribeSnapshots", 
+                        "ec2:DescribeVolumes", 
+                        "ec2:describeAvailabilityZones", 
+                        "ec2:DescribeVpcs", 
+                        "ec2:DescribeAccountAttributes", 
+                        "ec2:DescribeSecurityGroups", 
+                        "ec2:DescribeImages", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribePlacementGroups", 
+                        "ec2:DescribeInstances", 
+                        "ec2:DescribeInstanceTypes", 
+                        "ec2:DescribeVpcEndpoints", 
+                        "ec2:DescribeAddresses"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "Ec2Permissions"
+                }, 
                 {
                     "Action": [
-                        "ec2:DeleteSnapshot",
+                        "ec2:DeleteSnapshot", 
                         "ec2:DeregisterImage"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*",
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "ForAnyValue:StringEquals": {
                             "aws:CalledVia": [
                                 "backup.amazonaws.com"
                             ]
                         }
-                    }
-                },
+                    }, 
+                    "Sid": "Ec2DeletePermissions"
+                }, 
                 {
                     "Action": [
-                        "tag:GetTagKeys",
-                        "tag:GetTagValues",
+                        "tag:GetTagKeys", 
+                        "tag:GetTagValues", 
                         "tag:GetResources"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ResourceGroupTaggingPermissions"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "storagegateway:DescribeCachediSCSIVolumes",
+                        "storagegateway:DescribeCachediSCSIVolumes", 
                         "storagegateway:DescribeStorediSCSIVolumes"
-                    ],
-                    "Resource": "arn:aws:storagegateway:*:*:gateway/*/volume/*"
-                },
+                    ], 
+                    "Resource": "arn:aws:storagegateway:*:*:gateway/*/volume/*", 
+                    "Effect": "Allow", 
+                    "Sid": "StorageGatewayVolumePermissions"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
                         "storagegateway:ListGateways"
-                    ],
-                    "Resource": "arn:aws:storagegateway:*:*:*"
-                },
+                    ], 
+                    "Resource": "arn:aws:storagegateway:*:*:*", 
+                    "Effect": "Allow", 
+                    "Sid": "StorageGatewayPermissions"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "storagegateway:DescribeGatewayInformation",
-                        "storagegateway:ListVolumes",
+                        "storagegateway:DescribeGatewayInformation", 
                         "storagegateway:ListLocalDisks"
-                    ],
-                    "Resource": "arn:aws:storagegateway:*:*:gateway/*"
-                },
+                    ], 
+                    "Resource": "arn:aws:storagegateway:*:*:gateway/*", 
+                    "Effect": "Allow", 
+                    "Sid": "StorageGatewayGatewayPermissions"
+                }, 
                 {
                     "Action": [
-                        "iam:ListRoles",
+                        "storagegateway:ListVolumes"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "StorageGatewayGatewayStarPermissions"
+                }, 
+                {
+                    "Action": [
+                        "iam:ListRoles", 
                         "iam:GetRole"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "IamRolePermissions"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "iam:PassRole",
+                    "Action": "iam:PassRole", 
                     "Resource": [
-                        "arn:aws:iam::*:role/*AwsBackup*",
+                        "arn:aws:iam::*:role/*AwsBackup*", 
                         "arn:aws:iam::*:role/*AWSBackup*"
-                    ],
+                    ], 
+                    "Effect": "Allow", 
                     "Condition": {
-                        "StringLike": {
-                            "iam:PassedToService": "backup.amazonaws.com"
+                        "StringEquals": {
+                            "iam:PassedToService": [
+                                "backup.amazonaws.com", 
+                                "restore-testing.backup.amazonaws.com"
+                            ]
                         }
-                    }
-                },
+                    }, 
+                    "Sid": "IamPassRolePermissions"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "organizations:DescribeOrganization",
-                    "Resource": "*"
-                },
+                    "Action": "organizations:DescribeOrganization", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AwsOrganizationsPermissions"
+                }, 
                 {
                     "Action": [
-                        "kms:ListKeys",
-                        "kms:DescribeKey",
-                        "kms:GenerateDataKey",
+                        "kms:ListKeys", 
+                        "kms:DescribeKey", 
+                        "kms:GenerateDataKey", 
                         "kms:ListAliases"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "KmsPermissions"
+                }, 
                 {
                     "Action": [
                         "kms:CreateGrant"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*",
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
                     "Condition": {
-                        "ForAnyValue:StringEquals": {
-                            "kms:EncryptionContextKeys": "aws:backup:backup-vault"
-                        },
-                        "Bool": {
-                            "kms:GrantIsForAWSResource": true
-                        },
                         "StringLike": {
                             "kms:ViaService": "backup.*.amazonaws.com"
+                        }, 
+                        "ForAnyValue:StringEquals": {
+                            "kms:EncryptionContextKeys": "aws:backup:backup-vault"
+                        }, 
+                        "Bool": {
+                            "kms:GrantIsForAWSResource": true
                         }
-                    }
-                },
+                    }, 
+                    "Sid": "KmsCreateGrantPermissions"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ssm:CancelCommand",
+                        "ssm:CancelCommand", 
                         "ssm:GetCommandInvocation"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "SystemManagerCommandPermissions"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "ssm:SendCommand",
+                    "Action": "ssm:SendCommand", 
                     "Resource": [
-                        "arn:aws:ssm:*:*:document/AWSEC2-CreateVssSnapshot",
+                        "arn:aws:ssm:*:*:document/AWSEC2-CreateVssSnapshot", 
                         "arn:aws:ec2:*:*:instance/*"
-                    ]
-                },
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "SystemManagerSendCommandPermissions"
+                }, 
                 {
-                    "Action": "fsx:DescribeFileSystems",
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    "Action": [
+                        "fsx:DescribeFileSystems", 
+                        "fsx:DescribeBackups", 
+                        "fsx:DescribeVolumes", 
+                        "fsx:DescribeStorageVirtualMachines"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "FsxPermissions"
+                }, 
                 {
-                    "Action": "fsx:DescribeBackups",
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
-                {
-                    "Action": "fsx:DeleteBackup",
-                    "Effect": "Allow",
-                    "Resource": "arn:aws:fsx:*:*:backup/*",
+                    "Action": "fsx:DeleteBackup", 
+                    "Resource": "arn:aws:fsx:*:*:backup/*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "ForAnyValue:StringEquals": {
                             "aws:CalledVia": [
                                 "backup.amazonaws.com"
                             ]
                         }
-                    }
-                },
+                    }, 
+                    "Sid": "FsxDeletePermissions"
+                }, 
                 {
-                    "Action": "ds:DescribeDirectories",
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    "Action": "ds:DescribeDirectories", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DirectoryServicePermissions"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "iam:CreateServiceLinkedRole",
-                    "Resource": "*",
+                    "Action": "iam:CreateServiceLinkedRole", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "StringEquals": {
-                            "iam:AWSServiceName": "backup.amazonaws.com"
+                            "iam:AWSServiceName": [
+                                "backup.amazonaws.com", 
+                                "restore-testing.backup.amazonaws.com"
+                            ]
                         }
-                    }
-                },
+                    }, 
+                    "Sid": "IamCreateServiceLinkedRolePermissions"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "backup-gateway:AssociateGatewayToServer",
-                        "backup-gateway:CreateGateway",
-                        "backup-gateway:DeleteGateway",
-                        "backup-gateway:DeleteHypervisor",
-                        "backup-gateway:DisassociateGatewayFromServer",
-                        "backup-gateway:ImportHypervisorConfiguration",
-                        "backup-gateway:ListGateways",
-                        "backup-gateway:ListHypervisors",
-                        "backup-gateway:ListTagsForResource",
-                        "backup-gateway:ListVirtualMachines",
-                        "backup-gateway:PutMaintenanceStartTime",
-                        "backup-gateway:TagResource",
-                        "backup-gateway:TestHypervisorConfiguration",
-                        "backup-gateway:UntagResource",
-                        "backup-gateway:UpdateGatewayInformation",
+                        "backup-gateway:AssociateGatewayToServer", 
+                        "backup-gateway:CreateGateway", 
+                        "backup-gateway:DeleteGateway", 
+                        "backup-gateway:DeleteHypervisor", 
+                        "backup-gateway:DisassociateGatewayFromServer", 
+                        "backup-gateway:ImportHypervisorConfiguration", 
+                        "backup-gateway:ListGateways", 
+                        "backup-gateway:ListHypervisors", 
+                        "backup-gateway:ListTagsForResource", 
+                        "backup-gateway:ListVirtualMachines", 
+                        "backup-gateway:PutMaintenanceStartTime", 
+                        "backup-gateway:TagResource", 
+                        "backup-gateway:TestHypervisorConfiguration", 
+                        "backup-gateway:UntagResource", 
+                        "backup-gateway:UpdateGatewayInformation", 
                         "backup-gateway:UpdateHypervisor"
-                    ],
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "BackupGatewayPermissions"
+                }, 
+                {
+                    "Action": [
+                        "backup-gateway:GetHypervisor", 
+                        "backup-gateway:GetHypervisorPropertyMappings", 
+                        "backup-gateway:PutHypervisorPropertyMappings", 
+                        "backup-gateway:StartVirtualMachinesMetadataSync"
+                    ], 
+                    "Resource": "arn:aws:backup-gateway:*:*:hypervisor/*", 
+                    "Effect": "Allow", 
+                    "Sid": "BackupGatewayHypervisorPermissions"
+                }, 
+                {
+                    "Action": [
+                        "backup-gateway:GetVirtualMachine"
+                    ], 
+                    "Resource": "arn:aws:backup-gateway:*:*:vm/*", 
+                    "Effect": "Allow", 
+                    "Sid": "BackupGatewayVirtualMachinePermissions"
+                }, 
+                {
+                    "Action": [
+                        "backup-gateway:GetBandwidthRateLimitSchedule", 
+                        "backup-gateway:GetGateway", 
+                        "backup-gateway:PutBandwidthRateLimitSchedule"
+                    ], 
+                    "Resource": "arn:aws:backup-gateway:*:*:gateway/*", 
+                    "Effect": "Allow", 
+                    "Sid": "BackupGatewayGatewayPermissions"
+                }, 
+                {
+                    "Action": "cloudwatch:GetMetricData", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchPermissions"
+                }, 
+                {
+                    "Action": [
+                        "timestream:ListTables", 
+                        "timestream:ListDatabases"
+                    ], 
+                    "Resource": [
+                        "arn:aws:timestream:*:*:database/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "TimestreamDatabasePermissions"
+                }, 
+                {
+                    "Action": [
+                        "timestream:DescribeEndpoints"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "TimestreamPermissions"
+                }, 
+                {
+                    "Action": [
+                        "s3:ListAllMyBuckets"
+                    ], 
+                    "Resource": "arn:aws:s3:::*", 
+                    "Effect": "Allow", 
+                    "Sid": "S3BucketPermissions"
+                }, 
+                {
+                    "Action": [
+                        "redshift:DescribeClusters", 
+                        "redshift:DescribeClusterSubnetGroups", 
+                        "redshift:DescribeClusterSnapshots", 
+                        "redshift:DescribeSnapshotSchedules"
+                    ], 
+                    "Resource": [
+                        "arn:aws:redshift:*:*:cluster:*", 
+                        "arn:aws:redshift:*:*:subnetgroup:*", 
+                        "arn:aws:redshift:*:*:snapshot:*/*", 
+                        "arn:aws:redshift:*:*:snapshotschedule:*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "RedshiftResourcesPermissions"
+                }, 
+                {
+                    "Action": [
+                        "redshift:DescribeNodeConfigurationOptions", 
+                        "redshift:DescribeOrderableClusterOptions", 
+                        "redshift:DescribeClusterParameterGroups", 
+                        "redshift:DescribeClusterTracks"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "RedshiftPermissions"
+                }, 
+                {
+                    "Action": [
+                        "cloudformation:ListStacks"
+                    ], 
+                    "Resource": [
+                        "arn:aws:cloudformation:*:*:stack/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "CloudFormationStackPermissions"
+                }, 
+                {
+                    "Action": [
+                        "ssm-sap:GetOperation", 
+                        "ssm-sap:ListDatabases", 
+                        "ssm-sap:GetDatabase", 
+                        "ssm-sap:ListTagsForResource"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "SystemsManagerForSapPermissions"
+                }, 
+                {
+                    "Action": [
+                        "ram:GetResourceShareAssociations"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ResourceAccessManagerPermissions"
                 }
             ]
-        },
-        "VersionId": "v9",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-11-23T22:00:22Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

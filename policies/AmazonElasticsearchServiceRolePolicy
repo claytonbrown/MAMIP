@@ -1,28 +1,123 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2023-10-23T06:58:31Z", 
+        "VersionId": "v7", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Sid": "Stmt1480452973134",
                     "Action": [
-                        "ec2:CreateNetworkInterface",
-                        "ec2:DeleteNetworkInterface",
-                        "ec2:DescribeNetworkInterfaces",
-                        "ec2:ModifyNetworkInterfaceAttribute",
-                        "ec2:DescribeSecurityGroups",
-                        "ec2:DescribeSubnets",
-                        "ec2:DescribeVpcs",
-                        "elasticloadbalancing:AddListenerCertificates",
+                        "ec2:CreateNetworkInterface", 
+                        "ec2:DeleteNetworkInterface", 
+                        "ec2:DescribeNetworkInterfaces", 
+                        "ec2:ModifyNetworkInterfaceAttribute", 
+                        "ec2:DescribeSecurityGroups", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribeVpcs", 
+                        "elasticloadbalancing:AddListenerCertificates", 
                         "elasticloadbalancing:RemoveListenerCertificates"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "Stmt1480452973134"
+                }, 
+                {
+                    "Action": [
+                        "acm:DescribeCertificate"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "Stmt1480452973135"
+                }, 
+                {
+                    "Action": "cloudwatch:PutMetricData", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "cloudwatch:namespace": "AWS/ES"
+                        }
+                    }, 
+                    "Sid": "Stmt1480452973136"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateVpcEndpoint", 
+                        "ec2:ModifyVpcEndpoint"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:vpc/*", 
+                        "arn:aws:ec2:*:*:security-group/*", 
+                        "arn:aws:ec2:*:*:subnet/*", 
+                        "arn:aws:ec2:*:*:route-table/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "Stmt1480452973198"
+                }, 
+                {
+                    "Action": "ec2:CreateVpcEndpoint", 
+                    "Resource": "arn:aws:ec2:*:*:vpc-endpoint/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/OpenSearchManaged": "true"
+                        }
+                    }, 
+                    "Sid": "Stmt1480452973199"
+                }, 
+                {
+                    "Action": [
+                        "ec2:ModifyVpcEndpoint", 
+                        "ec2:DeleteVpcEndpoints"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:vpc-endpoint/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/OpenSearchManaged": "true"
+                        }
+                    }, 
+                    "Sid": "Stmt1480452973200"
+                }, 
+                {
+                    "Action": [
+                        "ec2:DescribeVpcEndpoints"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "Stmt1480452973201"
+                }, 
+                {
+                    "Action": [
+                        "ec2:AssignIpv6Addresses"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:network-interface/*", 
+                    "Effect": "Allow", 
+                    "Sid": "Stmt1480452973149"
+                }, 
+                {
+                    "Action": [
+                        "ec2:UnAssignIpv6Addresses"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:network-interface/*", 
+                    "Effect": "Allow", 
+                    "Sid": "Stmt1480452973150"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:vpc-endpoint/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "ec2:CreateAction": "CreateVpcEndpoint"
+                        }
+                    }, 
+                    "Sid": "Stmt1480452973202"
                 }
             ]
-        },
-        "VersionId": "v3",
-        "IsDefaultVersion": true,
-        "CreateDate": "2020-08-31T10:30:23Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

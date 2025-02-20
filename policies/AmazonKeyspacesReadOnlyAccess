@@ -1,32 +1,33 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2022-07-07T14:54:05Z", 
+        "VersionId": "v3", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
                         "cassandra:Select"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "application-autoscaling:DescribeScalableTargets",
-                        "application-autoscaling:DescribeScalingActivities",
-                        "application-autoscaling:DescribeScalingPolicies",
-                        "application-autoscaling:DescribeScheduledActions",
-                        "cloudwatch:DescribeAlarms",
-                        "kms:DescribeKey",
+                        "application-autoscaling:DescribeScalableTargets", 
+                        "application-autoscaling:DescribeScalingActivities", 
+                        "application-autoscaling:DescribeScalingPolicies", 
+                        "application-autoscaling:DescribeScheduledActions", 
+                        "cloudwatch:DescribeAlarms", 
+                        "cloudwatch:GetMetricData", 
+                        "kms:DescribeKey", 
                         "kms:ListAliases"
-                    ],
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-06-01T19:32:47Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

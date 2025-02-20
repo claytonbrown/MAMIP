@@ -1,79 +1,160 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2023-06-28T22:53:43Z", 
+        "VersionId": "v2", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ssm:GetOpsItem",
+                        "ssm:GetOpsItem", 
                         "ssm:UpdateOpsItem"
-                    ],
-                    "Resource": "*",
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "StringEquals": {
                             "aws:ResourceTag/ExplorerSecurityHubOpsItem": "true"
                         }
                     }
-                },
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
                         "ssm:CreateOpsItem"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
                         "ssm:AddTagsToResource"
-                    ],
-                    "Resource": "arn:aws:ssm:*:*:opsitem/*"
-                },
+                    ], 
+                    "Resource": "arn:aws:ssm:*:*:opsitem/*", 
+                    "Effect": "Allow"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ssm:UpdateServiceSetting",
+                        "ssm:UpdateServiceSetting", 
                         "ssm:GetServiceSetting"
-                    ],
+                    ], 
                     "Resource": [
-                        "arn:aws:ssm:*:*:servicesetting/ssm/opsitem/*",
+                        "arn:aws:ssm:*:*:servicesetting/ssm/opsitem/*", 
                         "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/*"
-                    ]
-                },
+                    ], 
+                    "Effect": "Allow"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "securityhub:GetFindings",
+                        "securityhub:GetFindings", 
                         "securityhub:BatchUpdateFindings"
-                    ],
+                    ], 
                     "Resource": [
                         "*"
-                    ]
-                },
+                    ], 
+                    "Effect": "Allow"
+                }, 
                 {
-                    "Effect": "Deny",
-                    "Action": "securityhub:BatchUpdateFindings",
-                    "Resource": "*",
+                    "Action": "securityhub:BatchUpdateFindings", 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
                     "Condition": {
                         "StringEquals": {
                             "securityhub:ASFFSyntaxPath/Workflow.Status": "SUPPRESSED"
-                        },
+                        }
+                    }
+                }, 
+                {
+                    "Action": "securityhub:BatchUpdateFindings", 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
                         "Null": {
-                            "securityhub:ASFFSyntaxPath/Confidence": false,
-                            "securityhub:ASFFSyntaxPath/Criticality": false,
-                            "securityhub:ASFFSyntaxPath/Note": false,
-                            "securityhub:ASFFSyntaxPath/RelatedFindings": false,
-                            "securityhub:ASFFSyntaxPath/Types": false,
-                            "securityhub:ASFFSyntaxPath/UserDefinedFields": false,
+                            "securityhub:ASFFSyntaxPath/Confidence": false
+                        }
+                    }
+                }, 
+                {
+                    "Action": "securityhub:BatchUpdateFindings", 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
+                        "Null": {
+                            "securityhub:ASFFSyntaxPath/Criticality": false
+                        }
+                    }
+                }, 
+                {
+                    "Action": "securityhub:BatchUpdateFindings", 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
+                        "Null": {
+                            "securityhub:ASFFSyntaxPath/Note.Text": false
+                        }
+                    }
+                }, 
+                {
+                    "Action": "securityhub:BatchUpdateFindings", 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
+                        "Null": {
+                            "securityhub:ASFFSyntaxPath/Note.UpdatedBy": false
+                        }
+                    }
+                }, 
+                {
+                    "Action": "securityhub:BatchUpdateFindings", 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
+                        "Null": {
+                            "securityhub:ASFFSyntaxPath/RelatedFindings": false
+                        }
+                    }
+                }, 
+                {
+                    "Action": "securityhub:BatchUpdateFindings", 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
+                        "Null": {
+                            "securityhub:ASFFSyntaxPath/Types": false
+                        }
+                    }
+                }, 
+                {
+                    "Action": "securityhub:BatchUpdateFindings", 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
+                        "Null": {
+                            "securityhub:ASFFSyntaxPath/UserDefinedFields.key": false
+                        }
+                    }
+                }, 
+                {
+                    "Action": "securityhub:BatchUpdateFindings", 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
+                        "Null": {
+                            "securityhub:ASFFSyntaxPath/UserDefinedFields.value": false
+                        }
+                    }
+                }, 
+                {
+                    "Action": "securityhub:BatchUpdateFindings", 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
+                        "Null": {
                             "securityhub:ASFFSyntaxPath/VerificationState": false
                         }
                     }
                 }
             ]
-        },
-        "VersionId": "v1",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-04-26T20:42:39Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

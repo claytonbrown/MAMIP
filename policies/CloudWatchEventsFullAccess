@@ -1,24 +1,85 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2025-01-22T02:07:06Z", 
+        "VersionId": "v3", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Sid": "CloudWatchEventsFullAccess",
-                    "Effect": "Allow",
-                    "Action": "events:*",
-                    "Resource": "*"
-                },
+                    "Action": [
+                        "events:*", 
+                        "schemas:*", 
+                        "scheduler:*", 
+                        "pipes:*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "EventBridgeActions"
+                }, 
                 {
-                    "Sid": "IAMPassRoleForCloudWatchEvents",
-                    "Effect": "Allow",
-                    "Action": "iam:PassRole",
-                    "Resource": "arn:aws:iam::*:role/AWS_Events_Invoke_Targets"
+                    "Action": "iam:CreateServiceLinkedRole", 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/apidestinations.events.amazonaws.com/AWSServiceRoleForAmazonEventBridgeApiDestinations", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:AWSServiceName": "apidestinations.events.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "IAMCreateServiceLinkedRoleForApiDestinations"
+                }, 
+                {
+                    "Action": "iam:CreateServiceLinkedRole", 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/schemas.amazonaws.com/AWSServiceRoleForSchemas", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:AWSServiceName": "schemas.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "IAMCreateServiceLinkedRoleForAmazonEventBridgeSchemas"
+                }, 
+                {
+                    "Action": [
+                        "secretsmanager:CreateSecret", 
+                        "secretsmanager:UpdateSecret", 
+                        "secretsmanager:DeleteSecret", 
+                        "secretsmanager:GetSecretValue", 
+                        "secretsmanager:PutSecretValue"
+                    ], 
+                    "Resource": "arn:aws:secretsmanager:*:*:secret:events!*", 
+                    "Effect": "Allow", 
+                    "Sid": "SecretsManagerAccessForApiDestinations"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
+                    "Resource": "arn:aws:iam::*:role/AWS_Events_Invoke_Targets", 
+                    "Effect": "Allow", 
+                    "Sid": "IAMPassRoleForCloudWatchEvents"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
+                    "Resource": "arn:aws:iam::*:role/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:PassedToService": "scheduler.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "IAMPassRoleAccessForScheduler"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
+                    "Resource": "arn:aws:iam::*:role/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:PassedToService": "pipes.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "IAMPassRoleAccessForPipes"
                 }
             ]
-        },
-        "VersionId": "v1",
-        "IsDefaultVersion": true,
-        "CreateDate": "2016-01-14T18:37:08Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

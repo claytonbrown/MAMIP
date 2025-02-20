@@ -1,0 +1,36 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-03-23T17:07:46Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "iam:ListRoleTags", 
+                        "iam:ListUserTags", 
+                        "tag:GetResources", 
+                        "ec2:DescribeTags"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }, 
+                {
+                    "Action": "s3:GetBucketTagging", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "NumericGreaterThanEquals": {
+                            "s3:TlsVersion": "1.2"
+                        }, 
+                        "StringEquals": {
+                            "s3:authType": "REST-HEADER", 
+                            "s3:signatureversion": "AWS4-HMAC-SHA256"
+                        }
+                    }
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}
