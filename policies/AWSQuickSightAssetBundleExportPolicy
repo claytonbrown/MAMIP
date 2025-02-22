@@ -1,0 +1,94 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-03-27T21:31:03Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "quicksight:ListTagsForResource"
+                    ], 
+                    "Resource": "arn:aws:quicksight:*:*:*/*", 
+                    "Effect": "Allow", 
+                    "Sid": "TagReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "quicksight:DescribeDashboard", 
+                        "quicksight:DescribeDashboardPermissions"
+                    ], 
+                    "Resource": "arn:aws:quicksight:*:*:dashboard/*", 
+                    "Effect": "Allow", 
+                    "Sid": "DashboardReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "quicksight:DescribeAnalysis", 
+                        "quicksight:DescribeAnalysisPermissions"
+                    ], 
+                    "Resource": "arn:aws:quicksight:*:*:analysis/*", 
+                    "Effect": "Allow", 
+                    "Sid": "AnalysisReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "quicksight:DescribeDataSet", 
+                        "quicksight:DescribeDataSetRefreshProperties", 
+                        "quicksight:ListRefreshSchedules", 
+                        "quicksight:DescribeDataSetPermissions"
+                    ], 
+                    "Resource": "arn:aws:quicksight:*:*:dataset/*", 
+                    "Effect": "Allow", 
+                    "Sid": "DataSetReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "quicksight:DescribeDataSource", 
+                        "quicksight:DescribeDataSourcePermissions"
+                    ], 
+                    "Resource": "arn:aws:quicksight:*:*:datasource/*", 
+                    "Effect": "Allow", 
+                    "Sid": "DataSourceReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "quicksight:DescribeTheme", 
+                        "quicksight:DescribeThemePermissions"
+                    ], 
+                    "Resource": "arn:aws:quicksight:*:*:theme/*", 
+                    "Effect": "Allow", 
+                    "Sid": "ThemeReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "quicksight:DescribeVPCConnection", 
+                        "quicksight:ListVPCConnections"
+                    ], 
+                    "Resource": "arn:aws:quicksight:*:*:vpcConnection/*", 
+                    "Effect": "Allow", 
+                    "Sid": "VPCConnectionReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "quicksight:DescribeRefreshSchedule"
+                    ], 
+                    "Resource": "arn:aws:quicksight:*:*:dataset/*/refresh-schedule/*", 
+                    "Effect": "Allow", 
+                    "Sid": "RefreshScheduleReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "quicksight:DescribeAssetBundleExportJob", 
+                        "quicksight:ListAssetBundleExportJobs", 
+                        "quicksight:StartAssetBundleExportJob"
+                    ], 
+                    "Resource": "arn:aws:quicksight:*:*:asset-bundle-export-job/*", 
+                    "Effect": "Allow", 
+                    "Sid": "AssetBundleExportOperations"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

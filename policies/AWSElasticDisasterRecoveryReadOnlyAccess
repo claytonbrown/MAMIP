@@ -1,38 +1,93 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-07-29T19:39:26Z", 
+        "VersionId": "v5", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "drs:DescribeJobLogItems",
-                        "drs:DescribeJobs",
-                        "drs:DescribeRecoveryInstances",
-                        "drs:DescribeRecoverySnapshots",
-                        "drs:DescribeReplicationConfigurationTemplates",
-                        "drs:DescribeSourceServers",
-                        "drs:GetFailbackReplicationConfiguration",
-                        "drs:GetLaunchConfiguration",
-                        "drs:GetReplicationConfiguration",
-                        "drs:ListTagsForResource"
-                    ],
-                    "Resource": "*"
-                },
+                        "drs:DescribeJobLogItems", 
+                        "drs:DescribeJobs", 
+                        "drs:DescribeRecoveryInstances", 
+                        "drs:DescribeRecoverySnapshots", 
+                        "drs:DescribeReplicationConfigurationTemplates", 
+                        "drs:DescribeSourceServers", 
+                        "drs:GetFailbackReplicationConfiguration", 
+                        "drs:GetLaunchConfiguration", 
+                        "drs:GetReplicationConfiguration", 
+                        "drs:ListExtensibleSourceServers", 
+                        "drs:ListStagingAccounts", 
+                        "drs:ListTagsForResource", 
+                        "drs:ListLaunchActions"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DRSReadOnlyAccess1"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ec2:DescribeInstances",
-                        "ec2:DescribeLaunchTemplateVersions",
-                        "ec2:DescribeSecurityGroups",
-                        "ec2:DescribeSubnets"
-                    ],
-                    "Resource": "*"
+                        "ec2:DescribeInstances", 
+                        "ec2:DescribeLaunchTemplateVersions", 
+                        "ec2:DescribeSecurityGroups", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:GetInstanceTypesFromInstanceRequirements"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DRSReadOnlyAccess2"
+                }, 
+                {
+                    "Action": "iam:ListRoles", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DRSReadOnlyAccess4"
+                }, 
+                {
+                    "Action": "ssm:ListCommandInvocations", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DRSReadOnlyAccess5"
+                }, 
+                {
+                    "Action": "ssm:GetParameter", 
+                    "Resource": "arn:aws:ssm:*:*:parameter/ManagedByAWSElasticDisasterRecovery-*", 
+                    "Effect": "Allow", 
+                    "Sid": "DRSReadOnlyAccess6"
+                }, 
+                {
+                    "Action": [
+                        "ssm:DescribeDocument", 
+                        "ssm:GetDocument"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:document/AWS-CreateImage", 
+                        "arn:aws:ssm:*:*:document/AWSMigration-ValidateNetworkConnectivity", 
+                        "arn:aws:ssm:*:*:document/AWSMigration-VerifyMountedVolumes", 
+                        "arn:aws:ssm:*:*:document/AWSMigration-ValidateHttpResponse", 
+                        "arn:aws:ssm:*:*:document/AWSMigration-ValidateDiskSpace", 
+                        "arn:aws:ssm:*:*:document/AWSMigration-VerifyProcessIsRunning", 
+                        "arn:aws:ssm:*:*:document/AWSMigration-LinuxTimeSyncSetting", 
+                        "arn:aws:ssm:*:*:document/AWSEC2-ApplicationInsightsCloudwatchAgentInstallAndConfigure"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "DRSReadOnlyAccess7"
+                }, 
+                {
+                    "Action": [
+                        "ssm:GetAutomationExecution"
+                    ], 
+                    "Resource": "arn:aws:ssm:*:*:automation-execution/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "aws:ResourceTag/AWSElasticDisasterRecoveryManaged": "false"
+                        }
+                    }, 
+                    "Sid": "DRSReadOnlyAccess8"
                 }
             ]
-        },
-        "VersionId": "v1",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-11-17T10:50:05Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

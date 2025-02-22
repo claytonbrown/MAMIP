@@ -1,0 +1,32 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-29T17:34:54Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "cloudwatch:DescribeAlarms", 
+                        "health:DescribeEvents"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "MonitoringPermissions"
+                }, 
+                {
+                    "Action": [
+                        "arc-zonal-shift:CancelZonalShift", 
+                        "arc-zonal-shift:GetManagedResource", 
+                        "arc-zonal-shift:StartZonalShift", 
+                        "arc-zonal-shift:UpdateZonalShift"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ZonalShiftManagementPermissions"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

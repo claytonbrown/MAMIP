@@ -1,0 +1,97 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-06-06T22:48:30Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "application-signals:BatchGetServiceLevelObjectiveBudgetReport", 
+                        "application-signals:GetService", 
+                        "application-signals:GetServiceLevelObjective", 
+                        "application-signals:ListServiceLevelObjectives", 
+                        "application-signals:ListServiceDependencies", 
+                        "application-signals:ListServiceDependents", 
+                        "application-signals:ListServiceOperations", 
+                        "application-signals:ListServices", 
+                        "application-signals:ListTagsForResource"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsReadOnlyAccessPermissions"
+                }, 
+                {
+                    "Action": "iam:GetRole", 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/application-signals.cloudwatch.amazonaws.com/AWSServiceRoleForCloudWatchApplicationSignals", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsGetRolePermissions"
+                }, 
+                {
+                    "Action": [
+                        "logs:StartQuery"
+                    ], 
+                    "Resource": "arn:aws:logs:*:*:log-group:/aws/application-signals/data:*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsLogGroupPermissions"
+                }, 
+                {
+                    "Action": [
+                        "logs:StopQuery", 
+                        "logs:GetQueryResults"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsLogsPermissions"
+                }, 
+                {
+                    "Action": [
+                        "cloudwatch:DescribeAlarms"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsAlarmsReadPermissions"
+                }, 
+                {
+                    "Action": [
+                        "cloudwatch:GetMetricData", 
+                        "cloudwatch:ListMetrics"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsMetricsReadPermissions"
+                }, 
+                {
+                    "Action": [
+                        "synthetics:DescribeCanaries", 
+                        "synthetics:DescribeCanariesLastRun", 
+                        "synthetics:GetCanaryRuns"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsSyntheticsReadPermissions"
+                }, 
+                {
+                    "Action": [
+                        "rum:BatchGetRumMetricDefinitions", 
+                        "rum:GetAppMonitor", 
+                        "rum:GetAppMonitorData", 
+                        "rum:ListAppMonitors"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsRumReadPermissions"
+                }, 
+                {
+                    "Action": [
+                        "xray:GetTraceSummaries"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsXrayReadPermissions"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

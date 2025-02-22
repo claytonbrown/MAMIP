@@ -1,22 +1,25 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-05-24T18:16:44Z", 
+        "VersionId": "v4", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
                     "Action": [
-                        "sqs:GetQueueAttributes",
-                        "sqs:GetQueueUrl",
-                        "sqs:ListDeadLetterSourceQueues",
-                        "sqs:ListQueues"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
+                        "sqs:GetQueueAttributes", 
+                        "sqs:GetQueueUrl", 
+                        "sqs:ListDeadLetterSourceQueues", 
+                        "sqs:ListQueues", 
+                        "sqs:ListMessageMoveTasks", 
+                        "sqs:ListQueueTags"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AmazonSQSReadOnlyAccess"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2018-08-20T23:35:49Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

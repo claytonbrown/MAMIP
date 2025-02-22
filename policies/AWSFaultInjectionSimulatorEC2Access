@@ -1,0 +1,68 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2025-02-12T10:07:06Z", 
+        "VersionId": "v5", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ec2:RebootInstances", 
+                        "ec2:SendSpotInstanceInterruptions", 
+                        "ec2:StartInstances", 
+                        "ec2:StopInstances", 
+                        "ec2:TerminateInstances"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:instance/*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowEc2Actions"
+                }, 
+                {
+                    "Action": [
+                        "kms:CreateGrant"
+                    ], 
+                    "Resource": [
+                        "arn:aws:kms:*:*:key/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Bool": {
+                            "kms:GrantIsForAWSResource": "true"
+                        }, 
+                        "StringLike": {
+                            "kms:ViaService": "ec2.*.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowEc2InstancesWithEncryptedEbsVolumes"
+                }, 
+                {
+                    "Action": [
+                        "ssm:SendCommand"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:instance/*", 
+                        "arn:aws:ssm:*:*:document/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AllowSSMSendOnEc2"
+                }, 
+                {
+                    "Action": [
+                        "ssm:CancelCommand", 
+                        "ssm:ListCommands"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowSSMStopOnEc2"
+                }, 
+                {
+                    "Action": "ec2:DescribeInstances", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeInstances"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

@@ -1,22 +1,23 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2022-10-20T20:34:07Z", 
+        "VersionId": "v4", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Sid": "AWSSSODirectoryAdministrator",
-                    "Effect": "Allow",
                     "Action": [
-                        "sso-directory:*",
-                        "identitystore:*",
+                        "sso-directory:*", 
+                        "identitystore:*", 
+                        "identitystore-auth:*", 
                         "sso:ListDirectoryAssociations"
-                    ],
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AWSSSODirectoryAdministrator"
                 }
             ]
-        },
-        "VersionId": "v3",
-        "IsDefaultVersion": true,
-        "CreateDate": "2022-03-25T20:31:19Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

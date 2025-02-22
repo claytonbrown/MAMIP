@@ -1,0 +1,71 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-14T17:01:12Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "resource-explorer-2:*", 
+                        "ec2:DescribeRegions", 
+                        "ram:ListResources", 
+                        "ram:GetResourceShares", 
+                        "organizations:ListAccounts", 
+                        "organizations:ListRoots", 
+                        "organizations:ListOrganizationalUnitsForParent", 
+                        "organizations:ListAccountsForParent", 
+                        "organizations:ListDelegatedAdministrators", 
+                        "organizations:ListAWSServiceAccessForOrganization", 
+                        "organizations:DescribeOrganization"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ReadOnlyAccess"
+                }, 
+                {
+                    "Action": [
+                        "iam:GetRole"
+                    ], 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/resource-explorer-2.amazonaws.com/AWSServiceRoleForResourceExplorer", 
+                    "Effect": "Allow", 
+                    "Sid": "ResourceExplorerGetSLRAccess"
+                }, 
+                {
+                    "Action": [
+                        "iam:CreateServiceLinkedRole"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:AWSServiceName": [
+                                "resource-explorer-2.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "ResourceExplorerCreateSLRAccess"
+                }, 
+                {
+                    "Action": [
+                        "organizations:EnableAWSServiceAccess", 
+                        "organizations:DisableAWSServiceAccess", 
+                        "organizations:RegisterDelegatedAdministrator", 
+                        "organizations:DeregisterDelegatedAdministrator"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "organizations:ServicePrincipal": [
+                                "resource-explorer-2.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "OrganizationsAdministratorAccess"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

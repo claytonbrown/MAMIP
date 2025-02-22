@@ -1,0 +1,23 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-09-09T21:15:14Z", 
+        "VersionId": "v3", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "supportplans:GetSupportPlan", 
+                        "supportplans:GetSupportPlanUpdateStatus", 
+                        "supportplans:ListSupportPlanModifiers", 
+                        "supportplans:StartSupportPlanUpdate", 
+                        "supportplans:CreateSupportPlanSchedule"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}
