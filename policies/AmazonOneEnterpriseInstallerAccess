@@ -1,0 +1,25 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-28T05:00:39Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "one:CreateDeviceActivationQrCode", 
+                        "one:GetDeviceInstance", 
+                        "one:GetSite", 
+                        "one:GetSiteAddress", 
+                        "one:ListDeviceInstances", 
+                        "one:ListSites"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "InstallerAccessStatementID"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

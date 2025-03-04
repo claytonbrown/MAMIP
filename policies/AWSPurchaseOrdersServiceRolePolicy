@@ -1,20 +1,39 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-12-01T17:51:06Z", 
+        "VersionId": "v6", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "aws-portal:*Billing",
-                        "purchase-orders:*PurchaseOrders"
-                    ],
-                    "Resource": "*"
+                        "account:GetAccountInformation", 
+                        "account:GetContactInformation", 
+                        "aws-portal:*Billing", 
+                        "consolidatedbilling:GetAccountBillingRole", 
+                        "invoicing:GetInvoicePDF", 
+                        "invoicing:ListInvoiceUnits", 
+                        "payments:GetPaymentInstrument", 
+                        "payments:ListPaymentPreferences", 
+                        "purchase-orders:AddPurchaseOrder", 
+                        "purchase-orders:DeletePurchaseOrder", 
+                        "purchase-orders:GetPurchaseOrder", 
+                        "purchase-orders:ListPurchaseOrderInvoices", 
+                        "purchase-orders:ListPurchaseOrders", 
+                        "purchase-orders:ListTagsForResource", 
+                        "purchase-orders:ModifyPurchaseOrders", 
+                        "purchase-orders:TagResource", 
+                        "purchase-orders:UntagResource", 
+                        "purchase-orders:UpdatePurchaseOrder", 
+                        "purchase-orders:UpdatePurchaseOrderStatus", 
+                        "purchase-orders:ViewPurchaseOrders", 
+                        "tax:ListTaxRegistrations"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-11-22T20:06:47Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

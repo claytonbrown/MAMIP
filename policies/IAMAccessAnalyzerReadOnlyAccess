@@ -1,21 +1,25 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-07-18T17:49:04Z", 
+        "VersionId": "v4", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "access-analyzer:Get*",
-                        "access-analyzer:List*",
+                        "access-analyzer:CheckAccessNotGranted", 
+                        "access-analyzer:CheckNoNewAccess", 
+                        "access-analyzer:CheckNoPublicAccess", 
+                        "access-analyzer:Get*", 
+                        "access-analyzer:List*", 
                         "access-analyzer:ValidatePolicy"
-                    ],
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "IAMAccessAnalyzerReadOnlyAccess"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-03-16T20:37:30Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

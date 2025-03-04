@@ -1,0 +1,39 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-14T16:53:46Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "resource-explorer-2:*", 
+                        "ec2:DescribeRegions", 
+                        "ram:ListResources", 
+                        "ram:GetResourceShares", 
+                        "organizations:DescribeOrganization"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ResourceExplorerConsoleFullAccess"
+                }, 
+                {
+                    "Action": [
+                        "iam:CreateServiceLinkedRole"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:AWSServiceName": [
+                                "resource-explorer-2.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "ResourceExplorerSLRAccess"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

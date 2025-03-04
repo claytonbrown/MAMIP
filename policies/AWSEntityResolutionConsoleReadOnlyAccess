@@ -1,0 +1,21 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-08-17T18:18:36Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "entityresolution:Get*", 
+                        "entityresolution:List*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "EntityResolutionRead"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

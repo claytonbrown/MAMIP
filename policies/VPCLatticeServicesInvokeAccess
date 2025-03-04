@@ -1,0 +1,19 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-03-30T02:45:07Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "vpc-lattice-svcs:Invoke"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

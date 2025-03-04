@@ -1,0 +1,314 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-02-27T17:42:02Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ssm:UpdateInstanceInformation"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:instance/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "aws:ResourceTag/AWSRDSCustom": [
+                                "custom-oracle", 
+                                "custom-sqlserver", 
+                                "custom-oracle-rac"
+                            ]
+                        }
+                    }, 
+                    "Sid": "ssmAgentPermission1"
+                }, 
+                {
+                    "Action": [
+                        "ssm:GetManifest", 
+                        "ssm:PutConfigurePackageResult"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ssmAgentPermission2"
+                }, 
+                {
+                    "Action": [
+                        "ssm:GetDocument", 
+                        "ssm:DescribeDocument"
+                    ], 
+                    "Resource": "arn:aws:ssm:*:*:document/*", 
+                    "Effect": "Allow", 
+                    "Sid": "ssmAgentPermission3"
+                }, 
+                {
+                    "Action": [
+                        "ssmmessages:CreateControlChannel", 
+                        "ssmmessages:OpenControlChannel"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ssmAgentPermission4"
+                }, 
+                {
+                    "Action": [
+                        "ec2messages:AcknowledgeMessage", 
+                        "ec2messages:DeleteMessage", 
+                        "ec2messages:FailMessage", 
+                        "ec2messages:GetEndpoint", 
+                        "ec2messages:GetMessages", 
+                        "ec2messages:SendReply"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ssmAgentPermission5"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateSnapshot", 
+                        "ec2:CreateSnapshots"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:volume/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "aws:ResourceTag/AWSRDSCustom": [
+                                "custom-oracle", 
+                                "custom-sqlserver", 
+                                "custom-oracle-rac"
+                            ]
+                        }
+                    }, 
+                    "Sid": "createEc2SnapshotPermission1"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateSnapshot", 
+                        "ec2:CreateSnapshots"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*::snapshot/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "aws:RequestTag/AWSRDSCustom": [
+                                "custom-oracle", 
+                                "custom-sqlserver", 
+                                "custom-oracle-rac"
+                            ]
+                        }
+                    }, 
+                    "Sid": "createEc2SnapshotPermission2"
+                }, 
+                {
+                    "Action": "ec2:CreateSnapshots", 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:instance/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "aws:ResourceTag/AWSRDSCustom": [
+                                "custom-oracle", 
+                                "custom-sqlserver", 
+                                "custom-oracle-rac"
+                            ]
+                        }
+                    }, 
+                    "Sid": "createEc2SnapshotPermission3"
+                }, 
+                {
+                    "Action": "ec2:CreateTags", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "ec2:CreateAction": [
+                                "CreateSnapshot", 
+                                "CreateSnapshots"
+                            ], 
+                            "aws:RequestTag/AWSRDSCustom": [
+                                "custom-oracle", 
+                                "custom-sqlserver", 
+                                "custom-oracle-rac"
+                            ]
+                        }
+                    }, 
+                    "Sid": "createTagForEc2SnapshotPermission"
+                }, 
+                {
+                    "Action": [
+                        "s3:putObject", 
+                        "s3:getObject", 
+                        "s3:getObjectVersion", 
+                        "s3:AbortMultipartUpload", 
+                        "s3:ListMultipartUploadParts"
+                    ], 
+                    "Resource": [
+                        "arn:aws:s3:::do-not-delete-rds-custom-*/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "rdsCustomS3ObjectPermission"
+                }, 
+                {
+                    "Action": [
+                        "s3:ListBucketVersions", 
+                        "s3:ListBucketMultipartUploads"
+                    ], 
+                    "Resource": [
+                        "arn:aws:s3:::do-not-delete-rds-custom-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "rdsCustomS3BucketPermission"
+                }, 
+                {
+                    "Action": [
+                        "secretsmanager:GetSecretValue", 
+                        "secretsmanager:DescribeSecret"
+                    ], 
+                    "Resource": [
+                        "arn:aws:secretsmanager:*:*:secret:do-not-delete-rds-custom-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "aws:ResourceTag/AWSRDSCustom": [
+                                "custom-oracle", 
+                                "custom-sqlserver", 
+                                "custom-oracle-rac"
+                            ]
+                        }
+                    }, 
+                    "Sid": "readSecretsFromCpPermission"
+                }, 
+                {
+                    "Action": [
+                        "secretsmanager:CreateSecret", 
+                        "secretsmanager:TagResource"
+                    ], 
+                    "Resource": [
+                        "arn:aws:secretsmanager:*:*:secret:do-not-delete-rds-custom-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "aws:RequestTag/AWSRDSCustom": "custom-oracle-rac"
+                        }
+                    }, 
+                    "Sid": "createSecretsOnDpPermission"
+                }, 
+                {
+                    "Action": "cloudwatch:PutMetricData", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "cloudwatch:namespace": [
+                                "rdscustom/rds-custom-sqlserver-agent", 
+                                "RDSCustomForOracle/Agent"
+                            ]
+                        }
+                    }, 
+                    "Sid": "publishCwMetricsPermission"
+                }, 
+                {
+                    "Action": "events:PutEvents", 
+                    "Resource": "arn:aws:events:*:*:event-bus/default", 
+                    "Effect": "Allow", 
+                    "Sid": "putEventsToEventBusPermission"
+                }, 
+                {
+                    "Action": [
+                        "logs:PutRetentionPolicy", 
+                        "logs:PutLogEvents", 
+                        "logs:DescribeLogStreams", 
+                        "logs:CreateLogStream", 
+                        "logs:CreateLogGroup"
+                    ], 
+                    "Resource": "arn:aws:logs:*:*:log-group:rds-custom-instance-*", 
+                    "Effect": "Allow", 
+                    "Sid": "cwlUploadPermission"
+                }, 
+                {
+                    "Action": [
+                        "sqs:SendMessage", 
+                        "sqs:ReceiveMessage", 
+                        "sqs:DeleteMessage", 
+                        "sqs:GetQueueUrl"
+                    ], 
+                    "Resource": [
+                        "arn:aws:sqs:*:*:do-not-delete-rds-custom-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "aws:ResourceTag/AWSRDSCustom": "custom-sqlserver"
+                        }
+                    }, 
+                    "Sid": "sendMessageToSqsQueuePermission"
+                }, 
+                {
+                    "Action": [
+                        "ec2:AssignPrivateIpAddresses", 
+                        "ec2:UnassignPrivateIpAddresses"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:network-interface/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "aws:ResourceTag/AWSRDSCustom": "custom-oracle-rac"
+                        }
+                    }, 
+                    "Sid": "managePrivateIpOnEniPermission"
+                }, 
+                {
+                    "Action": [
+                        "kms:Decrypt", 
+                        "kms:GenerateDataKey"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ArnLike": {
+                            "kms:EncryptionContext:SecretARN": "arn:aws:secretsmanager:*:*:secret:do-not-delete-rds-custom-*"
+                        }, 
+                        "StringLike": {
+                            "kms:ViaService": "secretsmanager.*.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "kmsPermissionWithSecret"
+                }, 
+                {
+                    "Action": [
+                        "kms:Decrypt", 
+                        "kms:GenerateDataKey"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ArnLike": {
+                            "kms:EncryptionContext:aws:s3:arn": "arn:aws:s3:::do-not-delete-rds-custom-*"
+                        }, 
+                        "StringLike": {
+                            "kms:ViaService": "s3.*.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "kmsPermissionWithS3"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

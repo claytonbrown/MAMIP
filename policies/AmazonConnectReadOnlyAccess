@@ -1,27 +1,29 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-06-19T15:15:33Z", 
+        "VersionId": "v4", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "connect:Get*",
-                        "connect:Describe*",
-                        "connect:List*",
+                        "connect:Get*", 
+                        "connect:Describe*", 
+                        "connect:List*", 
                         "ds:DescribeDirectories"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowConnectReadOnly"
+                }, 
                 {
-                    "Effect": "Deny",
-                    "Action": "connect:GetFederationTokens",
-                    "Resource": "*"
+                    "Action": "connect:AdminGetEmergencyAccessToken", 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Sid": "DenyConnectEmergencyAccess"
                 }
             ]
-        },
-        "VersionId": "v3",
-        "IsDefaultVersion": true,
-        "CreateDate": "2019-11-06T22:10:18Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

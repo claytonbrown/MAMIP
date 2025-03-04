@@ -1,0 +1,347 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-04-24T19:49:55Z", 
+        "VersionId": "v4", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ec2:DescribeAvailabilityZones", 
+                        "ec2:DescribeInternetGateways", 
+                        "ec2:DescribeInstances", 
+                        "ec2:DescribeInstanceTypes", 
+                        "ec2:DescribeRegions", 
+                        "ec2:DescribeReservedInstancesOfferings", 
+                        "ec2:DescribeRouteTables", 
+                        "ec2:DescribeSecurityGroups", 
+                        "ec2:DescribeSecurityGroupRules", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribeVpcAttribute", 
+                        "ec2:DescribeVpcs", 
+                        "ec2:DescribeInstanceTypeOfferings", 
+                        "elasticloadbalancing:DescribeAccountLimits", 
+                        "elasticloadbalancing:DescribeLoadBalancers", 
+                        "iam:GetOpenIDConnectProvider", 
+                        "iam:GetRole", 
+                        "route53:GetHostedZone", 
+                        "route53:ListHostedZones", 
+                        "route53:ListHostedZonesByName", 
+                        "route53:ListResourceRecordSets", 
+                        "route53:GetAccountLimit", 
+                        "servicequotas:GetServiceQuota"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ReadPermissions"
+                }, 
+                {
+                    "Action": [
+                        "iam:PassRole"
+                    ], 
+                    "Resource": [
+                        "arn:*:iam::*:role/*-ROSA-Worker-Role"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:PassedToService": [
+                                "ec2.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "PassRoleToEC2"
+                }, 
+                {
+                    "Action": [
+                        "iam:AddRoleToInstanceProfile", 
+                        "iam:RemoveRoleFromInstanceProfile", 
+                        "iam:DeleteInstanceProfile", 
+                        "iam:GetInstanceProfile"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:instance-profile/rosa-service-managed-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "ManageInstanceProfiles"
+                }, 
+                {
+                    "Action": [
+                        "iam:CreateInstanceProfile", 
+                        "iam:TagInstanceProfile"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:instance-profile/rosa-service-managed-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "CreateInstanceProfiles"
+                }, 
+                {
+                    "Action": [
+                        "secretsmanager:GetSecretValue"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "GetSecretValue"
+                }, 
+                {
+                    "Action": [
+                        "route53:ChangeResourceRecordSets"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAllValues:StringLike": {
+                            "route53:ChangeResourceRecordSetsNormalizedRecordNames": [
+                                "*.openshiftapps.com", 
+                                "*.devshift.org", 
+                                "*.hypershift.local", 
+                                "*.openshiftusgov.com", 
+                                "*.devshiftusgov.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "Route53ManageRecords"
+                }, 
+                {
+                    "Action": [
+                        "route53:ChangeTagsForResource", 
+                        "route53:CreateHostedZone", 
+                        "route53:DeleteHostedZone"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "Route53Manage"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:instance/*", 
+                        "arn:aws:ec2:*:*:volume/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "ec2:CreateAction": [
+                                "RunInstances"
+                            ]
+                        }
+                    }, 
+                    "Sid": "CreateTags"
+                }, 
+                {
+                    "Action": "ec2:RunInstances", 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:subnet/*", 
+                        "arn:aws:ec2:*:*:network-interface/*", 
+                        "arn:aws:ec2:*:*:security-group/*", 
+                        "arn:aws:ec2:*:*:snapshot/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "RunInstancesNoCondition"
+                }, 
+                {
+                    "Action": "ec2:RunInstances", 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:instance/*", 
+                        "arn:aws:ec2:*:*:volume/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "RunInstancesRestrictedRequestTag"
+                }, 
+                {
+                    "Action": [
+                        "ec2:RunInstances"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:image/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "ec2:Owner": [
+                                "531415883065", 
+                                "251351625822", 
+                                "210686502322"
+                            ]
+                        }
+                    }, 
+                    "Sid": "RunInstancesRedHatOwnedAMIs"
+                }, 
+                {
+                    "Action": [
+                        "ec2:TerminateInstances", 
+                        "ec2:GetConsoleOutput"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:instance/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "ManageInstancesRestrictedResourceTag"
+                }, 
+                {
+                    "Action": [
+                        "kms:CreateGrant"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "kms:ViaService": "ec2.*.amazonaws.com"
+                        }, 
+                        "StringEquals": {
+                            "aws:ResourceTag/red-hat": "true"
+                        }, 
+                        "Bool": {
+                            "kms:GrantIsForAWSResource": true
+                        }
+                    }, 
+                    "Sid": "CreateGrantRestrictedResourceTag"
+                }, 
+                {
+                    "Action": [
+                        "kms:DescribeKey", 
+                        "kms:GenerateDataKeyWithoutPlaintext"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/red-hat": "true"
+                        }
+                    }, 
+                    "Sid": "ManagedKMSRestrictedResourceTag"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateSecurityGroup"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:security-group*/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "CreateSecurityGroups"
+                }, 
+                {
+                    "Action": [
+                        "ec2:DeleteSecurityGroup"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:security-group*/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "DeleteSecurityGroup"
+                }, 
+                {
+                    "Action": [
+                        "ec2:AuthorizeSecurityGroupIngress", 
+                        "ec2:AuthorizeSecurityGroupEgress", 
+                        "ec2:RevokeSecurityGroupIngress", 
+                        "ec2:RevokeSecurityGroupEgress"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:security-group*/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "SecurityGroupIngressEgress"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateSecurityGroup"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:vpc/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "CreateSecurityGroupsVPCNoCondition"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:security-group/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "ec2:CreateAction": [
+                                "CreateSecurityGroup"
+                            ]
+                        }
+                    }, 
+                    "Sid": "CreateTagsRestrictedActions"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:subnet/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAllValues:StringLike": {
+                            "aws:TagKeys": [
+                                "kubernetes.io/cluster/*"
+                            ]
+                        }
+                    }, 
+                    "Sid": "CreateTagsK8sSubnet"
+                }, 
+                {
+                    "Action": [
+                        "iam:ListAttachedRolePolicies", 
+                        "iam:ListRolePolicies"
+                    ], 
+                    "Resource": "arn:aws:iam::*:role/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "ListPoliciesAttachedToRoles"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

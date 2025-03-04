@@ -1,0 +1,160 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-04-01T17:01:50Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "identitystore:DescribeGroup", 
+                        "identitystore:DescribeUser", 
+                        "identitystore:ListGroupMembershipsForMember", 
+                        "deadline:GetApplicationVersion", 
+                        "ec2:DescribeInstanceTypes", 
+                        "identitystore:ListUsers"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AdditionalPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:AssociateMemberToFleet", 
+                        "deadline:DisassociateMemberFromFleet"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:FleetMembershipLevels": [
+                                "OWNER"
+                            ]
+                        }
+                    }, 
+                    "Sid": "OwnerLevelPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:AssociateMemberToFleet"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:FleetMembershipLevels": [
+                                "MANAGER"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "deadline:MembershipLevel": [
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER"
+                            ], 
+                            "deadline:AssociatedMembershipLevel": [
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER", 
+                                ""
+                            ]
+                        }
+                    }, 
+                    "Sid": "ManagerLevelMemberAssociation"
+                }, 
+                {
+                    "Action": [
+                        "deadline:DisassociateMemberFromFleet"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:FleetMembershipLevels": [
+                                "MANAGER"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "deadline:AssociatedMembershipLevel": [
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER", 
+                                ""
+                            ]
+                        }
+                    }, 
+                    "Sid": "ManagerLevelMemberDisassociation"
+                }, 
+                {
+                    "Action": [
+                        "deadline:ListFleetMembers"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:FleetMembershipLevels": [
+                                "OWNER", 
+                                "MANAGER"
+                            ]
+                        }
+                    }, 
+                    "Sid": "OwnerManagerPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:AssumeFleetRoleForRead", 
+                        "deadline:GetFleet", 
+                        "deadline:GetQueueFleetAssociation", 
+                        "deadline:GetWorker", 
+                        "deadline:ListQueueFleetAssociations", 
+                        "deadline:ListSessionsForWorker", 
+                        "deadline:ListWorkers", 
+                        "deadline:SearchWorkers"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:FleetMembershipLevels": [
+                                "OWNER", 
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER"
+                            ]
+                        }
+                    }, 
+                    "Sid": "AllLevelsPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:ListFleets"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "deadline:RequesterPrincipalId": "${deadline:PrincipalId}"
+                        }
+                    }, 
+                    "Sid": "ListBasedOnMembership"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

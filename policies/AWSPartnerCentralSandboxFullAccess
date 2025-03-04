@@ -1,0 +1,40 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-12-10T18:21:19Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "partnercentral:*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "partnercentral:Catalog": "Sandbox"
+                        }
+                    }, 
+                    "Sid": "AWSPartnerCentralSandboxAccess"
+                }, 
+                {
+                    "Action": [
+                        "iam:PassRole"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:PassedToService": "resource-snapshot-job.partnercentral-selling.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "PassAWSPartnerCentralSnapshotJobRole"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

@@ -1,0 +1,116 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-10-03T20:32:36Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribeSecurityGroups", 
+                        "ec2:DescribeNetworkInterfaces", 
+                        "ec2:DescribeVpcs", 
+                        "ec2:DescribeCoipPools", 
+                        "ec2:GetCoipPoolUsage", 
+                        "ec2:DescribeAddresses", 
+                        "ec2:DescribeLocalGatewayRouteTableVpcAssociations"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeVpcResources"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateNetworkInterface"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:subnet/*", 
+                        "arn:aws:ec2:*:*:security-group/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "CreateNetworkInterface"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateNetworkInterface"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:network-interface/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/CreatedBy": "S3 On Outposts"
+                        }
+                    }, 
+                    "Sid": "CreateTagsForCreateNetworkInterface"
+                }, 
+                {
+                    "Action": [
+                        "ec2:AllocateAddress"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:ipv4pool-ec2/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AllocateIpAddress"
+                }, 
+                {
+                    "Action": [
+                        "ec2:AllocateAddress"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:elastic-ip/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/CreatedBy": "S3 On Outposts"
+                        }
+                    }, 
+                    "Sid": "CreateTagsForAllocateIpAddress"
+                }, 
+                {
+                    "Action": [
+                        "ec2:ModifyNetworkInterfaceAttribute", 
+                        "ec2:CreateNetworkInterfacePermission", 
+                        "ec2:DeleteNetworkInterface", 
+                        "ec2:DeleteNetworkInterfacePermission", 
+                        "ec2:DisassociateAddress", 
+                        "ec2:ReleaseAddress", 
+                        "ec2:AssociateAddress"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/CreatedBy": "S3 On Outposts"
+                        }
+                    }, 
+                    "Sid": "ReleaseVpcResources"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/CreatedBy": [
+                                "S3 On Outposts"
+                            ], 
+                            "ec2:CreateAction": [
+                                "CreateNetworkInterface", 
+                                "AllocateAddress"
+                            ]
+                        }
+                    }, 
+                    "Sid": "CreateTags"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}
