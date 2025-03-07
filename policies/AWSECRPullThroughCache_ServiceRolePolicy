@@ -1,24 +1,42 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2025-03-06T21:22:07Z", 
+        "VersionId": "v3", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ecr:GetAuthorizationToken",
-                        "ecr:BatchCheckLayerAvailability",
-                        "ecr:InitiateLayerUpload",
-                        "ecr:UploadLayerPart",
-                        "ecr:CompleteLayerUpload",
-                        "ecr:PutImage"
-                    ],
-                    "Resource": "*"
+                        "ecr:GetAuthorizationToken", 
+                        "ecr:BatchCheckLayerAvailability", 
+                        "ecr:InitiateLayerUpload", 
+                        "ecr:UploadLayerPart", 
+                        "ecr:CompleteLayerUpload", 
+                        "ecr:PutImage", 
+                        "ecr:BatchGetImage", 
+                        "ecr:BatchImportUpstreamImage", 
+                        "ecr:GetDownloadUrlForLayer", 
+                        "ecr:GetImageCopyStatus"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ECR"
+                }, 
+                {
+                    "Action": [
+                        "secretsmanager:GetSecretValue"
+                    ], 
+                    "Resource": "arn:aws:secretsmanager:*:*:secret:ecr-pullthroughcache/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "SecretsManager"
                 }
             ]
-        },
-        "VersionId": "v1",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-11-26T21:51:09Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

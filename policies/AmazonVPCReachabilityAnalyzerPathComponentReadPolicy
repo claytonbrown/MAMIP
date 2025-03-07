@@ -1,0 +1,21 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-05-01T20:38:22Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "network-firewall:Describe*", 
+                        "network-firewall:List*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "NetworkFirewallPermissions"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

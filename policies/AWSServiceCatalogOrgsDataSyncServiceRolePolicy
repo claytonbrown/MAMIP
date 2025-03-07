@@ -1,0 +1,25 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-04-10T20:48:28Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "organizations:DescribeAccount", 
+                        "organizations:DescribeOrganization", 
+                        "organizations:ListAccounts", 
+                        "organizations:ListChildren", 
+                        "organizations:ListParents", 
+                        "organizations:ListAWSServiceAccessForOrganization"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "OrganizationsDataSyncToServiceCatalog"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

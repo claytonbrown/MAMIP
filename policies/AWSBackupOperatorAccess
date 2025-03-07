@@ -1,176 +1,338 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-07-24T18:58:33Z", 
+        "VersionId": "v16", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "backup:Get*",
-                        "backup:List*",
-                        "backup:Describe*",
-                        "backup:CreateBackupSelection",
-                        "backup:DeleteBackupSelection",
-                        "backup:StartBackupJob",
-                        "backup:StartRestoreJob",
+                        "backup:Get*", 
+                        "backup:List*", 
+                        "backup:Describe*", 
+                        "backup:CreateBackupSelection", 
+                        "backup:DeleteBackupSelection", 
+                        "backup:StartBackupJob", 
+                        "backup:StartRestoreJob", 
                         "backup:StartCopyJob"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AwsBackupAllAccess"
+                }, 
                 {
                     "Action": [
-                        "rds:DescribeDBSnapshots",
-                        "rds:ListTagsForResource",
-                        "rds:DescribeDBInstances",
-                        "rds:describeDBEngineVersions",
-                        "rds:describeOptionGroups",
-                        "rds:describeOrderableDBInstanceOptions",
-                        "rds:describeDBSubnetGroups",
-                        "rds:DescribeDBClusterSnapshots",
-                        "rds:DescribeDBClusters",
-                        "rds:DescribeDBParameterGroups",
-                        "rds:DescribeDBClusterParameterGroups",
-                        "rds:DescribeDBInstanceAutomatedBackups"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                        "rds:DescribeDBSnapshots", 
+                        "rds:ListTagsForResource", 
+                        "rds:DescribeDBInstances", 
+                        "rds:describeDBEngineVersions", 
+                        "rds:describeOptionGroups", 
+                        "rds:describeOrderableDBInstanceOptions", 
+                        "rds:describeDBSubnetGroups", 
+                        "rds:DescribeDBClusterSnapshots", 
+                        "rds:DescribeDBClusters", 
+                        "rds:DescribeDBParameterGroups", 
+                        "rds:DescribeDBClusterParameterGroups", 
+                        "rds:DescribeDBInstanceAutomatedBackups", 
+                        "rds:DescribeDBClusterAutomatedBackups"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "RDSDescribeAccess"
+                }, 
                 {
                     "Action": [
-                        "dynamodb:ListBackups",
+                        "dynamodb:ListBackups", 
                         "dynamodb:ListTables"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DynamoDBAccess"
+                }, 
                 {
                     "Action": [
                         "elasticfilesystem:DescribeFilesystems"
-                    ],
-                    "Resource": "arn:aws:elasticfilesystem:*:*:file-system/*",
-                    "Effect": "Allow"
-                },
+                    ], 
+                    "Resource": "arn:aws:elasticfilesystem:*:*:file-system/*", 
+                    "Effect": "Allow", 
+                    "Sid": "EFSAccess"
+                }, 
                 {
                     "Action": [
-                        "ec2:DescribeSnapshots",
-                        "ec2:DescribeVolumes",
-                        "ec2:describeAvailabilityZones",
-                        "ec2:DescribeVpcs",
-                        "ec2:DescribeAccountAttributes",
-                        "ec2:DescribeSecurityGroups",
-                        "ec2:DescribeImages",
-                        "ec2:DescribeSubnets",
-                        "ec2:DescribePlacementGroups",
-                        "ec2:DescribeInstances",
-                        "ec2:DescribeInstanceTypes"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                        "ec2:DescribeSnapshots", 
+                        "ec2:DescribeVolumes", 
+                        "ec2:describeAvailabilityZones", 
+                        "ec2:DescribeVpcs", 
+                        "ec2:DescribeAccountAttributes", 
+                        "ec2:DescribeSecurityGroups", 
+                        "ec2:DescribeImages", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribePlacementGroups", 
+                        "ec2:DescribeInstances", 
+                        "ec2:DescribeInstanceTypes", 
+                        "ec2:DescribeVpcEndpoints", 
+                        "ec2:DescribeAddresses"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "EC2Access"
+                }, 
                 {
                     "Action": [
-                        "tag:GetTagKeys",
-                        "tag:GetTagValues",
+                        "tag:GetTagKeys", 
+                        "tag:GetTagValues", 
                         "tag:GetResources"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "TagReadAccess"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "storagegateway:DescribeCachediSCSIVolumes",
+                        "storagegateway:DescribeCachediSCSIVolumes", 
                         "storagegateway:DescribeStorediSCSIVolumes"
-                    ],
-                    "Resource": "arn:aws:storagegateway:*:*:gateway/*/volume/*"
-                },
+                    ], 
+                    "Resource": "arn:aws:storagegateway:*:*:gateway/*/volume/*", 
+                    "Effect": "Allow", 
+                    "Sid": "StorageGatewaySCSIAccess"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
                         "storagegateway:ListGateways"
-                    ],
-                    "Resource": "arn:aws:storagegateway:*:*:*"
-                },
+                    ], 
+                    "Resource": "arn:aws:storagegateway:*:*:*", 
+                    "Effect": "Allow", 
+                    "Sid": "StorageGatewayReadAccess"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "storagegateway:DescribeGatewayInformation",
-                        "storagegateway:ListVolumes",
+                        "storagegateway:DescribeGatewayInformation", 
                         "storagegateway:ListLocalDisks"
-                    ],
-                    "Resource": "arn:aws:storagegateway:*:*:gateway/*"
-                },
+                    ], 
+                    "Resource": "arn:aws:storagegateway:*:*:gateway/*", 
+                    "Effect": "Allow", 
+                    "Sid": "StorageGatewayDiskReadAccess"
+                }, 
                 {
                     "Action": [
-                        "iam:ListRoles",
-                        "iam:GetRole"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                        "storagegateway:ListVolumes"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "StorageGatewayVolumeReadAccess"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "iam:PassRole",
+                    "Action": [
+                        "iam:ListRoles", 
+                        "iam:GetRole"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "IAMRoleAccess"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
                     "Resource": [
-                        "arn:aws:iam::*:role/*AwsBackup*",
+                        "arn:aws:iam::*:role/*AwsBackup*", 
                         "arn:aws:iam::*:role/*AWSBackup*"
-                    ],
+                    ], 
+                    "Effect": "Allow", 
                     "Condition": {
                         "StringLike": {
                             "iam:PassedToService": "backup.amazonaws.com"
                         }
-                    }
-                },
+                    }, 
+                    "Sid": "PassRoleAccess"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "organizations:DescribeOrganization",
-                    "Resource": "*"
-                },
+                    "Action": "organizations:DescribeOrganization", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "OrganizationsAccess"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ssm:CancelCommand",
+                        "ssm:CancelCommand", 
                         "ssm:GetCommandInvocation"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "SSMReadAccess"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "ssm:SendCommand",
+                    "Action": "ssm:SendCommand", 
                     "Resource": [
-                        "arn:aws:ssm:*:*:document/AWSEC2-CreateVssSnapshot",
+                        "arn:aws:ssm:*:*:document/AWSEC2-CreateVssSnapshot", 
                         "arn:aws:ec2:*:*:instance/*"
-                    ]
-                },
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "SSMComandAccess"
+                }, 
                 {
-                    "Action": "fsx:DescribeBackups",
-                    "Effect": "Allow",
-                    "Resource": "arn:aws:fsx:*:*:backup/*"
-                },
+                    "Action": "fsx:DescribeBackups", 
+                    "Resource": "arn:aws:fsx:*:*:backup/*", 
+                    "Effect": "Allow", 
+                    "Sid": "FSXDescribeAccess"
+                }, 
                 {
-                    "Action": "fsx:DescribeFileSystems",
-                    "Effect": "Allow",
-                    "Resource": "arn:aws:fsx:*:*:file-system/*"
-                },
+                    "Action": "fsx:DescribeFileSystems", 
+                    "Resource": "arn:aws:fsx:*:*:file-system/*", 
+                    "Effect": "Allow", 
+                    "Sid": "FSxFileAccess"
+                }, 
                 {
-                    "Action": "ds:DescribeDirectories",
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    "Action": "fsx:DescribeVolumes", 
+                    "Resource": "arn:aws:fsx:*:*:volume/*/*", 
+                    "Effect": "Allow", 
+                    "Sid": "FSxVolumeAccess"
+                }, 
                 {
-                    "Effect": "Allow",
+                    "Action": "fsx:DescribeStorageVirtualMachines", 
+                    "Resource": "arn:aws:fsx:*:*:storage-virtual-machine/*/*", 
+                    "Effect": "Allow", 
+                    "Sid": "FSxMachineAccess"
+                }, 
+                {
+                    "Action": "ds:DescribeDirectories", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DirectoryServiceAccess"
+                }, 
+                {
                     "Action": [
-                        "backup-gateway:ListGateways",
-                        "backup-gateway:ListHypervisors",
-                        "backup-gateway:ListTagsForResource",
+                        "backup-gateway:ListGateways", 
+                        "backup-gateway:ListHypervisors", 
+                        "backup-gateway:ListTagsForResource", 
                         "backup-gateway:ListVirtualMachines"
-                    ],
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "BackupGatewayListAccess"
+                }, 
+                {
+                    "Action": [
+                        "backup-gateway:GetHypervisor", 
+                        "backup-gateway:GetHypervisorPropertyMappings"
+                    ], 
+                    "Resource": "arn:aws:backup-gateway:*:*:hypervisor/*", 
+                    "Effect": "Allow", 
+                    "Sid": "BackupGatewayHypervisorAccess"
+                }, 
+                {
+                    "Action": [
+                        "backup-gateway:GetVirtualMachine"
+                    ], 
+                    "Resource": "arn:aws:backup-gateway:*:*:vm/*", 
+                    "Effect": "Allow", 
+                    "Sid": "BackupGatewayMachineAccess"
+                }, 
+                {
+                    "Action": [
+                        "backup-gateway:GetBandwidthRateLimitSchedule", 
+                        "backup-gateway:GetGateway"
+                    ], 
+                    "Resource": "arn:aws:backup-gateway:*:*:gateway/*", 
+                    "Effect": "Allow", 
+                    "Sid": "BackupGatewayAccess"
+                }, 
+                {
+                    "Action": "cloudwatch:GetMetricData", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchAccess"
+                }, 
+                {
+                    "Action": [
+                        "timestream:ListDatabases", 
+                        "timestream:ListTables"
+                    ], 
+                    "Resource": [
+                        "arn:aws:timestream:*:*:database/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "TimestreamListAccess"
+                }, 
+                {
+                    "Action": [
+                        "timestream:DescribeEndpoints"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "TimestreamDescribeAccess"
+                }, 
+                {
+                    "Action": [
+                        "s3:ListAllMyBuckets"
+                    ], 
+                    "Resource": "arn:aws:s3:::*", 
+                    "Effect": "Allow", 
+                    "Sid": "S3ListAccess"
+                }, 
+                {
+                    "Action": [
+                        "redshift:DescribeClusters", 
+                        "redshift:DescribeClusterSubnetGroups", 
+                        "redshift:DescribeClusterSnapshots", 
+                        "redshift:DescribeSnapshotSchedules"
+                    ], 
+                    "Resource": [
+                        "arn:aws:redshift:*:*:cluster:*", 
+                        "arn:aws:redshift:*:*:subnetgroup:*", 
+                        "arn:aws:redshift:*:*:snapshot:*/*", 
+                        "arn:aws:redshift:*:*:snapshotschedule:*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "RedshiftAccess"
+                }, 
+                {
+                    "Action": [
+                        "redshift:DescribeNodeConfigurationOptions", 
+                        "redshift:DescribeOrderableClusterOptions", 
+                        "redshift:DescribeClusterParameterGroups", 
+                        "redshift:DescribeClusterTracks"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "RedshiftOptionsAccess"
+                }, 
+                {
+                    "Action": [
+                        "cloudformation:ListStacks"
+                    ], 
+                    "Resource": [
+                        "arn:aws:cloudformation:*:*:stack/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "CloudFormationAccess"
+                }, 
+                {
+                    "Action": [
+                        "ssm-sap:GetOperation", 
+                        "ssm-sap:ListDatabases"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "SAPAccess"
+                }, 
+                {
+                    "Action": [
+                        "ssm-sap:GetDatabase", 
+                        "ssm-sap:ListTagsForResource"
+                    ], 
+                    "Resource": "arn:aws:ssm-sap:*:*:*", 
+                    "Effect": "Allow", 
+                    "Sid": "SAPDatabaseAccess"
+                }, 
+                {
+                    "Action": [
+                        "ram:GetResourceShareAssociations"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "RAMAccess"
                 }
             ]
-        },
-        "VersionId": "v8",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-11-23T22:00:28Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

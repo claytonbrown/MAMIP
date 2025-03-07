@@ -1,31 +1,66 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-11-21T17:51:05Z", 
+        "VersionId": "v10", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
                     "Action": [
-                        "autoscaling:Describe*",
-                        "cloudwatch:Describe*",
-                        "cloudwatch:Get*",
-                        "cloudwatch:List*",
-                        "logs:Get*",
-                        "logs:List*",
-                        "logs:StartQuery",
-                        "logs:StopQuery",
-                        "logs:Describe*",
-                        "logs:TestMetricFilter",
-                        "logs:FilterLogEvents",
-                        "sns:Get*",
-                        "sns:List*"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
+                        "application-autoscaling:DescribeScalingPolicies", 
+                        "application-signals:BatchGet*", 
+                        "application-signals:Get*", 
+                        "application-signals:List*", 
+                        "autoscaling:Describe*", 
+                        "cloudwatch:BatchGet*", 
+                        "cloudwatch:Describe*", 
+                        "cloudwatch:GenerateQuery", 
+                        "cloudwatch:Get*", 
+                        "cloudwatch:List*", 
+                        "logs:Get*", 
+                        "logs:List*", 
+                        "logs:StartQuery", 
+                        "logs:StopQuery", 
+                        "logs:Describe*", 
+                        "logs:TestMetricFilter", 
+                        "logs:FilterLogEvents", 
+                        "logs:StartLiveTail", 
+                        "logs:StopLiveTail", 
+                        "oam:ListSinks", 
+                        "sns:Get*", 
+                        "sns:List*", 
+                        "rum:BatchGet*", 
+                        "rum:Get*", 
+                        "rum:List*", 
+                        "synthetics:Describe*", 
+                        "synthetics:Get*", 
+                        "synthetics:List*", 
+                        "xray:BatchGet*", 
+                        "xray:Get*", 
+                        "xray:List*", 
+                        "xray:StartTraceRetrieval", 
+                        "xray:CancelTraceRetrieval"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchReadOnlyAccessPermissions"
+                }, 
+                {
+                    "Action": [
+                        "oam:ListAttachedLinks"
+                    ], 
+                    "Resource": "arn:aws:oam:*:*:sink/*", 
+                    "Effect": "Allow", 
+                    "Sid": "OAMReadPermissions"
+                }, 
+                {
+                    "Action": "iam:GetRole", 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/application-signals.cloudwatch.amazonaws.com/AWSServiceRoleForCloudWatchApplicationSignals", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchReadOnlyGetRolePermissions"
                 }
             ]
-        },
-        "VersionId": "v4",
-        "IsDefaultVersion": true,
-        "CreateDate": "2020-07-17T17:49:09Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

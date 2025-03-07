@@ -1,20 +1,45 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-09-24T22:13:12Z", 
+        "VersionId": "v2", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "sns:GetTopicAttributes",
-                        "sns:List*"
-                    ],
-                    "Resource": "*"
+                        "sns:GetTopicAttributes", 
+                        "sns:List*", 
+                        "sns:CheckIfPhoneNumberIsOptedOut", 
+                        "sns:GetEndpointAttributes", 
+                        "sns:GetDataProtectionPolicy", 
+                        "sns:GetPlatformApplicationAttributes", 
+                        "sns:GetSMSAttributes", 
+                        "sns:GetSMSSandboxAccountStatus", 
+                        "sns:GetSubscriptionAttributes"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "SNSReadOnlyAccess"
+                }, 
+                {
+                    "Action": [
+                        "sms-voice:DescribeVerifiedDestinationNumbers", 
+                        "sms-voice:DescribeAccountAttributes", 
+                        "sms-voice:DescribeSpendLimits", 
+                        "sms-voice:DescribePhoneNumbers", 
+                        "sms-voice:DescribeOptedOutNumbers"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:CalledViaLast": "sns.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "SMSAccessViaSNS"
                 }
             ]
-        },
-        "VersionId": "v1",
-        "IsDefaultVersion": true,
-        "CreateDate": "2015-02-06T18:41:06Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

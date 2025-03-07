@@ -1,0 +1,15 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-07-25T20:29:37Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": {
+                "Action": "mediapackagev2:*", 
+                "Resource": "*", 
+                "Effect": "Allow"
+            }
+        }, 
+        "IsDefaultVersion": true
+    }
+}

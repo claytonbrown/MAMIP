@@ -1,30 +1,55 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-11-20T19:22:33Z", 
+        "VersionId": "v4", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
                     "Action": [
-                        "aws-marketplace:ViewSubscriptions",
-                        "aws-marketplace:Subscribe",
+                        "aws-marketplace:ViewSubscriptions", 
+                        "aws-marketplace:Subscribe", 
                         "aws-marketplace:Unsubscribe"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }, 
                 {
                     "Action": [
-                        "aws-marketplace:CreatePrivateMarketplaceRequests",
-                        "aws-marketplace:ListPrivateMarketplaceRequests",
+                        "aws-marketplace:CreatePrivateMarketplaceRequests", 
+                        "aws-marketplace:ListPrivateMarketplaceRequests", 
                         "aws-marketplace:DescribePrivateMarketplaceRequests"
-                    ],
-                    "Effect": "Allow",
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }, 
+                {
+                    "Action": [
+                        "aws-marketplace:ListPrivateListings"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }, 
+                {
+                    "Action": [
+                        "aws-marketplace:UpdatePurchaseOrders", 
+                        "aws-marketplace:ListAgreementCharges"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "aws-marketplace:AgreementType": "false"
+                        }, 
+                        "ForAllValues:StringEquals": {
+                            "aws-marketplace:AgreementType": [
+                                "PurchaseAgreement"
+                            ]
+                        }
+                    }
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2019-10-28T21:49:43Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

@@ -1,27 +1,142 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2023-11-28T03:49:56Z", 
+        "VersionId": "v3", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Action": "elasticache:*",
-                    "Effect": "Allow",
-                    "Resource": "*"
-                },
+                    "Action": "elasticache:*", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ElastiCacheManagementActions"
+                }, 
                 {
-                    "Action": "iam:CreateServiceLinkedRole",
-                    "Effect": "Allow",
-                    "Resource": "arn:aws:iam::*:role/aws-service-role/elasticache.amazonaws.com/AWSServiceRoleForElastiCache",
+                    "Action": "iam:CreateServiceLinkedRole", 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/elasticache.amazonaws.com/AWSServiceRoleForElastiCache", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "StringLike": {
                             "iam:AWSServiceName": "elasticache.amazonaws.com"
                         }
-                    }
+                    }, 
+                    "Sid": "CreateServiceLinkedRole"
+                }, 
+                {
+                    "Action": "ec2:CreateVpcEndpoint", 
+                    "Resource": "arn:aws:ec2:*:*:vpc-endpoint/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "ec2:VpceServiceName": "com.amazonaws.elasticache.serverless.*"
+                        }
+                    }, 
+                    "Sid": "CreateVPCEndpoints"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateVpcEndpoint"
+                    ], 
+                    "NotResource": "arn:aws:ec2:*:*:vpc-endpoint/*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowAccessToElastiCacheTaggedVpcEndpoints"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags"
+                    ], 
+                    "Resource": "arn:aws:ec2:*:*:vpc-endpoint/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "ec2:CreateAction": "CreateVpcEndpoint", 
+                            "aws:RequestTag/AmazonElastiCacheManaged": "true"
+                        }
+                    }, 
+                    "Sid": "TagVPCEndpointsOnCreation"
+                }, 
+                {
+                    "Action": [
+                        "ec2:DescribeVpcs", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribeSecurityGroups"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowAccessToEc2"
+                }, 
+                {
+                    "Action": [
+                        "kms:DescribeKey", 
+                        "kms:ListAliases", 
+                        "kms:ListKeys"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowAccessToKMS"
+                }, 
+                {
+                    "Action": [
+                        "cloudwatch:GetMetricStatistics", 
+                        "cloudwatch:GetMetricData"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowAccessToCloudWatch"
+                }, 
+                {
+                    "Action": [
+                        "application-autoscaling:DescribeScalableTargets", 
+                        "application-autoscaling:DescribeScheduledActions", 
+                        "application-autoscaling:DescribeScalingPolicies", 
+                        "application-autoscaling:DescribeScalingActivities"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowAccessToAutoScaling"
+                }, 
+                {
+                    "Action": [
+                        "logs:DescribeLogGroups"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeLogGroups"
+                }, 
+                {
+                    "Action": [
+                        "firehose:ListDeliveryStreams"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ListLogDeliveryStreams"
+                }, 
+                {
+                    "Action": [
+                        "s3:ListAllMyBuckets"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeS3Buckets"
+                }, 
+                {
+                    "Action": [
+                        "outposts:ListOutposts"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowAccessToOutposts"
+                }, 
+                {
+                    "Action": [
+                        "sns:ListTopics"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowAccessToSNS"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2017-12-07T17:48:26Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

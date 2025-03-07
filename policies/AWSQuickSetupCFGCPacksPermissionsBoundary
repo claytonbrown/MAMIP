@@ -1,0 +1,123 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-06-26T09:52:11Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "iam:GetRole"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/AWS-QuickSetup-CFGCPacks*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "ConfigurationRoleGetPermissions"
+                }, 
+                {
+                    "Action": [
+                        "iam:PassRole"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/AWS-QuickSetup-CFGCPacks*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:PassedToService": [
+                                "ssm.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "ConfigurationRolePassToSSMPermissions"
+                }, 
+                {
+                    "Action": [
+                        "config:PutConformancePack"
+                    ], 
+                    "Resource": [
+                        "arn:aws:config:*:*:conformance-pack/AWS-QuickSetup-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": [
+                                "${aws:PrincipalAccount}"
+                            ]
+                        }
+                    }, 
+                    "Sid": "PutCPackPermissions"
+                }, 
+                {
+                    "Action": [
+                        "config:DescribeConformancePackStatus"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DescribeCPacksPermissions"
+                }, 
+                {
+                    "Action": [
+                        "iam:CreateServiceLinkedRole"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/aws-service-role/config-conforms.amazonaws.com/AWSServiceRoleForConfigConforms"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:AWSServiceName": "config-conforms.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "ConformancePacksSLRCreatePermissions"
+                }, 
+                {
+                    "Action": [
+                        "iam:CreateServiceLinkedRole"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:AWSServiceName": "ssm.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "SystemsManagerSLRCreatePermissions"
+                }, 
+                {
+                    "Action": [
+                        "iam:ListRoles", 
+                        "config:DescribeConfigurationRecorders", 
+                        "compute-optimizer:GetEnrollmentStatus", 
+                        "support:DescribeTrustedAdvisorChecks"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "EnableExplorerReadOnlyPermissions"
+                }, 
+                {
+                    "Action": [
+                        "ssm:UpdateServiceSetting", 
+                        "ssm:GetServiceSetting"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager", 
+                        "arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2", 
+                        "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded", 
+                        "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association", 
+                        "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer", 
+                        "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance", 
+                        "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor", 
+                        "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "ServiceSettingsForExplorerUpdatePermissions"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

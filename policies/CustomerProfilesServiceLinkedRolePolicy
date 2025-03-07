@@ -1,0 +1,47 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-11-26T22:21:06Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "cloudwatch:PutMetricData"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "cloudwatch:namespace": "AWS/CustomerProfiles"
+                        }
+                    }
+                }, 
+                {
+                    "Action": [
+                        "iam:DeleteRole"
+                    ], 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/profile.amazonaws.com/AWSServiceRoleForProfile_*", 
+                    "Effect": "Allow"
+                }, 
+                {
+                    "Action": [
+                        "connect-campaigns:PutProfileOutboundRequestBatch"
+                    ], 
+                    "Resource": [
+                        "arn:aws:connect-campaigns:*:*:campaign/*"
+                    ], 
+                    "Effect": "Allow"
+                }, 
+                {
+                    "Action": [
+                        "profile:BatchGetProfile"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

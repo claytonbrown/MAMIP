@@ -1,0 +1,78 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2025-03-07T14:52:07Z", 
+        "VersionId": "v4", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ecs:DescribeClusters", 
+                        "ecs:ListContainerInstances"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ecs:*:*:cluster/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "Clusters"
+                }, 
+                {
+                    "Action": [
+                        "ecs:DescribeTasks", 
+                        "ecs:StopTask"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ecs:*:*:task/*/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "Tasks"
+                }, 
+                {
+                    "Action": [
+                        "ecs:UpdateContainerInstancesState"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ecs:*:*:container-instance/*/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "ContainerInstances"
+                }, 
+                {
+                    "Action": [
+                        "ecs:ListTasks"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ListTasks"
+                }, 
+                {
+                    "Action": "ssm:SendCommand", 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:managed-instance/*", 
+                        "arn:aws:ssm:*:*:document/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "SSMSend"
+                }, 
+                {
+                    "Action": [
+                        "ssm:ListCommands", 
+                        "ssm:CancelCommand"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "SSMList"
+                }, 
+                {
+                    "Action": [
+                        "tag:GetResources"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "TargetResolutionByTags"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

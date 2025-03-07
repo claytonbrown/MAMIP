@@ -1,0 +1,204 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-11-21T20:21:06Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "sagemaker:DescribeFeatureGroup", 
+                        "sagemaker:ListModelPackages", 
+                        "sagemaker:DescribeModelPackage", 
+                        "sagemaker:DescribeModelPackageGroup", 
+                        "sagemaker:DescribeAlgorithm", 
+                        "sagemaker:ListTags", 
+                        "sagemaker:DescribeDomain", 
+                        "sagemaker:GetModelPackageGroupPolicy", 
+                        "sagemaker:Search"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AmazonSageMakerReadPermission"
+                }, 
+                {
+                    "Action": [
+                        "sagemaker:AddTags", 
+                        "sagemaker:DeleteTags"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringLike": {
+                            "aws:TagKeys": [
+                                "sagemaker:shared-with:*"
+                            ]
+                        }
+                    }, 
+                    "Sid": "AmazonSageMakerTaggingPermission"
+                }, 
+                {
+                    "Action": [
+                        "sagemaker:PutModelPackageGroupPolicy", 
+                        "sagemaker:DeleteModelPackageGroupPolicy"
+                    ], 
+                    "Resource": [
+                        "arn:*:sagemaker:*:*:model-package-group/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AmazonSageMakerModelPackageGroupPolicyPermission"
+                }, 
+                {
+                    "Action": [
+                        "ram:GetResourceShares", 
+                        "ram:GetResourceShareInvitations", 
+                        "ram:GetResourceShareAssociations"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AmazonSageMakerRAMPermission"
+                }, 
+                {
+                    "Action": [
+                        "sagemaker:PutResourcePolicy", 
+                        "sagemaker:GetResourcePolicy", 
+                        "sagemaker:DeleteResourcePolicy"
+                    ], 
+                    "Resource": [
+                        "arn:*:sagemaker:*:*:feature-group/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AmazonSageMakerRAMResourcePolicyPermission"
+                }, 
+                {
+                    "Action": [
+                        "ram:TagResource"
+                    ], 
+                    "Resource": "arn:*:ram:*:*:resource-share/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "aws:RequestTag/AwsDataZoneDomainId": "false"
+                        }
+                    }, 
+                    "Sid": "AmazonSageMakerRAMTagResourceSharePermission"
+                }, 
+                {
+                    "Action": [
+                        "ram:DeleteResourceShare"
+                    ], 
+                    "Resource": "arn:*:ram:*:*:resource-share/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "aws:ResourceTag/AwsDataZoneDomainId": "false"
+                        }
+                    }, 
+                    "Sid": "AmazonSageMakerRAMDeleteResourceSharePermission"
+                }, 
+                {
+                    "Action": [
+                        "ram:CreateResourceShare"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "aws:RequestTag/AwsDataZoneDomainId": "false"
+                        }, 
+                        "StringLikeIfExists": {
+                            "ram:RequestedResourceType": [
+                                "sagemaker:*"
+                            ]
+                        }
+                    }, 
+                    "Sid": "AmazonSageMakerRAMCreateResourceSharePermission"
+                }, 
+                {
+                    "Action": [
+                        "s3:DeleteBucketPolicy", 
+                        "s3:PutBucketPolicy", 
+                        "s3:GetBucketPolicy"
+                    ], 
+                    "Resource": [
+                        "arn:aws:s3:::sagemaker-datazone*", 
+                        "arn:aws:s3:::SageMaker-DataZone*", 
+                        "arn:aws:s3:::datazone-sagemaker*", 
+                        "arn:aws:s3:::DataZone-SageMaker*", 
+                        "arn:aws:s3:::amazon-datazone*", 
+                        "arn:aws:s3:::amazon-sagemaker*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AmazonSageMakerS3BucketPolicyPermission"
+                }, 
+                {
+                    "Action": [
+                        "s3:GetObject", 
+                        "s3:ListBucket"
+                    ], 
+                    "Resource": [
+                        "arn:aws:s3:::sagemaker-datazone*", 
+                        "arn:aws:s3:::SageMaker-DataZone*", 
+                        "arn:aws:s3:::datazone-sagemaker*", 
+                        "arn:aws:s3:::DataZone-SageMaker*", 
+                        "arn:aws:s3:::amazon-datazone*", 
+                        "arn:aws:s3:::amazon-sagemaker*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AmazonSageMakerS3Permission"
+                }, 
+                {
+                    "Action": [
+                        "ecr:GetRepositoryPolicy", 
+                        "ecr:SetRepositoryPolicy", 
+                        "ecr:DeleteRepositoryPolicy"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "aws:ResourceTag/AmazonDataZoneEnvironment": "false"
+                        }
+                    }, 
+                    "Sid": "AmazonSageMakerECRPermission"
+                }, 
+                {
+                    "Action": [
+                        "kms:DescribeKey"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:TagKeys": [
+                                "AmazonDataZoneEnvironment"
+                            ]
+                        }
+                    }, 
+                    "Sid": "AmazonSageMakerKMSReadPermission"
+                }, 
+                {
+                    "Action": [
+                        "kms:CreateGrant"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:TagKeys": [
+                                "AmazonDataZoneEnvironment"
+                            ]
+                        }, 
+                        "ForAllValues:StringEquals": {
+                            "kms:GrantOperations": [
+                                "Decrypt"
+                            ]
+                        }
+                    }, 
+                    "Sid": "AmazonSageMakerKMSGrantPermission"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

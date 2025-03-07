@@ -1,0 +1,171 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-10-07T18:24:52Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "identitystore:DescribeGroup", 
+                        "identitystore:DescribeUser", 
+                        "identitystore:ListGroupMembershipsForMember", 
+                        "deadline:GetApplicationVersion", 
+                        "ec2:DescribeInstanceTypes", 
+                        "identitystore:ListUsers"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AdditionalPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:AssociateMemberToJob", 
+                        "deadline:DisassociateMemberFromJob"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:JobMembershipLevels": [
+                                "OWNER"
+                            ]
+                        }
+                    }, 
+                    "Sid": "OwnerLevelPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:AssociateMemberToJob"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:JobMembershipLevels": [
+                                "MANAGER"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "deadline:MembershipLevel": [
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER"
+                            ], 
+                            "deadline:AssociatedMembershipLevel": [
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER", 
+                                ""
+                            ]
+                        }
+                    }, 
+                    "Sid": "ManagerLevelMemberAssociation"
+                }, 
+                {
+                    "Action": [
+                        "deadline:DisassociateMemberFromJob"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:JobMembershipLevels": [
+                                "MANAGER"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "deadline:AssociatedMembershipLevel": [
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER", 
+                                ""
+                            ]
+                        }
+                    }, 
+                    "Sid": "ManagerLevelMemberDisassociation"
+                }, 
+                {
+                    "Action": [
+                        "deadline:ListJobMembers", 
+                        "deadline:UpdateJob", 
+                        "deadline:UpdateSession", 
+                        "deadline:UpdateStep", 
+                        "deadline:UpdateTask"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:JobMembershipLevels": [
+                                "OWNER", 
+                                "MANAGER"
+                            ]
+                        }
+                    }, 
+                    "Sid": "OwnerManagerPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:GetJob", 
+                        "deadline:GetJobTemplate", 
+                        "deadline:GetSession", 
+                        "deadline:GetSessionAction", 
+                        "deadline:GetStep", 
+                        "deadline:GetTask", 
+                        "deadline:ListJobParameterDefinitions", 
+                        "deadline:ListSessionActions", 
+                        "deadline:ListSessions", 
+                        "deadline:ListStepConsumers", 
+                        "deadline:ListStepDependencies", 
+                        "deadline:ListSteps", 
+                        "deadline:ListTasks", 
+                        "deadline:SearchSteps", 
+                        "deadline:SearchTasks"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:JobMembershipLevels": [
+                                "OWNER", 
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER"
+                            ]
+                        }
+                    }, 
+                    "Sid": "AllLevelsPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:ListJobs"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "deadline:RequesterPrincipalId": "${deadline:PrincipalId}"
+                        }
+                    }, 
+                    "Sid": "ListBasedOnMembership"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

@@ -1,0 +1,80 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-11-12T22:22:17Z", 
+        "VersionId": "v4", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "connect:Create*", 
+                        "connect:Update*", 
+                        "connect:Delete*", 
+                        "connect:Describe*", 
+                        "connect:List*", 
+                        "connect:Search*", 
+                        "connect:Associate*", 
+                        "connect:Disassociate*", 
+                        "connect:Get*", 
+                        "connect:BatchGet*", 
+                        "connect:TagResource", 
+                        "connect:UntagResource"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowConnectActions"
+                }, 
+                {
+                    "Action": [
+                        "connect:Start*", 
+                        "connect:Stop*", 
+                        "connect:Resume*", 
+                        "connect:Suspend*", 
+                        "connect:*Contact", 
+                        "connect:SearchContacts", 
+                        "connect:*ContactAttributes*", 
+                        "connect:*RealtimeContact*", 
+                        "connect:*AnalyticsData*", 
+                        "connect:*MetricData*", 
+                        "connect:*UserData*", 
+                        "connect:*ContactEvaluation", 
+                        "connect:*AttachedFile*", 
+                        "connect:UpdateContactSchedule", 
+                        "connect:UpdateContactRoutingData", 
+                        "connect:ListContactReferences", 
+                        "connect:CreateParticipant", 
+                        "connect:CreatePersistentContactAssociation", 
+                        "connect:CreateInstance", 
+                        "connect:DeleteInstance", 
+                        "connect:ListInstances", 
+                        "connect:ReplicateInstance", 
+                        "connect:GetFederationToken", 
+                        "connect:ClaimPhoneNumber", 
+                        "connect:ImportPhoneNumber", 
+                        "connect:ReleasePhoneNumber", 
+                        "connect:SearchAvailablePhoneNumbers", 
+                        "connect:CreateTrafficDistributionGroup", 
+                        "connect:DeleteTrafficDistributionGroup", 
+                        "connect:GetTrafficDistribution", 
+                        "connect:UpdateTrafficDistribution"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Sid": "DisallowedConnectActions"
+                }, 
+                {
+                    "Action": "cloudwatch:PutMetricData", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "cloudwatch:namespace": "AWS/Connect"
+                        }
+                    }, 
+                    "Sid": "AllowPutMetricsForConnectNamespace"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

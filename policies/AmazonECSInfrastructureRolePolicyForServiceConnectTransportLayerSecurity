@@ -1,0 +1,97 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-01-19T20:08:36Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": "secretsmanager:CreateSecret", 
+                    "Resource": "arn:aws:secretsmanager:*:*:secret:ecs-sc!*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ArnLike": {
+                            "aws:RequestTag/AmazonECSCreated": [
+                                "arn:aws:ecs:*:*:service/*/*", 
+                                "arn:aws:ecs:*:*:task-set/*/*"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "aws:RequestTag/AmazonECSManaged": "true", 
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "CreateSecret"
+                }, 
+                {
+                    "Action": "secretsmanager:TagResource", 
+                    "Resource": "arn:aws:secretsmanager:*:*:secret:ecs-sc!*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ArnLike": {
+                            "aws:RequestTag/AmazonECSCreated": [
+                                "arn:aws:ecs:*:*:service/*/*", 
+                                "arn:aws:ecs:*:*:task-set/*/*"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "aws:RequestTag/AmazonECSManaged": "true", 
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "TagOnCreateSecret"
+                }, 
+                {
+                    "Action": [
+                        "secretsmanager:DescribeSecret", 
+                        "secretsmanager:UpdateSecret", 
+                        "secretsmanager:GetSecretValue", 
+                        "secretsmanager:PutSecretValue", 
+                        "secretsmanager:DeleteSecret", 
+                        "secretsmanager:RotateSecret", 
+                        "secretsmanager:UpdateSecretVersionStage"
+                    ], 
+                    "Resource": "arn:aws:secretsmanager:*:*:secret:ecs-sc!*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "secretsmanager:ResourceTag/aws:secretsmanager:owningService": "ecs-sc", 
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "RotateTLSCertificateSecret"
+                }, 
+                {
+                    "Action": [
+                        "acm-pca:GetCertificate", 
+                        "acm-pca:GetCertificateAuthorityCertificate", 
+                        "acm-pca:DescribeCertificateAuthority"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/AmazonECSManaged": "true"
+                        }
+                    }, 
+                    "Sid": "ManagePrivateCertificateAuthority"
+                }, 
+                {
+                    "Action": [
+                        "acm-pca:IssueCertificate"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "acm-pca:TemplateArn": "arn:aws:acm-pca:::template/EndEntityCertificate/V1", 
+                            "aws:ResourceTag/AmazonECSManaged": "true"
+                        }
+                    }, 
+                    "Sid": "ManagePrivateCertificateAuthorityForIssuingEndEntityCertificate"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

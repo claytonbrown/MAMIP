@@ -1,0 +1,86 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-06-26T09:40:20Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "s3:CreateBucket", 
+                        "s3:PutBucketPublicAccessBlock", 
+                        "s3:ListBucket", 
+                        "s3:PutBucketPolicy", 
+                        "s3:PutEncryptionConfiguration"
+                    ], 
+                    "Resource": [
+                        "arn:aws:s3:::aws-quick-setup-config-recording-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "S3BucketCreatePermissions"
+                }, 
+                {
+                    "Action": [
+                        "sns:ListTopics"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "SNSTopicsListPermissions"
+                }, 
+                {
+                    "Action": [
+                        "sns:CreateTopic"
+                    ], 
+                    "Resource": "arn:aws:sns:*:*:ConfigRecording-Default-Topic", 
+                    "Effect": "Allow", 
+                    "Sid": "DefaultSNSTopicCreatePermissions"
+                }, 
+                {
+                    "Action": [
+                        "config:DescribeConfigurationRecorders", 
+                        "config:DescribeDeliveryChannels", 
+                        "config:PutConfigurationRecorder", 
+                        "config:PutDeliveryChannel", 
+                        "config:StartConfigurationRecorder"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ConfigureAndStartConfigurationRecorderPermissions"
+                }, 
+                {
+                    "Action": [
+                        "iam:GetRole", 
+                        "iam:PassRole"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig", 
+                        "arn:aws:iam::*:role/AWSServiceRoleForConfig"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "GetAndPassConfigSLRPermissions"
+                }, 
+                {
+                    "Action": [
+                        "iam:CreateServiceLinkedRole"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:AWSServiceName": "config.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "CreateConfigSLRPermissions"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

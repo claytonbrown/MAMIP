@@ -1,0 +1,327 @@
+[
+    {
+        "findingDetails": "The 18376 characters in the identity policy, excluding whitespace, exceed the 10240 character maximum for inline and managed policies. We recommend that you use multiple granular policies.",
+        "findingType": "WARNING",
+        "issueCode": "POLICY_SIZE_EXCEEDS_IDENTITY_POLICY_QUOTA",
+        "learnMoreLink": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-policy-checks.html#access-analyzer-reference-policy-checks-general-warning-policy-size-exceeds-identity-policy-quota",
+        "locations": [
+            {
+                "path": [],
+                "span": {
+                    "end": {
+                        "column": 19147,
+                        "line": 1,
+                        "offset": 19147
+                    },
+                    "start": {
+                        "column": 0,
+                        "line": 1,
+                        "offset": 0
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "findingDetails": "Using the effect Allow with the condition key aws:ResourceTag/AmazonDataZoneProject and actions for services with the following prefixes does not affect the policy: sagemaker-mlflow. The actions for the listed service are not allowed by this statement. We recommend that you move these actions to a different statement without this condition key.",
+        "findingType": "SUGGESTION",
+        "issueCode": "ALLOW_WITH_UNSUPPORTED_TAG_CONDITION_KEY_FOR_SERVICE",
+        "learnMoreLink": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-policy-checks.html#access-analyzer-reference-policy-checks-suggestion-allow-with-unsupported-tag-condition-key-for-service",
+        "locations": [
+            {
+                "path": [
+                    {
+                        "value": "Statement"
+                    },
+                    {
+                        "index": 7
+                    },
+                    {
+                        "value": "Action"
+                    },
+                    {
+                        "index": 5
+                    }
+                ],
+                "span": {
+                    "end": {
+                        "column": 2885,
+                        "line": 1,
+                        "offset": 2885
+                    },
+                    "start": {
+                        "column": 2858,
+                        "line": 1,
+                        "offset": 2858
+                    }
+                }
+            },
+            {
+                "path": [
+                    {
+                        "value": "Statement"
+                    },
+                    {
+                        "index": 7
+                    },
+                    {
+                        "value": "Condition"
+                    },
+                    {
+                        "value": "StringEquals"
+                    },
+                    {
+                        "key": "aws:ResourceTag/AmazonDataZoneProject"
+                    }
+                ],
+                "span": {
+                    "end": {
+                        "column": 4647,
+                        "line": 1,
+                        "offset": 4647
+                    },
+                    "start": {
+                        "column": 4608,
+                        "line": 1,
+                        "offset": 4608
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "findingDetails": "Using the effect Allow with the condition key aws:ResourceTag/AmazonDataZoneProject and actions for services with the following prefixes does not affect the policy: sagemaker. The actions for the listed service are not allowed by this statement. We recommend that you move these actions to a different statement without this condition key.",
+        "findingType": "SUGGESTION",
+        "issueCode": "ALLOW_WITH_UNSUPPORTED_TAG_CONDITION_KEY_FOR_SERVICE",
+        "learnMoreLink": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-policy-checks.html#access-analyzer-reference-policy-checks-suggestion-allow-with-unsupported-tag-condition-key-for-service",
+        "locations": [
+            {
+                "path": [
+                    {
+                        "value": "Statement"
+                    },
+                    {
+                        "index": 16
+                    },
+                    {
+                        "value": "Action"
+                    },
+                    {
+                        "index": 5
+                    }
+                ],
+                "span": {
+                    "end": {
+                        "column": 8006,
+                        "line": 1,
+                        "offset": 8006
+                    },
+                    "start": {
+                        "column": 7969,
+                        "line": 1,
+                        "offset": 7969
+                    }
+                }
+            },
+            {
+                "path": [
+                    {
+                        "value": "Statement"
+                    },
+                    {
+                        "index": 16
+                    },
+                    {
+                        "value": "Action"
+                    },
+                    {
+                        "index": 6
+                    }
+                ],
+                "span": {
+                    "end": {
+                        "column": 8058,
+                        "line": 1,
+                        "offset": 8058
+                    },
+                    "start": {
+                        "column": 8008,
+                        "line": 1,
+                        "offset": 8008
+                    }
+                }
+            },
+            {
+                "path": [
+                    {
+                        "value": "Statement"
+                    },
+                    {
+                        "index": 16
+                    },
+                    {
+                        "value": "Action"
+                    },
+                    {
+                        "index": 8
+                    }
+                ],
+                "span": {
+                    "end": {
+                        "column": 8123,
+                        "line": 1,
+                        "offset": 8123
+                    },
+                    "start": {
+                        "column": 8088,
+                        "line": 1,
+                        "offset": 8088
+                    }
+                }
+            },
+            {
+                "path": [
+                    {
+                        "value": "Statement"
+                    },
+                    {
+                        "index": 16
+                    },
+                    {
+                        "value": "Action"
+                    },
+                    {
+                        "index": 10
+                    }
+                ],
+                "span": {
+                    "end": {
+                        "column": 8194,
+                        "line": 1,
+                        "offset": 8194
+                    },
+                    "start": {
+                        "column": 8161,
+                        "line": 1,
+                        "offset": 8161
+                    }
+                }
+            },
+            {
+                "path": [
+                    {
+                        "value": "Statement"
+                    },
+                    {
+                        "index": 16
+                    },
+                    {
+                        "value": "Action"
+                    },
+                    {
+                        "index": 13
+                    }
+                ],
+                "span": {
+                    "end": {
+                        "column": 8294,
+                        "line": 1,
+                        "offset": 8294
+                    },
+                    "start": {
+                        "column": 8260,
+                        "line": 1,
+                        "offset": 8260
+                    }
+                }
+            },
+            {
+                "path": [
+                    {
+                        "value": "Statement"
+                    },
+                    {
+                        "index": 16
+                    },
+                    {
+                        "value": "Action"
+                    },
+                    {
+                        "index": 14
+                    }
+                ],
+                "span": {
+                    "end": {
+                        "column": 8340,
+                        "line": 1,
+                        "offset": 8340
+                    },
+                    "start": {
+                        "column": 8296,
+                        "line": 1,
+                        "offset": 8296
+                    }
+                }
+            },
+            {
+                "path": [
+                    {
+                        "value": "Statement"
+                    },
+                    {
+                        "index": 16
+                    },
+                    {
+                        "value": "Action"
+                    },
+                    {
+                        "index": 15
+                    }
+                ],
+                "span": {
+                    "end": {
+                        "column": 8386,
+                        "line": 1,
+                        "offset": 8386
+                    },
+                    "start": {
+                        "column": 8342,
+                        "line": 1,
+                        "offset": 8342
+                    }
+                }
+            },
+            {
+                "path": [
+                    {
+                        "value": "Statement"
+                    },
+                    {
+                        "index": 16
+                    },
+                    {
+                        "value": "Condition"
+                    },
+                    {
+                        "value": "StringEquals"
+                    },
+                    {
+                        "key": "aws:ResourceTag/AmazonDataZoneProject"
+                    }
+                ],
+                "span": {
+                    "end": {
+                        "column": 8639,
+                        "line": 1,
+                        "offset": 8639
+                    },
+                    "start": {
+                        "column": 8600,
+                        "line": 1,
+                        "offset": 8600
+                    }
+                }
+            }
+        ]
+    }
+]

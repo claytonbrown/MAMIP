@@ -22,16 +22,16 @@ DESCRIPTION ?= Monitor AWS Managed IAM Policies Changes
 S3_BUCKET ?= zoph-lab-terraform-tfstate
 ARTIFACTS_BUCKET ?= mamip-artifacts
 AWS_REGION ?= eu-west-1
-ENV ?= dev
-ECR ?= 567589703415.dkr.ecr.eu-west-1.amazonaws.com/mamip-ecr-dev
+ENV ?= prod
+ECR ?= 567589703415.dkr.ecr.eu-west-1.amazonaws.com/mamip-ecr-$(ENV)
 ################################################
 
 # Automation is done by Github Actions
 login:
-	@aws ecr get-login-password | docker login --username AWS --password-stdin $(ECR)
+	@aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(ECR)
 
 build-docker: login
-	@docker build -t mamip-image ./automation/
+	@docker buildx build --platform=linux/arm64 -t mamip-image ./automation/
 	@docker tag mamip-image $(ECR)
 	@docker push $(ECR)
 
@@ -60,6 +60,12 @@ apply:
 		-var="project=$(PROJECT)" \
 		-var="description=$(DESCRIPTION)" \
 		-compact-warnings ./automation/tf-fargate/
+
+longest:
+	@find ./policies -type f | awk -F/ '{print length($$NF), $$NF}' | sort -nr | head -10
+
+shortest:
+	@find ./policies  -type f | awk -F/ '{print length($$NF), $$NF}' | sort -n | head -10
 
 destroy:
 	@read -p "Are you sure that you want to destroy: '$(PROJECT)-$(ENV)-$(AWS_REGION)'? [yes/N]: " sure && [ $${sure:-N} = 'yes' ]

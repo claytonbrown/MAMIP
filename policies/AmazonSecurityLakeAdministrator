@@ -1,0 +1,478 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-02-23T16:01:57Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "securitylake:*", 
+                        "organizations:DescribeOrganization", 
+                        "organizations:ListDelegatedServicesForAccount", 
+                        "organizations:ListAccounts", 
+                        "iam:ListRoles", 
+                        "ram:GetResourceShareAssociations"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowActionsWithAnyResource"
+                }, 
+                {
+                    "Action": [
+                        "glue:CreateCrawler", 
+                        "glue:StopCrawlerSchedule", 
+                        "lambda:CreateEventSourceMapping", 
+                        "lakeformation:GrantPermissions", 
+                        "lakeformation:ListPermissions", 
+                        "lakeformation:RegisterResource", 
+                        "lakeformation:RevokePermissions", 
+                        "lakeformation:GetDatalakeSettings", 
+                        "events:ListConnections", 
+                        "events:ListApiDestinations", 
+                        "iam:GetRole", 
+                        "iam:ListAttachedRolePolicies", 
+                        "kms:DescribeKey"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowActionsWithAnyResourceViaSecurityLake"
+                }, 
+                {
+                    "Action": [
+                        "s3:CreateBucket", 
+                        "s3:PutBucketPolicy", 
+                        "s3:PutBucketPublicAccessBlock", 
+                        "s3:PutBucketNotification", 
+                        "s3:PutBucketTagging", 
+                        "s3:PutEncryptionConfiguration", 
+                        "s3:PutBucketVersioning", 
+                        "s3:PutReplicationConfiguration", 
+                        "s3:PutLifecycleConfiguration", 
+                        "s3:ListBucket", 
+                        "s3:PutObject", 
+                        "s3:GetBucketNotification"
+                    ], 
+                    "Resource": "arn:aws:s3:::aws-security-data-lake*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowManagingSecurityLakeS3Buckets"
+                }, 
+                {
+                    "Action": [
+                        "lambda:CreateFunction"
+                    ], 
+                    "Resource": [
+                        "arn:aws:lambda:*:*:function:SecurityLake_Glue_Partition_Updater_Lambda*", 
+                        "arn:aws:lambda:*:*:function:AmazonSecurityLake*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowLambdaCreateFunction"
+                }, 
+                {
+                    "Action": [
+                        "lambda:AddPermission"
+                    ], 
+                    "Resource": [
+                        "arn:aws:lambda:*:*:function:SecurityLake_Glue_Partition_Updater_Lambda*", 
+                        "arn:aws:lambda:*:*:function:AmazonSecurityLake*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }, 
+                        "StringEquals": {
+                            "lambda:Principal": "securitylake.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowLambdaAddPermission"
+                }, 
+                {
+                    "Action": [
+                        "glue:CreateDatabase", 
+                        "glue:GetDatabase", 
+                        "glue:CreateTable", 
+                        "glue:GetTable"
+                    ], 
+                    "Resource": [
+                        "arn:aws:glue:*:*:catalog", 
+                        "arn:aws:glue:*:*:database/amazon_security_lake_glue_db*", 
+                        "arn:aws:glue:*:*:table/amazon_security_lake_glue_db*/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowGlueActions"
+                }, 
+                {
+                    "Action": [
+                        "events:PutTargets", 
+                        "events:PutRule", 
+                        "events:DescribeRule", 
+                        "events:CreateApiDestination", 
+                        "events:CreateConnection", 
+                        "events:UpdateConnection", 
+                        "events:UpdateApiDestination", 
+                        "events:DeleteConnection", 
+                        "events:DeleteApiDestination", 
+                        "events:ListTargetsByRule", 
+                        "events:RemoveTargets", 
+                        "events:DeleteRule"
+                    ], 
+                    "Resource": [
+                        "arn:aws:events:*:*:rule/AmazonSecurityLake*", 
+                        "arn:aws:events:*:*:rule/SecurityLake*", 
+                        "arn:aws:events:*:*:api-destination/AmazonSecurityLake*", 
+                        "arn:aws:events:*:*:connection/AmazonSecurityLake*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowEventBridgeActions"
+                }, 
+                {
+                    "Action": [
+                        "sqs:CreateQueue", 
+                        "sqs:SetQueueAttributes", 
+                        "sqs:GetQueueURL", 
+                        "sqs:AddPermission", 
+                        "sqs:GetQueueAttributes", 
+                        "sqs:DeleteQueue"
+                    ], 
+                    "Resource": [
+                        "arn:aws:sqs:*:*:SecurityLake*", 
+                        "arn:aws:sqs:*:*:AmazonSecurityLake*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowSQSActions"
+                }, 
+                {
+                    "Action": "kms:CreateGrant", 
+                    "Resource": "arn:aws:kms:*:*:key/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }, 
+                        "StringLike": {
+                            "kms:EncryptionContext:aws:s3:arn": "arn:aws:s3:::aws-security-data-lake*"
+                        }, 
+                        "ForAllValues:StringEquals": {
+                            "kms:GrantOperations": [
+                                "GenerateDataKey", 
+                                "RetireGrant", 
+                                "Decrypt"
+                            ]
+                        }
+                    }, 
+                    "Sid": "AllowKmsCmkGrantForSecurityLake"
+                }, 
+                {
+                    "Action": [
+                        "ram:CreateResourceShare", 
+                        "ram:AssociateResourceShare"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }, 
+                        "StringLikeIfExists": {
+                            "ram:ResourceArn": [
+                                "arn:aws:glue:*:*:catalog", 
+                                "arn:aws:glue:*:*:database/amazon_security_lake_glue_db*", 
+                                "arn:aws:glue:*:*:table/amazon_security_lake_glue_db*/*"
+                            ]
+                        }
+                    }, 
+                    "Sid": "AllowEnablingQueryBasedSubscribers"
+                }, 
+                {
+                    "Action": [
+                        "ram:UpdateResourceShare", 
+                        "ram:GetResourceShares", 
+                        "ram:DisassociateResourceShare", 
+                        "ram:DeleteResourceShare"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }, 
+                        "StringLike": {
+                            "ram:ResourceShareName": "LakeFormation*"
+                        }
+                    }, 
+                    "Sid": "AllowConfiguringQueryBasedSubscribers"
+                }, 
+                {
+                    "Action": [
+                        "secretsmanager:CreateSecret", 
+                        "secretsmanager:GetSecretValue", 
+                        "secretsmanager:PutSecretValue"
+                    ], 
+                    "Resource": "arn:aws:secretsmanager:*:*:secret:events!connection/AmazonSecurityLake-*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowConfiguringCredentialsForSubscriberNotification"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
+                    "Resource": [
+                        "arn:aws:iam::*:role/service-role/AmazonSecurityLakeMetaStoreManager", 
+                        "arn:aws:iam::*:role/service-role/AmazonSecurityLakeMetaStoreManagerV2"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "iam:AssociatedResourceARN": "arn:aws:securitylake:*:*:data-lake/default"
+                        }, 
+                        "StringEquals": {
+                            "iam:PassedToService": "lambda.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowPassRoleForUpdatingGluePartitionsSecLakeArn"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
+                    "Resource": [
+                        "arn:aws:iam::*:role/service-role/AmazonSecurityLakeMetaStoreManager", 
+                        "arn:aws:iam::*:role/service-role/AmazonSecurityLakeMetaStoreManagerV2"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "iam:AssociatedResourceARN": [
+                                "arn:aws:lambda:*:*:function:SecurityLake_Glue_Partition_Updater_Lambda*", 
+                                "arn:aws:lambda:*:*:function:AmazonSecurityLake*"
+                            ]
+                        }, 
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }, 
+                        "StringEquals": {
+                            "iam:PassedToService": "lambda.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowPassRoleForUpdatingGluePartitionsLambdaArn"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
+                    "Resource": "arn:aws:iam::*:role/service-role/AmazonSecurityLakeS3ReplicationRole", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "iam:AssociatedResourceARN": "arn:aws:securitylake:*:*:data-lake/default"
+                        }, 
+                        "StringEquals": {
+                            "iam:PassedToService": "s3.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowPassRoleForCrossRegionReplicationSecLakeArn"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
+                    "Resource": "arn:aws:iam::*:role/service-role/AmazonSecurityLakeS3ReplicationRole", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "iam:AssociatedResourceARN": "arn:aws:s3:::aws-security-data-lake*"
+                        }, 
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }, 
+                        "StringEquals": {
+                            "iam:PassedToService": "s3.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowPassRoleForCrossRegionReplicationS3Arn"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
+                    "Resource": "arn:aws:iam::*:role/service-role/AmazonSecurityLakeCustomDataGlueCrawler*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "iam:AssociatedResourceARN": "arn:aws:securitylake:*:*:data-lake/default"
+                        }, 
+                        "StringEquals": {
+                            "iam:PassedToService": "glue.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowPassRoleForCustomSourceCrawlerSecLakeArn"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
+                    "Resource": "arn:aws:iam::*:role/service-role/AmazonSecurityLakeCustomDataGlueCrawler*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }, 
+                        "StringEquals": {
+                            "iam:PassedToService": "glue.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowPassRoleForCustomSourceCrawlerGlueArn"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
+                    "Resource": "arn:aws:iam::*:role/service-role/AmazonSecurityLakeSubscriberEventBridge", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "iam:AssociatedResourceARN": "arn:aws:securitylake:*:*:subscriber/*"
+                        }, 
+                        "StringEquals": {
+                            "iam:PassedToService": "events.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowPassRoleForSubscriberNotificationSecLakeArn"
+                }, 
+                {
+                    "Action": "iam:PassRole", 
+                    "Resource": "arn:aws:iam::*:role/service-role/AmazonSecurityLakeSubscriberEventBridge", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "iam:AssociatedResourceARN": "arn:aws:events:*:*:rule/AmazonSecurityLake*"
+                        }, 
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }, 
+                        "StringEquals": {
+                            "iam:PassedToService": "events.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowPassRoleForSubscriberNotificationEventsArn"
+                }, 
+                {
+                    "Action": "iam:CreateServiceLinkedRole", 
+                    "Resource": [
+                        "arn:aws:iam::*:role/aws-service-role/securitylake.amazonaws.com/AWSServiceRoleForSecurityLake", 
+                        "arn:aws:iam::*:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess", 
+                        "arn:aws:iam::*:role/aws-service-role/apidestinations.events.amazonaws.com/AWSServiceRoleForAmazonEventBridgeApiDestinations"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "iam:AWSServiceName": [
+                                "securitylake.amazonaws.com", 
+                                "lakeformation.amazonaws.com", 
+                                "apidestinations.events.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "AllowOnboardingToSecurityLakeDependencies"
+                }, 
+                {
+                    "Action": [
+                        "iam:CreateRole", 
+                        "iam:PutRolePolicy", 
+                        "iam:DeleteRolePolicy"
+                    ], 
+                    "Resource": "arn:aws:iam::*:role/AmazonSecurityLake*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }, 
+                        "StringEquals": {
+                            "iam:PermissionsBoundary": "arn:aws:iam::aws:policy/AmazonSecurityLakePermissionsBoundary"
+                        }
+                    }, 
+                    "Sid": "AllowRolePolicyActionsforSubscibersandSources"
+                }, 
+                {
+                    "Action": [
+                        "iam:PutRolePolicy", 
+                        "iam:GetRolePolicy"
+                    ], 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowRegisterS3LocationInLakeFormation"
+                }, 
+                {
+                    "Action": [
+                        "iam:ListRolePolicies", 
+                        "iam:DeleteRole"
+                    ], 
+                    "Resource": "arn:aws:iam::*:role/AmazonSecurityLake*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "securitylake.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowIAMActionsByResource"
+                }, 
+                {
+                    "Action": [
+                        "s3:Get*", 
+                        "s3:List*"
+                    ], 
+                    "Resource": "arn:aws:s3:::aws-security-data-lake-*", 
+                    "Effect": "Allow", 
+                    "Sid": "S3ReadAccessToSecurityLakes"
+                }, 
+                {
+                    "Action": [
+                        "s3:GetObject", 
+                        "s3:GetObjectVersion"
+                    ], 
+                    "Resource": "arn:aws:s3:::security-lake-meta-store-manager-*", 
+                    "Effect": "Allow", 
+                    "Sid": "S3ReadAccessToSecurityLakeMetastoreObject"
+                }, 
+                {
+                    "Action": [
+                        "s3:GetAccountPublicAccessBlock", 
+                        "s3:ListAccessPoints", 
+                        "s3:ListAllMyBuckets"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "S3ResourcelessReadOnly"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

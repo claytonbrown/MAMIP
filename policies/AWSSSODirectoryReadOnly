@@ -1,25 +1,27 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2022-11-16T18:17:48Z", 
+        "VersionId": "v4", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Sid": "AWSSSODirectoryReadOnly",
-                    "Effect": "Allow",
                     "Action": [
-                        "sso-directory:Search*",
-                        "sso-directory:Describe*",
-                        "sso-directory:List*",
-                        "sso-directory:Get*",
-                        "identitystore:Describe*",
-                        "identitystore:List*"
-                    ],
-                    "Resource": "*"
+                        "sso-directory:Search*", 
+                        "sso-directory:Describe*", 
+                        "sso-directory:List*", 
+                        "sso-directory:Get*", 
+                        "identitystore:Describe*", 
+                        "identitystore:List*", 
+                        "identitystore-auth:ListSessions", 
+                        "identitystore-auth:BatchGetSession"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AWSSSODirectoryReadOnly"
                 }
             ]
-        },
-        "VersionId": "v3",
-        "IsDefaultVersion": true,
-        "CreateDate": "2022-03-25T20:57:20Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

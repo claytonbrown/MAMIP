@@ -1,21 +1,22 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2022-09-16T19:05:20Z", 
+        "VersionId": "v2", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "iotsitewise:Describe*",
-                        "iotsitewise:List*",
-                        "iotsitewise:Get*"
-                    ],
-                    "Resource": "*"
+                        "iotsitewise:Describe*", 
+                        "iotsitewise:List*", 
+                        "iotsitewise:Get*", 
+                        "iotsitewise:BatchGet*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
                 }
             ]
-        },
-        "VersionId": "v1",
-        "IsDefaultVersion": true,
-        "CreateDate": "2018-12-04T20:55:11Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

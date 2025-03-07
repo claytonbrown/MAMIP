@@ -1,48 +1,62 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-10-24T22:21:39Z", 
+        "VersionId": "v8", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
-                    "Action": "elasticloadbalancing:*",
-                    "Resource": "*"
-                },
+                    "Action": "elasticloadbalancing:*", 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ec2:DescribeAccountAttributes",
-                        "ec2:DescribeAddresses",
-                        "ec2:DescribeInternetGateways",
-                        "ec2:DescribeSecurityGroups",
-                        "ec2:DescribeSubnets",
-                        "ec2:DescribeVpcs",
-                        "ec2:DescribeVpcClassicLink",
-                        "ec2:DescribeInstances",
-                        "ec2:DescribeNetworkInterfaces",
-                        "ec2:DescribeClassicLinkInstances",
-                        "ec2:DescribeRouteTables",
-                        "ec2:DescribeCoipPools",
-                        "ec2:GetCoipPoolUsage",
-                        "ec2:DescribeVpcPeeringConnections",
+                        "ec2:DescribeAccountAttributes", 
+                        "ec2:DescribeAddresses", 
+                        "ec2:DescribeInternetGateways", 
+                        "ec2:DescribeSecurityGroups", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribeVpcs", 
+                        "ec2:DescribeVpcClassicLink", 
+                        "ec2:DescribeInstances", 
+                        "ec2:DescribeNetworkInterfaces", 
+                        "ec2:DescribeClassicLinkInstances", 
+                        "ec2:DescribeRouteTables", 
+                        "ec2:DescribeCoipPools", 
+                        "ec2:GetCoipPoolUsage", 
+                        "ec2:GetSecurityGroupsForVpc", 
+                        "ec2:DescribeVpcPeeringConnections", 
                         "cognito-idp:DescribeUserPoolClient"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "iam:CreateServiceLinkedRole",
-                    "Resource": "*",
+                    "Action": "iam:CreateServiceLinkedRole", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "StringEquals": {
                             "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
                         }
                     }
+                }, 
+                {
+                    "Action": "arc-zonal-shift:*", 
+                    "Resource": "arn:aws:elasticloadbalancing:*:*:loadbalancer/*", 
+                    "Effect": "Allow"
+                }, 
+                {
+                    "Action": [
+                        "arc-zonal-shift:ListManagedResources", 
+                        "arc-zonal-shift:ListZonalShifts"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
                 }
             ]
-        },
-        "VersionId": "v6",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-08-26T18:32:13Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

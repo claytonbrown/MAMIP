@@ -1,0 +1,24 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-04-26T18:09:52Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "osis:GetPipeline", 
+                        "osis:GetPipelineChangeProgress", 
+                        "osis:GetPipelineBlueprint", 
+                        "osis:ListPipelineBlueprints", 
+                        "osis:ListPipelines", 
+                        "osis:ListTagsForResource"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

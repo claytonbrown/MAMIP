@@ -1,0 +1,46 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-05-03T17:12:41Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "servicecatalog:ListProvisioningArtifacts", 
+                        "servicecatalog:DescribeProductAsAdmin", 
+                        "servicecatalog:DeleteProvisioningArtifact", 
+                        "servicecatalog:ListServiceActionsForProvisioningArtifact", 
+                        "servicecatalog:DescribeProvisioningArtifact", 
+                        "servicecatalog:CreateProvisioningArtifact", 
+                        "servicecatalog:UpdateProvisioningArtifact"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ArtifactSyncToServiceCatalog"
+                }, 
+                {
+                    "Action": [
+                        "codestar-connections:UseConnection", 
+                        "codeconnections:UseConnection"
+                    ], 
+                    "Resource": [
+                        "arn:aws:codestar-connections:*:*:connection/*", 
+                        "arn:aws:codeconnections:*:*:connection/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AccessArtifactRepositories"
+                }, 
+                {
+                    "Action": [
+                        "cloudformation:ValidateTemplate"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ValidateTemplate"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

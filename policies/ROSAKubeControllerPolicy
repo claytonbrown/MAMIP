@@ -1,0 +1,193 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-10-16T18:17:05Z", 
+        "VersionId": "v3", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ec2:DescribeAvailabilityZones", 
+                        "ec2:DescribeInstances", 
+                        "ec2:DescribeRouteTables", 
+                        "ec2:DescribeSecurityGroups", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribeVpcs", 
+                        "elasticloadbalancing:DescribeLoadBalancers", 
+                        "elasticloadbalancing:DescribeLoadBalancerAttributes", 
+                        "elasticloadbalancing:DescribeListeners", 
+                        "elasticloadbalancing:DescribeTargetGroups", 
+                        "elasticloadbalancing:DescribeTargetHealth", 
+                        "elasticloadbalancing:DescribeLoadBalancerPolicies"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "ReadPermissions"
+                }, 
+                {
+                    "Action": [
+                        "kms:DescribeKey"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/red-hat": "true"
+                        }
+                    }, 
+                    "Sid": "KMSDescribeKey"
+                }, 
+                {
+                    "Action": [
+                        "elasticloadbalancing:AddTags", 
+                        "elasticloadbalancing:ConfigureHealthCheck", 
+                        "elasticloadbalancing:CreateLoadBalancerPolicy", 
+                        "elasticloadbalancing:DeleteLoadBalancer", 
+                        "elasticloadbalancing:DeregisterInstancesFromLoadBalancer", 
+                        "elasticloadbalancing:ModifyLoadBalancerAttributes", 
+                        "elasticloadbalancing:RegisterInstancesWithLoadBalancer", 
+                        "elasticloadbalancing:SetLoadBalancerPoliciesForBackendServer"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "LoadBalanacerManagement"
+                }, 
+                {
+                    "Action": [
+                        "elasticloadbalancing:CreateTargetGroup"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "CreateTargetGroup"
+                }, 
+                {
+                    "Action": [
+                        "elasticloadbalancing:DeleteListener", 
+                        "elasticloadbalancing:RegisterTargets", 
+                        "elasticloadbalancing:ModifyTargetGroup", 
+                        "elasticloadbalancing:DeleteTargetGroup", 
+                        "elasticloadbalancing:ApplySecurityGroupsToLoadBalancer", 
+                        "elasticloadbalancing:CreateLoadBalancerListeners", 
+                        "elasticloadbalancing:DeleteLoadBalancerListeners", 
+                        "elasticloadbalancing:AttachLoadBalancerToSubnets", 
+                        "elasticloadbalancing:DetachLoadBalancerFromSubnets", 
+                        "elasticloadbalancing:ModifyListener", 
+                        "elasticloadbalancing:SetLoadBalancerPoliciesOfListener"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "LoadBalanacerManagementResourceTag"
+                }, 
+                {
+                    "Action": [
+                        "elasticloadbalancing:CreateListener"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/red-hat-managed": "true", 
+                            "aws:ResourceTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "CreateListeners"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateSecurityGroup"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:security-group/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "CreateSecurityGroup"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateSecurityGroup"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:vpc/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "CreateSecurityGroupVpc"
+                }, 
+                {
+                    "Action": [
+                        "elasticloadbalancing:CreateLoadBalancer"
+                    ], 
+                    "Resource": [
+                        "arn:aws:elasticloadbalancing:*:*:loadbalancer/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:RequestTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "CreateLoadBalancer"
+                }, 
+                {
+                    "Action": [
+                        "ec2:AuthorizeSecurityGroupIngress", 
+                        "ec2:RevokeSecurityGroupIngress", 
+                        "ec2:DeleteSecurityGroup"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:security-group/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/red-hat-managed": "true"
+                        }
+                    }, 
+                    "Sid": "ModifySecurityGroup"
+                }, 
+                {
+                    "Action": [
+                        "ec2:CreateTags"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:security-group/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "ec2:CreateAction": "CreateSecurityGroup"
+                        }
+                    }, 
+                    "Sid": "CreateTagsSecurityGroups"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

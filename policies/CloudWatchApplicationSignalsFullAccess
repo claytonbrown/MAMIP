@@ -1,0 +1,123 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-06-06T22:50:16Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": "application-signals:*", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsFullAccessPermissions"
+                }, 
+                {
+                    "Action": "cloudwatch:DescribeAlarms", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsAlarmsPermissions"
+                }, 
+                {
+                    "Action": [
+                        "cloudwatch:GetMetricData", 
+                        "cloudwatch:ListMetrics"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsMetricsPermissions"
+                }, 
+                {
+                    "Action": [
+                        "logs:StartQuery"
+                    ], 
+                    "Resource": "arn:aws:logs:*:*:log-group:/aws/application-signals/data:*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsLogGroupPermissions"
+                }, 
+                {
+                    "Action": [
+                        "logs:StopQuery", 
+                        "logs:GetQueryResults"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsLogsPermissions"
+                }, 
+                {
+                    "Action": [
+                        "synthetics:DescribeCanaries", 
+                        "synthetics:DescribeCanariesLastRun", 
+                        "synthetics:GetCanaryRuns"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsSyntheticsPermissions"
+                }, 
+                {
+                    "Action": [
+                        "rum:BatchCreateRumMetricDefinitions", 
+                        "rum:BatchDeleteRumMetricDefinitions", 
+                        "rum:BatchGetRumMetricDefinitions", 
+                        "rum:GetAppMonitor", 
+                        "rum:GetAppMonitorData", 
+                        "rum:ListAppMonitors", 
+                        "rum:PutRumMetricsDestination", 
+                        "rum:UpdateRumMetricDefinition"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsRumPermissions"
+                }, 
+                {
+                    "Action": "xray:GetTraceSummaries", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsXrayPermissions"
+                }, 
+                {
+                    "Action": "cloudwatch:PutMetricAlarm", 
+                    "Resource": [
+                        "arn:aws:cloudwatch:*:*:alarm:SLO-AttainmentGoalAlarm-*", 
+                        "arn:aws:cloudwatch:*:*:alarm:SLO-WarningAlarm-*", 
+                        "arn:aws:cloudwatch:*:*:alarm:SLI-HealthAlarm-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsPutMetricAlarmPermissions"
+                }, 
+                {
+                    "Action": "iam:CreateServiceLinkedRole", 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/application-signals.cloudwatch.amazonaws.com/AWSServiceRoleForCloudWatchApplicationSignals", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "iam:AWSServiceName": "application-signals.cloudwatch.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "CloudWatchApplicationSignalsCreateServiceLinkedRolePermissions"
+                }, 
+                {
+                    "Action": "iam:GetRole", 
+                    "Resource": "arn:aws:iam::*:role/aws-service-role/application-signals.cloudwatch.amazonaws.com/AWSServiceRoleForCloudWatchApplicationSignals", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsGetRolePermissions"
+                }, 
+                {
+                    "Action": [
+                        "sns:CreateTopic", 
+                        "sns:Subscribe"
+                    ], 
+                    "Resource": "arn:aws:sns:*:*:cloudwatch-application-signals-*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsSnsWritePermissions"
+                }, 
+                {
+                    "Action": "sns:ListTopics", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchApplicationSignalsSnsReadPermissions"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

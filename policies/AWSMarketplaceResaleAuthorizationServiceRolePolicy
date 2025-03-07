@@ -1,0 +1,101 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-03-05T18:47:54Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ram:CreateResourceShare"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ram:*:*:*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ArnLike": {
+                            "ram:ResourceArn": "arn:aws:aws-marketplace:*:*:AWSMarketplace/ResaleAuthorization/*"
+                        }, 
+                        "StringEquals": {
+                            "ram:RequestedResourceType": "aws-marketplace:Entity"
+                        }, 
+                        "Null": {
+                            "ram:Principal": "true"
+                        }
+                    }, 
+                    "Sid": "AllowResaleAuthorizationShareActionsRAMCreate"
+                }, 
+                {
+                    "Action": [
+                        "ram:AssociateResourceShare"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ram:*:*:*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "ram:Principal": "false"
+                        }, 
+                        "StringEquals": {
+                            "ram:ResourceShareName": "AWSMarketplaceResaleAuthorization"
+                        }
+                    }, 
+                    "Sid": "AllowResaleAuthorizationShareActionsRAMAssociate"
+                }, 
+                {
+                    "Action": [
+                        "ram:AcceptResourceShareInvitation"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ram:*:*:*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "ram:ResourceShareName": "AWSMarketplaceResaleAuthorization"
+                        }
+                    }, 
+                    "Sid": "AllowResaleAuthorizationShareActionsRAMAccept"
+                }, 
+                {
+                    "Action": [
+                        "ram:GetResourceShareInvitations", 
+                        "ram:GetResourceShareAssociations"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ram:*:*:*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AllowResaleAuthorizationShareActionsRAMGet"
+                }, 
+                {
+                    "Action": [
+                        "aws-marketplace:PutResourcePolicy", 
+                        "aws-marketplace:GetResourcePolicy"
+                    ], 
+                    "Resource": "arn:aws:aws-marketplace:*:*:AWSMarketplace/ResaleAuthorization/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "ram.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "AllowResaleAuthorizationShareActionsMarketplace"
+                }, 
+                {
+                    "Action": [
+                        "aws-marketplace:DescribeEntity"
+                    ], 
+                    "Resource": "arn:aws:aws-marketplace:*:*:AWSMarketplace/ResaleAuthorization/*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowResaleAuthorizationShareActionsMarketplaceDescribe"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

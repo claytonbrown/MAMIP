@@ -1,0 +1,60 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-29T14:03:36Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "cloudwatch:PutMetricData"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "cloudwatch:namespace": [
+                                "AWS/Neptune", 
+                                "AWS/Usage"
+                            ]
+                        }
+                    }, 
+                    "Sid": "GraphMetrics"
+                }, 
+                {
+                    "Action": [
+                        "logs:CreateLogGroup"
+                    ], 
+                    "Resource": [
+                        "arn:aws:logs:*:*:log-group:/aws/neptune/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "GraphLogGroup"
+                }, 
+                {
+                    "Action": [
+                        "logs:CreateLogStream", 
+                        "logs:PutLogEvents", 
+                        "logs:DescribeLogStreams"
+                    ], 
+                    "Resource": [
+                        "arn:aws:logs:*:*:log-group:/aws/neptune/*:log-stream:*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }, 
+                    "Sid": "GraphLogEvents"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

@@ -1,0 +1,74 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-02-14T22:28:01Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "aws-marketplace:DescribeEntity"
+                    ], 
+                    "Resource": [
+                        "arn:aws:aws-marketplace:*:*:AWSMarketplace/Experience/*", 
+                        "arn:aws:aws-marketplace:*:*:AWSMarketplace/Audience/*", 
+                        "arn:aws:aws-marketplace:*:*:AWSMarketplace/ProcurementPolicy/*", 
+                        "arn:aws:aws-marketplace:*:*:AWSMarketplace/BrandingSettings/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "PrivateMarketplaceCatalogDescribePermissions"
+                }, 
+                {
+                    "Action": [
+                        "aws-marketplace:DescribeChangeSet"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "PrivateMarketplaceCatalogDescribeChangeSetPermissions"
+                }, 
+                {
+                    "Action": [
+                        "aws-marketplace:ListEntities", 
+                        "aws-marketplace:ListChangeSets"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "PrivateMarketplaceCatalogListPermissions"
+                }, 
+                {
+                    "Action": [
+                        "aws-marketplace:StartChangeSet"
+                    ], 
+                    "Resource": [
+                        "arn:aws:aws-marketplace:*:*:AWSMarketplace/Experience/*", 
+                        "arn:aws:aws-marketplace:*:*:AWSMarketplace/ChangeSet/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "catalog:ChangeType": [
+                                "AssociateAudience", 
+                                "DisassociateAudience"
+                            ]
+                        }
+                    }, 
+                    "Sid": "PrivateMarketplaceStartChangeSetPermissions"
+                }, 
+                {
+                    "Action": [
+                        "organizations:DescribeAccount", 
+                        "organizations:DescribeOrganizationalUnit", 
+                        "organizations:ListDelegatedAdministrators", 
+                        "organizations:ListChildren"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "PrivateMarketplaceOrganizationPermissions"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

@@ -1,49 +1,62 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2025-01-03T21:37:06Z", 
+        "VersionId": "v4", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Sid": "ComputeOptimizerFullAccess",
-                    "Effect": "Allow",
                     "Action": [
                         "compute-optimizer:*"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ComputeOptimizerFullAccess"
+                }, 
                 {
-                    "Sid": "AwsOrgsAccess",
-                    "Effect": "Allow",
                     "Action": [
-                        "organizations:DescribeOrganization",
-                        "organizations:ListAccounts",
-                        "organizations:ListAWSServiceAccessForOrganization"
-                    ],
+                        "organizations:DescribeOrganization", 
+                        "organizations:ListAccounts", 
+                        "organizations:ListAWSServiceAccessForOrganization", 
+                        "organizations:ListDelegatedAdministrators"
+                    ], 
                     "Resource": [
                         "*"
-                    ]
-                },
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AwsOrgsAccess"
+                }, 
                 {
-                    "Sid": "CloudWatchAccess",
-                    "Effect": "Allow",
                     "Action": [
-                        "cloudwatch:GetMetricData"
-                    ],
-                    "Resource": "*"
-                },
+                        "cloudwatch:GetMetricData", 
+                        "cloudwatch:DescribeAlarms"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "CloudWatchAccess"
+                }, 
                 {
-                    "Sid": "AutoScalingAccess",
-                    "Effect": "Allow",
                     "Action": [
-                        "autoscaling:DescribeAutoScalingInstances",
-                        "autoscaling:DescribeAutoScalingGroups"
-                    ],
-                    "Resource": "*"
+                        "autoscaling:DescribeAutoScalingInstances", 
+                        "autoscaling:DescribeAutoScalingGroups", 
+                        "autoscaling:DescribePolicies", 
+                        "autoscaling:DescribeScheduledActions"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AutoScalingAccess"
+                }, 
+                {
+                    "Action": [
+                        "ec2:DescribeInstances", 
+                        "ec2:DescribeVolumes"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "Ec2Access"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-11-29T16:04:07Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

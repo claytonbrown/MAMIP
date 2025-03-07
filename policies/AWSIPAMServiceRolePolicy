@@ -1,38 +1,53 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-11-08T16:29:09Z", 
+        "VersionId": "v5", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ec2:DescribeAddresses",
-                        "ec2:DescribeByoipCidrs",
-                        "ec2:DescribeIpv6Pools",
-                        "ec2:DescribePublicIpv4Pools",
-                        "ec2:DescribeSubnets",
-                        "ec2:DescribeVpcs",
-                        "organizations:DescribeAccount",
-                        "organizations:DescribeOrganization",
-                        "organizations:ListAccounts",
-                        "organizations:ListDelegatedAdministrators"
-                    ],
-                    "Resource": "*"
-                },
+                        "ec2:DescribeAccountAttributes", 
+                        "ec2:DescribeAddresses", 
+                        "ec2:DescribeByoipCidrs", 
+                        "ec2:DescribeIpv6Pools", 
+                        "ec2:DescribeNetworkInterfaces", 
+                        "ec2:DescribePublicIpv4Pools", 
+                        "ec2:DescribeSecurityGroups", 
+                        "ec2:DescribeSecurityGroupRules", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribeVpcs", 
+                        "ec2:DescribeVpnConnections", 
+                        "ec2:GetIpamDiscoveredAccounts", 
+                        "ec2:GetIpamDiscoveredPublicAddresses", 
+                        "ec2:GetIpamDiscoveredResourceCidrs", 
+                        "globalaccelerator:ListAccelerators", 
+                        "globalaccelerator:ListByoipCidrs", 
+                        "organizations:DescribeAccount", 
+                        "organizations:DescribeOrganization", 
+                        "organizations:ListAccounts", 
+                        "organizations:ListDelegatedAdministrators", 
+                        "organizations:ListChildren", 
+                        "organizations:ListParents", 
+                        "organizations:DescribeOrganizationalUnit"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "IPAMDiscoveryDescribeActions"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "cloudwatch:PutMetricData",
-                    "Resource": "*",
+                    "Action": "cloudwatch:PutMetricData", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "StringEquals": {
                             "cloudwatch:namespace": "AWS/IPAM"
                         }
-                    }
+                    }, 
+                    "Sid": "CloudWatchMetricsPublishActions"
                 }
             ]
-        },
-        "VersionId": "v1",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-11-30T19:08:11Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

@@ -1,75 +1,260 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-05-19T08:30:02Z", 
+        "VersionId": "v8", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
                     "Action": [
                         "mgn:*"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor0"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "kms:ListAliases",
+                        "kms:ListAliases", 
                         "kms:DescribeKey"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor1"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "ec2:DescribeKeyPairs",
-                        "ec2:DescribeTags",
-                        "ec2:DescribeNetworkInterfaces",
-                        "ec2:DescribePlacementGroups",
-                        "ec2:DescribeAccountAttributes",
-                        "ec2:DescribeAvailabilityZones",
-                        "ec2:DescribeImages",
-                        "ec2:DescribeInstances",
-                        "ec2:DescribeInstanceTypes",
-                        "ec2:DescribeInstanceAttribute",
-                        "ec2:DescribeInstanceStatus",
-                        "ec2:DescribeInstanceTypeOfferings",
-                        "ec2:DescribeLaunchTemplateVersions",
-                        "ec2:DescribeLaunchTemplates",
-                        "ec2:DescribeSecurityGroups",
-                        "ec2:DescribeSnapshots",
-                        "ec2:DescribeSubnets",
-                        "ec2:DescribeVolumes",
-                        "ec2:GetEbsEncryptionByDefault",
+                        "ec2:DescribeKeyPairs", 
+                        "ec2:DescribeTags", 
+                        "ec2:DescribeNetworkInterfaces", 
+                        "ec2:DescribePlacementGroups", 
+                        "ec2:DescribeAccountAttributes", 
+                        "ec2:DescribeAvailabilityZones", 
+                        "ec2:DescribeImages", 
+                        "ec2:DescribeInstances", 
+                        "ec2:DescribeInstanceTypes", 
+                        "ec2:DescribeInstanceAttribute", 
+                        "ec2:DescribeInstanceStatus", 
+                        "ec2:DescribeInstanceTypeOfferings", 
+                        "ec2:DescribeLaunchTemplateVersions", 
+                        "ec2:DescribeLaunchTemplates", 
+                        "ec2:DescribeSecurityGroups", 
+                        "ec2:DescribeSnapshots", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribeVolumes", 
+                        "ec2:GetEbsEncryptionByDefault", 
                         "ec2:GetEbsDefaultKmsKeyId"
-                    ],
-                    "Resource": "*"
-                },
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor2"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "license-manager:ListLicenseConfigurations",
-                    "Resource": "*"
-                },
+                    "Action": "license-manager:ListLicenseConfigurations", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor3"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "elasticloadbalancing:DescribeLoadBalancers",
-                    "Resource": "*"
-                },
+                    "Action": "elasticloadbalancing:DescribeLoadBalancers", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor4"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "iam:ListInstanceProfiles",
-                    "Resource": "*"
-                },
+                    "Action": "iam:ListInstanceProfiles", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor5"
+                }, 
                 {
-                    "Effect": "Allow",
+                    "Action": "iam:PassRole", 
+                    "Resource": [
+                        "arn:aws:iam::*:role/service-role/AWSApplicationMigrationLaunchInstanceWithSsmRole", 
+                        "arn:aws:iam::*:role/service-role/AWSApplicationMigrationLaunchInstanceWithDrsRole"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Bool": {
+                            "aws:ViaAWSService": "true"
+                        }, 
+                        "StringEquals": {
+                            "iam:PassedToService": "ec2.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "VisualEditor6"
+                }, 
+                {
+                    "Action": [
+                        "drs:DescribeSourceServers"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor7"
+                }, 
+                {
+                    "Action": [
+                        "ssm:SendCommand"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ec2:*:*:instance/*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "aws:ResourceTag/AWSApplicationMigrationServiceManaged": "false"
+                        }, 
+                        "Bool": {
+                            "aws:ViaAWSService": "true"
+                        }
+                    }, 
+                    "Sid": "VisualEditor8"
+                }, 
+                {
+                    "Action": [
+                        "ssm:ListCommandInvocations"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor9"
+                }, 
+                {
+                    "Action": [
+                        "ssm:DescribeInstanceInformation", 
+                        "ssm:GetCommandInvocation"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Bool": {
+                            "aws:ViaAWSService": "true"
+                        }
+                    }, 
+                    "Sid": "VisualEditor10"
+                }, 
+                {
+                    "Action": [
+                        "ssm:DescribeDocument", 
+                        "ssm:SendCommand"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:document/AWSDisasterRecovery-InstallDRAgentOnInstance", 
+                        "arn:aws:ssm:*:*:document/AWSMigration-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Bool": {
+                            "aws:ViaAWSService": "true"
+                        }
+                    }, 
+                    "Sid": "VisualEditor11"
+                }, 
+                {
+                    "Action": [
+                        "drs:DisconnectSourceServer"
+                    ], 
+                    "Resource": "arn:aws:drs:*:*:source-server/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "aws:ResourceTag/AWSApplicationMigrationServiceConfiguredDR": "false"
+                        }, 
+                        "Bool": {
+                            "aws:ViaAWSService": "true"
+                        }
+                    }, 
+                    "Sid": "VisualEditor12"
+                }, 
+                {
+                    "Action": [
+                        "ssm:GetParameter", 
+                        "ssm:PutParameter"
+                    ], 
+                    "Resource": "arn:aws:ssm:*:*:parameter/ManagedByAWSApplicationMigrationService-*", 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor13"
+                }, 
+                {
                     "Action": [
                         "servicequotas:GetServiceQuota"
-                    ],
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor14"
+                }, 
+                {
+                    "Action": [
+                        "ssm:GetAutomationExecution"
+                    ], 
+                    "Resource": "arn:aws:ssm:*:*:automation-execution/*", 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor15"
+                }, 
+                {
+                    "Action": [
+                        "ssm:GetDocument"
+                    ], 
+                    "Resource": [
+                        "arn:aws:ssm:*:*:document/AWSDisasterRecovery-InstallDRAgentOnInstance", 
+                        "arn:aws:ssm:*:*:document/AWSMigration-*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "VisualEditor16"
+                }, 
+                {
+                    "Action": [
+                        "ssm:GetParameters"
+                    ], 
+                    "Resource": "arn:aws:ssm:*:*:parameter/ManagedByAWSApplicationMigrationService-*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "ssm.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "VisualEditor17"
+                }, 
+                {
+                    "Action": [
+                        "ssm:StartAutomationExecution"
+                    ], 
+                    "Resource": "arn:aws:ssm:*:*:automation-definition/AWSMigration-*:$DEFAULT", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "mgn.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "VisualEditor18"
+                }, 
+                {
+                    "Action": "ssm:ListCommands", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": "ssm.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "VisualEditor19"
+                }, 
+                {
+                    "Action": [
+                        "ssm:DescribeParameters"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "aws:CalledVia": [
+                                "mgn.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "VisualEditor20"
                 }
             ]
-        },
-        "VersionId": "v3",
-        "IsDefaultVersion": true,
-        "CreateDate": "2022-05-01T08:31:14Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

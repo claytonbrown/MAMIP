@@ -1,0 +1,41 @@
+[
+    {
+        "findingDetails": "The condition key lakeformation:GlueARN does not exist in the service lakeformation. Use a valid condition key.",
+        "findingType": "ERROR",
+        "issueCode": "INVALID_SERVICE_CONDITION_KEY",
+        "learnMoreLink": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-policy-checks.html#access-analyzer-reference-policy-checks-error-invalid-service-condition-key",
+        "locations": [
+            {
+                "path": [
+                    {
+                        "value": "Statement"
+                    },
+                    {
+                        "index": 6
+                    },
+                    {
+                        "value": "Condition"
+                    },
+                    {
+                        "value": "Null"
+                    },
+                    {
+                        "key": "lakeformation:GlueARN"
+                    }
+                ],
+                "span": {
+                    "end": {
+                        "column": 2500,
+                        "line": 1,
+                        "offset": 2500
+                    },
+                    "start": {
+                        "column": 2477,
+                        "line": 1,
+                        "offset": 2477
+                    }
+                }
+            }
+        ]
+    }
+]

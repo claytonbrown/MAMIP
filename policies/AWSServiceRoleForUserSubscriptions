@@ -1,0 +1,30 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2025-02-21T17:37:06Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "identitystore:DescribeGroup", 
+                        "identitystore:DescribeUser", 
+                        "identitystore:IsMemberInGroups", 
+                        "identitystore:ListGroupMemberships", 
+                        "organizations:DescribeOrganization", 
+                        "sso:DescribeApplication", 
+                        "sso:DescribeInstance", 
+                        "sso:ListInstances", 
+                        "sso-directory:DescribeUser"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "SubscriptionManagementPolicy"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

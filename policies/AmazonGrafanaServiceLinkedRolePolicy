@@ -1,0 +1,58 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2022-11-08T23:10:33Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ec2:DescribeNetworkInterfaces", 
+                        "ec2:DescribeVpcs", 
+                        "ec2:DescribeDhcpOptions", 
+                        "ec2:DescribeSubnets", 
+                        "ec2:DescribeSecurityGroups"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow"
+                }, 
+                {
+                    "Action": "ec2:CreateNetworkInterface", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAllValues:StringEquals": {
+                            "aws:TagKeys": [
+                                "AmazonGrafanaManaged"
+                            ]
+                        }
+                    }
+                }, 
+                {
+                    "Action": "ec2:CreateTags", 
+                    "Resource": "arn:aws:ec2:*:*:network-interface/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "aws:RequestTag/AmazonGrafanaManaged": "false"
+                        }, 
+                        "StringEquals": {
+                            "ec2:CreateAction": "CreateNetworkInterface"
+                        }
+                    }
+                }, 
+                {
+                    "Action": "ec2:DeleteNetworkInterface", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "Null": {
+                            "ec2:ResourceTag/AmazonGrafanaManaged": "false"
+                        }
+                    }
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

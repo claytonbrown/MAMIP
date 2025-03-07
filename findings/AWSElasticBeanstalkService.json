@@ -11,7 +11,7 @@
                         "value": "Statement"
                     },
                     {
-                        "index": 2
+                        "index": 3
                     },
                     {
                         "value": "Resource"
@@ -22,14 +22,14 @@
                 ],
                 "span": {
                     "end": {
-                        "column": 559,
+                        "column": 684,
                         "line": 1,
-                        "offset": 559
+                        "offset": 684
                     },
                     "start": {
-                        "column": 526,
+                        "column": 651,
                         "line": 1,
-                        "offset": 526
+                        "offset": 651
                     }
                 }
             },
@@ -39,7 +39,7 @@
                         "value": "Statement"
                     },
                     {
-                        "index": 2
+                        "index": 3
                     },
                     {
                         "value": "Resource"
@@ -50,14 +50,14 @@
                 ],
                 "span": {
                     "end": {
-                        "column": 596,
+                        "column": 721,
                         "line": 1,
-                        "offset": 596
+                        "offset": 721
                     },
                     "start": {
-                        "column": 561,
+                        "column": 686,
                         "line": 1,
-                        "offset": 561
+                        "offset": 686
                     }
                 }
             }
@@ -75,25 +75,25 @@
                         "value": "Statement"
                     },
                     {
-                        "index": 4
+                        "index": 6
                     },
                     {
                         "value": "Action"
                     },
                     {
-                        "index": 72
+                        "index": 73
                     }
                 ],
                 "span": {
                     "end": {
-                        "column": 3368,
+                        "column": 3756,
                         "line": 1,
-                        "offset": 3368
+                        "offset": 3756
                     },
                     "start": {
-                        "column": 3354,
+                        "column": 3742,
                         "line": 1,
-                        "offset": 3354
+                        "offset": 3742
                     }
                 }
             },
@@ -103,7 +103,7 @@
                         "value": "Statement"
                     },
                     {
-                        "index": 4
+                        "index": 6
                     },
                     {
                         "value": "Resource"
@@ -114,14 +114,14 @@
                 ],
                 "span": {
                     "end": {
-                        "column": 3887,
+                        "column": 4275,
                         "line": 1,
-                        "offset": 3887
+                        "offset": 4275
                     },
                     "start": {
-                        "column": 3884,
+                        "column": 4272,
                         "line": 1,
-                        "offset": 3884
+                        "offset": 4272
                     }
                 }
             }

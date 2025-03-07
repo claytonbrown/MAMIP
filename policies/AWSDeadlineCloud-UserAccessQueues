@@ -1,0 +1,206 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-10-07T18:25:13Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "identitystore:DescribeGroup", 
+                        "identitystore:DescribeUser", 
+                        "identitystore:ListGroupMembershipsForMember", 
+                        "deadline:GetApplicationVersion", 
+                        "ec2:DescribeInstanceTypes", 
+                        "identitystore:ListUsers"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Sid": "AdditionalPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:AssociateMemberToJob", 
+                        "deadline:AssociateMemberToQueue", 
+                        "deadline:DisassociateMemberFromJob", 
+                        "deadline:DisassociateMemberFromQueue"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:QueueMembershipLevels": [
+                                "OWNER"
+                            ]
+                        }
+                    }, 
+                    "Sid": "OwnerLevelPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:AssociateMemberToJob", 
+                        "deadline:AssociateMemberToQueue"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:QueueMembershipLevels": [
+                                "MANAGER"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "deadline:MembershipLevel": [
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER"
+                            ], 
+                            "deadline:AssociatedMembershipLevel": [
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER", 
+                                ""
+                            ]
+                        }
+                    }, 
+                    "Sid": "ManagerLevelMemberAssociation"
+                }, 
+                {
+                    "Action": [
+                        "deadline:DisassociateMemberFromJob", 
+                        "deadline:DisassociateMemberFromQueue"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:QueueMembershipLevels": [
+                                "MANAGER"
+                            ]
+                        }, 
+                        "StringEquals": {
+                            "deadline:AssociatedMembershipLevel": [
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER", 
+                                ""
+                            ]
+                        }
+                    }, 
+                    "Sid": "ManagerLevelMemberDisassociation"
+                }, 
+                {
+                    "Action": [
+                        "deadline:ListJobMembers", 
+                        "deadline:ListQueueMembers", 
+                        "deadline:UpdateJob", 
+                        "deadline:UpdateSession", 
+                        "deadline:UpdateStep", 
+                        "deadline:UpdateTask"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:QueueMembershipLevels": [
+                                "OWNER", 
+                                "MANAGER"
+                            ]
+                        }
+                    }, 
+                    "Sid": "OwnerManagerPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:AssumeQueueRoleForUser", 
+                        "deadline:CreateJob"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:QueueMembershipLevels": [
+                                "OWNER", 
+                                "MANAGER", 
+                                "CONTRIBUTOR"
+                            ]
+                        }
+                    }, 
+                    "Sid": "OwnerManagerContributorPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:AssumeQueueRoleForRead", 
+                        "deadline:GetJob", 
+                        "deadline:GetJobTemplate", 
+                        "deadline:GetQueue", 
+                        "deadline:GetQueueEnvironment", 
+                        "deadline:GetQueueFleetAssociation", 
+                        "deadline:GetSession", 
+                        "deadline:GetSessionAction", 
+                        "deadline:GetStep", 
+                        "deadline:GetStorageProfileForQueue", 
+                        "deadline:GetTask", 
+                        "deadline:ListJobParameterDefinitions", 
+                        "deadline:ListQueueEnvironments", 
+                        "deadline:ListQueueFleetAssociations", 
+                        "deadline:ListSessionActions", 
+                        "deadline:ListSessions", 
+                        "deadline:ListStepConsumers", 
+                        "deadline:ListStepDependencies", 
+                        "deadline:ListSteps", 
+                        "deadline:ListStorageProfilesForQueue", 
+                        "deadline:ListTasks", 
+                        "deadline:SearchJobs", 
+                        "deadline:SearchSteps", 
+                        "deadline:SearchTasks"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "deadline:QueueMembershipLevels": [
+                                "OWNER", 
+                                "MANAGER", 
+                                "CONTRIBUTOR", 
+                                "VIEWER"
+                            ]
+                        }
+                    }, 
+                    "Sid": "AllLevelsPermissions"
+                }, 
+                {
+                    "Action": [
+                        "deadline:ListJobs", 
+                        "deadline:ListQueues"
+                    ], 
+                    "Resource": [
+                        "*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "deadline:RequesterPrincipalId": "${deadline:PrincipalId}"
+                        }
+                    }, 
+                    "Sid": "ListBasedOnMembership"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-15T16:37:33Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "cloudwatch:PutMetricData"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "cloudwatch:namespace": [
+                                "AWS/rePostPrivate", 
+                                "AWS/Usage"
+                            ]
+                        }
+                    }, 
+                    "Sid": "CloudWatchPublishMetrics"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

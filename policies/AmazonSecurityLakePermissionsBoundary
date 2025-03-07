@@ -1,0 +1,140 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2024-05-14T20:39:20Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "s3:GetObject", 
+                        "s3:GetObjectVersion", 
+                        "s3:ListBucket", 
+                        "s3:ListBucketVersions", 
+                        "s3:PutObject", 
+                        "s3:GetBucketLocation", 
+                        "kms:Decrypt", 
+                        "kms:GenerateDataKey", 
+                        "sqs:ReceiveMessage", 
+                        "sqs:ChangeMessageVisibility", 
+                        "sqs:DeleteMessage", 
+                        "sqs:GetQueueUrl", 
+                        "sqs:SendMessage", 
+                        "sqs:GetQueueAttributes", 
+                        "sqs:ListQueues"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowActionsForSecurityLake"
+                }, 
+                {
+                    "NotAction": [
+                        "s3:GetObject", 
+                        "s3:GetObjectVersion", 
+                        "s3:ListBucket", 
+                        "s3:ListBucketVersions", 
+                        "s3:PutObject", 
+                        "s3:GetBucketLocation", 
+                        "kms:Decrypt", 
+                        "kms:GenerateDataKey", 
+                        "sqs:ReceiveMessage", 
+                        "sqs:ChangeMessageVisibility", 
+                        "sqs:DeleteMessage", 
+                        "sqs:GetQueueUrl", 
+                        "sqs:SendMessage", 
+                        "sqs:GetQueueAttributes", 
+                        "sqs:ListQueues"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Sid": "DenyActionsForSecurityLake"
+                }, 
+                {
+                    "Action": [
+                        "s3:GetObject", 
+                        "s3:GetObjectVersion", 
+                        "s3:ListBucket", 
+                        "s3:ListBucketVersions", 
+                        "s3:PutObject", 
+                        "s3:GetBucketLocation"
+                    ], 
+                    "NotResource": [
+                        "arn:aws:s3:::aws-security-data-lake*"
+                    ], 
+                    "Effect": "Deny", 
+                    "Sid": "DenyActionsNotOnSecurityLakeBucket"
+                }, 
+                {
+                    "Action": [
+                        "sqs:ReceiveMessage", 
+                        "sqs:ChangeMessageVisibility", 
+                        "sqs:DeleteMessage", 
+                        "sqs:GetQueueUrl", 
+                        "sqs:SendMessage", 
+                        "sqs:GetQueueAttributes", 
+                        "sqs:ListQueues"
+                    ], 
+                    "NotResource": "arn:aws:sqs:*:*:AmazonSecurityLake*", 
+                    "Effect": "Deny", 
+                    "Sid": "DenyActionsNotOnSecurityLakeSQS"
+                }, 
+                {
+                    "Action": [
+                        "kms:Decrypt", 
+                        "kms:GenerateDataKey"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
+                        "StringNotLike": {
+                            "kms:ViaService": [
+                                "s3.*.amazonaws.com", 
+                                "sqs.*.amazonaws.com"
+                            ]
+                        }
+                    }, 
+                    "Sid": "DenyActionsNotOnSecurityLakeKMSS3SQS"
+                }, 
+                {
+                    "Action": [
+                        "kms:Decrypt", 
+                        "kms:GenerateDataKey"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
+                        "Null": {
+                            "kms:EncryptionContext:aws:s3:arn": "false"
+                        }, 
+                        "StringNotLikeIfExists": {
+                            "kms:EncryptionContext:aws:s3:arn": [
+                                "arn:aws:s3:::aws-security-data-lake*"
+                            ]
+                        }
+                    }, 
+                    "Sid": "DenyActionsNotOnSecurityLakeKMSForS3"
+                }, 
+                {
+                    "Action": [
+                        "kms:Decrypt", 
+                        "kms:GenerateDataKey"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Deny", 
+                    "Condition": {
+                        "Null": {
+                            "kms:EncryptionContext:aws:sqs:arn": "false"
+                        }, 
+                        "StringNotLikeIfExists": {
+                            "kms:EncryptionContext:aws:sqs:arn": [
+                                "arn:aws:sqs:*:*:AmazonSecurityLake*"
+                            ]
+                        }
+                    }, 
+                    "Sid": "DenyActionsNotOnSecurityLakeKMSForS3SQS"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

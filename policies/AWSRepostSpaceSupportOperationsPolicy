@@ -1,0 +1,25 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-26T21:52:15Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "support:AddAttachmentsToSet", 
+                        "support:AddCommunicationToCase", 
+                        "support:CreateCase", 
+                        "support:DescribeCases", 
+                        "support:DescribeCommunications", 
+                        "support:ResolveCase"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "RepostSpaceSupportOperations"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

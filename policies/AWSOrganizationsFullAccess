@@ -1,26 +1,44 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-02-06T17:49:01Z", 
+        "VersionId": "v6", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
-                    "Action": "organizations:*",
-                    "Resource": "*"
-                },
+                    "Action": "organizations:*", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AWSOrganizationsFullAccess"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "account:PutAlternateContact",
-                        "account:DeleteAlternateContact",
-                        "account:GetAlternateContact"
-                    ],
-                    "Resource": "*"
+                        "account:PutAlternateContact", 
+                        "account:DeleteAlternateContact", 
+                        "account:GetAlternateContact", 
+                        "account:GetContactInformation", 
+                        "account:PutContactInformation", 
+                        "account:ListRegions", 
+                        "account:EnableRegion", 
+                        "account:DisableRegion"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AWSOrganizationsFullAccessAccount"
+                }, 
+                {
+                    "Action": "iam:CreateServiceLinkedRole", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:AWSServiceName": "organizations.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AWSOrganizationsFullAccessCreateSLR"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2022-02-07T18:26:04Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

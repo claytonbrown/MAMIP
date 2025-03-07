@@ -1,26 +1,46 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2023-11-26T18:15:46Z", 
+        "VersionId": "v3", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
-                    "Action": "elasticloadbalancing:Describe*",
-                    "Resource": "*"
-                },
-                {
-                    "Effect": "Allow",
                     "Action": [
-                        "ec2:DescribeInstances",
-                        "ec2:DescribeClassicLinkInstances",
+                        "elasticloadbalancing:Describe*", 
+                        "elasticloadbalancing:Get*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "Statement1"
+                }, 
+                {
+                    "Action": [
+                        "ec2:DescribeInstances", 
+                        "ec2:DescribeClassicLinkInstances", 
                         "ec2:DescribeSecurityGroups"
-                    ],
-                    "Resource": "*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "Statement2"
+                }, 
+                {
+                    "Action": "arc-zonal-shift:GetManagedResource", 
+                    "Resource": "arn:aws:elasticloadbalancing:*:*:loadbalancer/*", 
+                    "Effect": "Allow", 
+                    "Sid": "Statement3"
+                }, 
+                {
+                    "Action": [
+                        "arc-zonal-shift:ListManagedResources", 
+                        "arc-zonal-shift:ListZonalShifts"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "Statement4"
                 }
             ]
-        },
-        "VersionId": "v1",
-        "IsDefaultVersion": true,
-        "CreateDate": "2018-09-20T20:17:09Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

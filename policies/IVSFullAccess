@@ -1,0 +1,21 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-12-13T21:20:21Z", 
+        "VersionId": "v1", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ivs:*", 
+                        "ivschat:*"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "IVSFullAccess"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

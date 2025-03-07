@@ -1,0 +1,55 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2025-01-09T16:52:05Z", 
+        "VersionId": "v3", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "thinclient:GetDevice", 
+                        "thinclient:GetDeviceDetails", 
+                        "thinclient:GetEnvironment", 
+                        "thinclient:GetSoftwareSet", 
+                        "thinclient:ListDevices", 
+                        "thinclient:ListDeviceSessions", 
+                        "thinclient:ListEnvironments", 
+                        "thinclient:ListSoftwareSets", 
+                        "thinclient:ListTagsForResource"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowThinClientReadAccess"
+                }, 
+                {
+                    "Action": [
+                        "workspaces:DescribeConnectionAliases", 
+                        "workspaces:DescribeWorkspaceDirectories"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowWorkSpacesAccess"
+                }, 
+                {
+                    "Action": [
+                        "workspaces-web:GetPortal", 
+                        "workspaces-web:GetUserSettings", 
+                        "workspaces-web:ListPortals"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowWorkSpacesSecureBrowserAccess"
+                }, 
+                {
+                    "Action": [
+                        "appstream:DescribeStacks"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AllowAppStreamAccess"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

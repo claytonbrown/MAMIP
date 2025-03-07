@@ -1,0 +1,44 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2022-10-29T22:15:51Z", 
+        "VersionId": "v2", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "ssmmessages:OpenControlChannel", 
+                        "ssmmessages:CreateControlChannel", 
+                        "ssmmessages:OpenDataChannel", 
+                        "ssmmessages:CreateDataChannel"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "SsmMessagesAccess"
+                }, 
+                {
+                    "Action": [
+                        "s3:GetObject"
+                    ], 
+                    "Resource": "arn:aws:s3:::*/refactoringtoolkit*", 
+                    "Effect": "Allow", 
+                    "Sid": "S3GetObjectAccess"
+                }, 
+                {
+                    "Action": [
+                        "s3:ListBucket"
+                    ], 
+                    "Resource": "arn:aws:s3:::*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringLike": {
+                            "s3:prefix": "refactoringtoolkit*"
+                        }
+                    }, 
+                    "Sid": "S3ListBucketAccess"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

@@ -1,0 +1,86 @@
+{
+    "PolicyVersion": {
+        "CreateDate": "2023-11-27T13:39:44Z", 
+        "VersionId": "v5", 
+        "Document": {
+            "Version": "2012-10-17", 
+            "Statement": [
+                {
+                    "Action": [
+                        "drs:GetAgentInstallationAssetsForDrs", 
+                        "drs:SendClientLogsForDrs", 
+                        "drs:SendClientMetricsForDrs", 
+                        "drs:CreateSourceServerForDrs", 
+                        "drs:CreateSourceNetwork"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "DRSEc2InstancePolicy1"
+                }, 
+                {
+                    "Action": [
+                        "drs:TagResource"
+                    ], 
+                    "Resource": "arn:aws:drs:*:*:source-server/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "drs:CreateAction": "CreateSourceServerForDrs"
+                        }
+                    }, 
+                    "Sid": "DRSEc2InstancePolicy2"
+                }, 
+                {
+                    "Action": [
+                        "drs:TagResource"
+                    ], 
+                    "Resource": "arn:aws:drs:*:*:source-network/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "drs:CreateAction": "CreateSourceNetwork"
+                        }
+                    }, 
+                    "Sid": "DRSEc2InstancePolicy3"
+                }, 
+                {
+                    "Action": [
+                        "drs:SendAgentMetricsForDrs", 
+                        "drs:SendAgentLogsForDrs", 
+                        "drs:UpdateAgentSourcePropertiesForDrs", 
+                        "drs:UpdateAgentReplicationInfoForDrs", 
+                        "drs:UpdateAgentConversionInfoForDrs", 
+                        "drs:GetAgentCommandForDrs", 
+                        "drs:GetAgentConfirmedResumeInfoForDrs", 
+                        "drs:GetAgentRuntimeConfigurationForDrs", 
+                        "drs:UpdateAgentBacklogForDrs", 
+                        "drs:GetAgentReplicationInfoForDrs"
+                    ], 
+                    "Resource": "arn:aws:drs:*:*:source-server/*", 
+                    "Effect": "Allow", 
+                    "Sid": "DRSEc2InstancePolicy4"
+                }, 
+                {
+                    "Action": [
+                        "sts:AssumeRole", 
+                        "sts:TagSession"
+                    ], 
+                    "Resource": [
+                        "arn:aws:iam::*:role/service-role/DRSCrossAccountAgentAuthorizedRole_*"
+                    ], 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "ForAnyValue:StringEquals": {
+                            "sts:TransitiveTagKeys": "SourceInstanceARN"
+                        }, 
+                        "StringLike": {
+                            "aws:RequestTag/SourceInstanceARN": "${ec2:SourceInstanceARN}"
+                        }
+                    }, 
+                    "Sid": "DRSEc2InstancePolicy5"
+                }
+            ]
+        }, 
+        "IsDefaultVersion": true
+    }
+}

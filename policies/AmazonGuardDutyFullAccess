@@ -1,40 +1,66 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-06-10T22:50:31Z", 
+        "VersionId": "v6", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
-                    "Action": "guardduty:*",
-                    "Resource": "*"
-                },
+                    "Action": "guardduty:*", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "AmazonGuardDutyFullAccessSid1"
+                }, 
                 {
-                    "Effect": "Allow",
-                    "Action": "iam:CreateServiceLinkedRole",
-                    "Resource": "*",
+                    "Action": "iam:CreateServiceLinkedRole", 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
                     "Condition": {
                         "StringLike": {
-                            "iam:AWSServiceName": "guardduty.amazonaws.com"
+                            "iam:AWSServiceName": [
+                                "guardduty.amazonaws.com", 
+                                "malware-protection.guardduty.amazonaws.com"
+                            ]
                         }
-                    }
-                },
+                    }, 
+                    "Sid": "CreateServiceLinkedRoleSid1"
+                }, 
                 {
-                    "Effect": "Allow",
                     "Action": [
-                        "organizations:EnableAWSServiceAccess",
-                        "organizations:RegisterDelegatedAdministrator",
-                        "organizations:ListDelegatedAdministrators",
-                        "organizations:ListAWSServiceAccessForOrganization",
-                        "organizations:DescribeOrganizationalUnit",
-                        "organizations:DescribeAccount",
-                        "organizations:DescribeOrganization"
-                    ],
-                    "Resource": "*"
+                        "organizations:EnableAWSServiceAccess", 
+                        "organizations:RegisterDelegatedAdministrator", 
+                        "organizations:ListDelegatedAdministrators", 
+                        "organizations:ListAWSServiceAccessForOrganization", 
+                        "organizations:DescribeOrganizationalUnit", 
+                        "organizations:DescribeAccount", 
+                        "organizations:DescribeOrganization", 
+                        "organizations:ListAccounts"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "ActionsForOrganizationsSid1"
+                }, 
+                {
+                    "Action": "iam:GetRole", 
+                    "Resource": "arn:aws:iam::*:role/*AWSServiceRoleForAmazonGuardDutyMalwareProtection", 
+                    "Effect": "Allow", 
+                    "Sid": "IamGetRoleSid1"
+                }, 
+                {
+                    "Action": [
+                        "iam:PassRole"
+                    ], 
+                    "Resource": "arn:aws:iam::*:role/*", 
+                    "Effect": "Allow", 
+                    "Condition": {
+                        "StringEquals": {
+                            "iam:PassedToService": "malware-protection-plan.guardduty.amazonaws.com"
+                        }
+                    }, 
+                    "Sid": "AllowPassRoleToMalwareProtectionPlan"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2021-02-16T23:39:53Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }

@@ -1,23 +1,24 @@
 {
     "PolicyVersion": {
+        "CreateDate": "2024-02-06T16:07:08Z", 
+        "VersionId": "v4", 
         "Document": {
-            "Version": "2012-10-17",
+            "Version": "2012-10-17", 
             "Statement": [
                 {
-                    "Effect": "Allow",
-                    "Action": "organizations:ListAccounts",
-                    "Resource": "*"
-                },
-                {
-                    "Sid": "ListAWSServiceAccessForOrganization0",
-                    "Effect": "Allow",
-                    "Action": "organizations:ListAWSServiceAccessForOrganization",
-                    "Resource": "*"
+                    "Action": [
+                        "organizations:ListAccounts", 
+                        "organizations:ListAWSServiceAccessForOrganization", 
+                        "organizations:ListDelegatedAdministrators", 
+                        "organizations:DescribeOrganization", 
+                        "organizations:DescribeAccount"
+                    ], 
+                    "Resource": "*", 
+                    "Effect": "Allow", 
+                    "Sid": "HealthAPIOrganizationView0"
                 }
             ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2020-06-08T12:48:44Z"
+        }, 
+        "IsDefaultVersion": true
     }
 }
