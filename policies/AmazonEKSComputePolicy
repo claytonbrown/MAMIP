@@ -101,11 +101,16 @@
                             "iam:AWSServiceName": "spot.amazonaws.com"
                         }
                     }
+                },
+                {
+                    "Effect": "Allow",
+                    "Action": "ec2:DescribeCapacityReservations",
+                    "Resource": "*"
                 }
             ]
         },
-        "VersionId": "v6",
+        "VersionId": "v7",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-04-17T21:27:07+00:00"
+        "CreateDate": "2026-05-18T21:12:10+00:00"
     }
 }
