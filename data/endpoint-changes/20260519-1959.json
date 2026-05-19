@@ -1,0 +1,27 @@
+{
+  "detected_at": "2026-05-19T19:59:19.213Z",
+  "botocore_commit": "271c036da75ebaa0301cf38c87a5a4b9fdbe3ae8",
+  "botocore_commit_url": "https://github.com/boto/botocore/commit/271c036da75ebaa0301cf38c87a5a4b9fdbe3ae8",
+  "summary": "1 new service(s), 1 service expansion(s)",
+  "changes": [
+    {
+      "type": "service_expansion",
+      "partition": "aws",
+      "service": "codebuild",
+      "id": "codebuild",
+      "new_regions": [
+        "ap-southeast-5",
+        "ap-southeast-6",
+        "ap-southeast-7"
+      ],
+      "description": "codebuild expanded to ap-southeast-5, ap-southeast-6, ap-southeast-7"
+    },
+    {
+      "type": "new_service",
+      "partition": "aws-eusc",
+      "id": "apigateway",
+      "description": "apigateway (1 endpoint)",
+      "endpoint_count": 1
+    }
+  ]
+}
