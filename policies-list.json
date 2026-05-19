@@ -29,12 +29,12 @@
             "PolicyId": "ANPAILL3HVNFSB6DCOWYQ",
             "Arn": "arn:aws:iam::aws:policy/ReadOnlyAccess",
             "Path": "/",
-            "DefaultVersionId": "v184",
+            "DefaultVersionId": "v185",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2015-02-06T18:39:48+00:00",
-            "UpdateDate": "2026-05-07T16:12:21+00:00"
+            "UpdateDate": "2026-05-18T15:42:10+00:00"
         },
         {
             "PolicyName": "AWSCloudFormationReadOnlyAccess",
@@ -701,12 +701,12 @@
             "PolicyId": "ANPAIX2T3QCXHR2OGGCTO",
             "Arn": "arn:aws:iam::aws:policy/SecurityAudit",
             "Path": "/",
-            "DefaultVersionId": "v87",
+            "DefaultVersionId": "v88",
             "AttachmentCount": 3,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2015-02-06T18:41:01+00:00",
-            "UpdateDate": "2026-05-07T16:12:08+00:00"
+            "UpdateDate": "2026-05-18T15:42:13+00:00"
         },
         {
             "PolicyName": "AmazonSESFullAccess",
@@ -4469,12 +4469,12 @@
             "PolicyId": "ANPAJ6R6FMTSRUJSKI72Y",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AmazonConnectServiceLinkedRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v53",
+            "DefaultVersionId": "v54",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2018-09-07T00:21:43+00:00",
-            "UpdateDate": "2026-02-12T17:59:17+00:00"
+            "UpdateDate": "2026-05-18T21:12:24+00:00"
         },
         {
             "PolicyName": "ElasticLoadBalancingReadOnly",
@@ -14813,12 +14813,12 @@
             "PolicyId": "ANPAZKAPJZG4HYRJHGSOQ",
             "Arn": "arn:aws:iam::aws:policy/AmazonEKSComputePolicy",
             "Path": "/",
-            "DefaultVersionId": "v6",
+            "DefaultVersionId": "v7",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2024-11-01T21:46:52+00:00",
-            "UpdateDate": "2026-04-17T21:27:07+00:00"
+            "UpdateDate": "2026-05-18T21:12:10+00:00"
         },
         {
             "PolicyName": "GameLiftContainerFleetPolicy",
