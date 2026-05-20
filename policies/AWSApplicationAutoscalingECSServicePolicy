@@ -7,6 +7,7 @@
                     "Effect": "Allow",
                     "Action": [
                         "ecs:DescribeServices",
+                        "ecs:DescribeServiceRevisions",
                         "ecs:UpdateService",
                         "cloudwatch:PutMetricAlarm",
                         "cloudwatch:DescribeAlarms",
@@ -19,8 +20,8 @@
                 }
             ]
         },
-        "VersionId": "v2",
+        "VersionId": "v3",
         "IsDefaultVersion": true,
-        "CreateDate": "2024-10-24T20:05:50+00:00"
+        "CreateDate": "2026-05-20T21:27:13+00:00"
     }
 }
