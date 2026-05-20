@@ -19,11 +19,25 @@
                     "Effect": "Allow",
                     "Action": "organizations:DescribeOrganization",
                     "Resource": "*"
+                },
+                {
+                    "Sid": "KMSForFirehoseSSECMK",
+                    "Effect": "Allow",
+                    "Action": [
+                        "kms:GenerateDataKey",
+                        "kms:Decrypt"
+                    ],
+                    "Resource": "*",
+                    "Condition": {
+                        "StringLike": {
+                            "kms:ViaService": "firehose.*.amazonaws.com"
+                        }
+                    }
                 }
             ]
         },
-        "VersionId": "v3",
+        "VersionId": "v4",
         "IsDefaultVersion": true,
-        "CreateDate": "2024-06-03T17:29:04+00:00"
+        "CreateDate": "2026-05-20T18:12:21+00:00"
     }
 }
