@@ -214,11 +214,17 @@
                         "cloudformation:ActivateType"
                     ],
                     "Resource": "arn:aws:cloudformation:*:*:type/hook/AWS-ControlTower*"
+                },
+                {
+                    "Sid": "AllowBatchDescribeTypeConfigurationsForHookConfigFetch",
+                    "Effect": "Allow",
+                    "Action": "cloudformation:BatchDescribeTypeConfigurations",
+                    "Resource": "*"
                 }
             ]
         },
-        "VersionId": "v10",
+        "VersionId": "v11",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-02-12T18:01:38+00:00"
+        "CreateDate": "2026-05-20T19:27:15+00:00"
     }
 }
