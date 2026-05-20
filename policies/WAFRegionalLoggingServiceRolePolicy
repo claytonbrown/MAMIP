@@ -12,11 +12,25 @@
                     "Resource": [
                         "arn:aws:firehose:*:*:deliverystream/aws-waf-logs-*"
                     ]
+                },
+                {
+                    "Sid": "KMSForFirehoseSSECMK",
+                    "Effect": "Allow",
+                    "Action": [
+                        "kms:GenerateDataKey",
+                        "kms:Decrypt"
+                    ],
+                    "Resource": "*",
+                    "Condition": {
+                        "StringLike": {
+                            "kms:ViaService": "firehose.*.amazonaws.com"
+                        }
+                    }
                 }
             ]
         },
-        "VersionId": "v1",
+        "VersionId": "v2",
         "IsDefaultVersion": true,
-        "CreateDate": "2018-08-24T18:40:55+00:00"
+        "CreateDate": "2026-05-20T18:42:25+00:00"
     }
 }
