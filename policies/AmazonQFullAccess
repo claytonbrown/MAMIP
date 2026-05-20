@@ -36,6 +36,17 @@
                     "Resource": "*"
                 },
                 {
+                    "Sid": "AllowQArtifactsAccess",
+                    "Effect": "Allow",
+                    "Action": [
+                        "q:CreateArtifact",
+                        "q:GetArtifact",
+                        "q:GetArtifactActionResult",
+                        "q:PerformArtifactAction"
+                    ],
+                    "Resource": "*"
+                },
+                {
                     "Sid": "AllowCloudControlReadAccess",
                     "Effect": "Allow",
                     "Action": [
@@ -69,8 +80,8 @@
                 }
             ]
         },
-        "VersionId": "v11",
+        "VersionId": "v12",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-02-12T18:00:32+00:00"
+        "CreateDate": "2026-05-20T22:27:23+00:00"
     }
 }
