@@ -1,0 +1,19 @@
+{
+  "detected_at": "2026-05-20T20:25:56.858Z",
+  "botocore_commit": "623c681f0a6d448ad15f3f56f63b916bef710f00",
+  "botocore_commit_url": "https://github.com/boto/botocore/commit/623c681f0a6d448ad15f3f56f63b916bef710f00",
+  "summary": "1 service expansion(s)",
+  "changes": [
+    {
+      "type": "service_expansion",
+      "partition": "aws",
+      "service": "cassandra",
+      "id": "cassandra",
+      "new_regions": [
+        "ap-southeast-5",
+        "ap-southeast-7"
+      ],
+      "description": "cassandra expanded to ap-southeast-5, ap-southeast-7"
+    }
+  ]
+}
