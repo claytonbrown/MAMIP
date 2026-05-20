@@ -1,0 +1,18 @@
+{
+  "type": "NEW_FEATURES",
+  "detected_at": "2026-05-20T19:09:35Z",
+  "description": "GuardDuty Extended Threat Detection now integrates exposure and vulnerability context from AWS Security Hub to enhance attack sequence findings. This capability improves prioritization accuracy and delivers more actionable critical-severity findings by correlating threat activity with resource exposure data, including known vulnerabilities, internet reachability, and misconfigurations. When available, attack sequence findings are enriched with exposure indicators, helping you prioritize the most critical remediation actions. To maximize detection coverage, enable Security Hub alongside GuardDuty Runtime Monitoring for EC2, EKS, and ECS Fargate. Feature availability varies in AWS GovCloud (US) and AWS China Regions.",
+  "short_description": "GuardDuty Extended Threat Detection now integrates exposure and vulnerability context from AWS Security Hub to enhance attack sequence findings. This ",
+  "link": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html",
+  "gist_url": "",
+  "raw_sns_message": {
+    "version": "1",
+    "type": "NEW_FEATURES",
+    "featureDetails": [
+      {
+        "featureDescription": "GuardDuty Extended Threat Detection now integrates exposure and vulnerability context from AWS Security Hub to enhance attack sequence findings. This capability improves prioritization accuracy and delivers more actionable critical-severity findings by correlating threat activity with resource exposure data, including known vulnerabilities, internet reachability, and misconfigurations. When available, attack sequence findings are enriched with exposure indicators, helping you prioritize the most critical remediation actions. To maximize detection coverage, enable Security Hub alongside GuardDuty Runtime Monitoring for EC2, EKS, and ECS Fargate. Feature availability varies in AWS GovCloud (US) and AWS China Regions.",
+        "featureLink": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html"
+      }
+    ]
+  }
+}
