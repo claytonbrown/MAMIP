@@ -1201,6 +1201,21 @@ function escapeXml(str) {
     .replace(/'/g, "&apos;");
 }
 
+/**
+ * Truncate at the nearest word boundary, falling back to a hard cut if no
+ * good break is available. Used for RSS titles so feed readers don't show
+ * sentences clipped mid-word.
+ */
+function smartTruncate(text, max) {
+  if (!text) return "";
+  const collapsed = text.replace(/\s+/g, " ").trim();
+  if (collapsed.length <= max) return collapsed;
+  const sliced = collapsed.slice(0, max);
+  const lastSpace = sliced.lastIndexOf(" ");
+  const cutoff = lastSpace > max * 0.6 ? lastSpace : max;
+  return `${sliced.slice(0, cutoff).replace(/[.,;:!?\-]+$/, "")}...`;
+}
+
 function buildRSSFeed(channel, items) {
   const itemsXml = items
     .map(
@@ -1303,14 +1318,42 @@ function generateRSSFeeds(policyData, endpointsData, guarddutyData) {
   console.log(`   📡 Endpoints feed: ${endpointItems.length} items`);
 
   // --- GuardDuty feed ---
+  // Titles are always prefixed with "GuardDuty" so feed items remain
+  // unambiguous when surfaced alongside unrelated content (Slack, readers, etc.).
+  const GUARDDUTY_TYPE_LABELS = {
+    NEW_FINDINGS: "GuardDuty New Finding",
+    UPDATED_FINDINGS: "GuardDuty Updated Finding",
+    NEW_FEATURES: "GuardDuty New Feature",
+    NEW_REGION: "GuardDuty New Region",
+    GENERAL: "GuardDuty Announcement",
+  };
+
+  const FINDING_TYPES = new Set(["NEW_FINDINGS", "UPDATED_FINDINGS"]);
+
   const guarddutyItems = (guarddutyData.announcements || [])
     .sort((a, b) => new Date(b.detected_at) - new Date(a.detected_at))
     .slice(0, MAX_ITEMS)
     .map((a) => {
-      const typeLabel = a.type.replace(/_/g, " ").toLowerCase();
-      const title = a.short_description
-        ? `${a.type}: ${a.short_description}`
-        : `GuardDuty ${typeLabel}`;
+      const label =
+        GUARDDUTY_TYPE_LABELS[a.type] ||
+        `GuardDuty ${a.type
+          .toLowerCase()
+          .split("_")
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" ")}`;
+
+      // Findings store the finding type ID in short_description (use it verbatim).
+      // Features/regions/general truncate descriptions mid-word; build a clean
+      // word-boundary title from the full description instead.
+      const isFinding = FINDING_TYPES.has(a.type);
+      const sourceText = isFinding
+        ? a.short_description || a.description || ""
+        : a.description || a.short_description || "";
+      const cleanTitle = isFinding
+        ? sourceText
+        : smartTruncate(sourceText, 120);
+      const title = cleanTitle ? `${label}: ${cleanTitle}` : label;
+
       const descParts = [];
       if (a.description) descParts.push(`<p>${escapeXml(a.description)}</p>`);
       if (a.link) descParts.push(`<p><a href="${escapeXml(a.link)}">AWS Documentation</a></p>`);
