@@ -3137,12 +3137,12 @@
             "PolicyId": "ANPAJFXLLV7AKH5PSFOYG",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AWSApplicationAutoscalingECSServicePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v2",
+            "DefaultVersionId": "v3",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2017-10-25T23:53:08+00:00",
-            "UpdateDate": "2024-10-24T20:05:50+00:00"
+            "UpdateDate": "2026-05-20T21:27:13+00:00"
         },
         {
             "PolicyName": "AWSApplicationAutoscalingEMRInstanceGroupPolicy",
@@ -4421,24 +4421,24 @@
             "PolicyId": "ANPAJE43HAZMEH4CI6SU2",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/WAFRegionalLoggingServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v1",
+            "DefaultVersionId": "v2",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2018-08-24T18:40:55+00:00",
-            "UpdateDate": "2018-08-24T18:40:55+00:00"
+            "UpdateDate": "2026-05-20T18:42:25+00:00"
         },
         {
             "PolicyName": "WAFLoggingServiceRolePolicy",
             "PolicyId": "ANPAJZ7N545GUNUHNTYOM",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/WAFLoggingServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v1",
+            "DefaultVersionId": "v2",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2018-08-24T21:05:47+00:00",
-            "UpdateDate": "2018-08-24T21:05:47+00:00"
+            "UpdateDate": "2026-05-20T19:12:17+00:00"
         },
         {
             "PolicyName": "AmazonFreeRTOSOTAUpdate",
@@ -5597,12 +5597,12 @@
             "PolicyId": "ANPAZKAPJZG4MW35THVLF",
             "Arn": "arn:aws:iam::aws:policy/service-role/AWSControlTowerServiceRolePolicy",
             "Path": "/service-role/",
-            "DefaultVersionId": "v20",
+            "DefaultVersionId": "v21",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2019-05-03T18:19:11+00:00",
-            "UpdateDate": "2026-03-23T18:42:11+00:00"
+            "UpdateDate": "2026-05-20T20:12:23+00:00"
         },
         {
             "PolicyName": "AmazonRoute53ResolverFullAccess",
@@ -6353,12 +6353,12 @@
             "PolicyId": "ANPAZKAPJZG4AHQ3ASNCX",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/WAFV2LoggingServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v3",
+            "DefaultVersionId": "v4",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2019-11-07T00:40:56+00:00",
-            "UpdateDate": "2024-06-03T17:29:04+00:00"
+            "UpdateDate": "2026-05-20T18:12:21+00:00"
         },
         {
             "PolicyName": "AWSServiceRoleForAmazonEKSNodegroup",
@@ -12833,12 +12833,12 @@
             "PolicyId": "ANPAZKAPJZG4ITRUSWZXG",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AWSControlTowerAccountServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v10",
+            "DefaultVersionId": "v11",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2023-06-05T22:04:50+00:00",
-            "UpdateDate": "2026-02-12T18:01:38+00:00"
+            "UpdateDate": "2026-05-20T19:27:15+00:00"
         },
         {
             "PolicyName": "ROSAInstallerPolicy",
@@ -13613,12 +13613,12 @@
             "PolicyId": "ANPAZKAPJZG4JQANMNF6S",
             "Arn": "arn:aws:iam::aws:policy/AmazonQFullAccess",
             "Path": "/",
-            "DefaultVersionId": "v11",
+            "DefaultVersionId": "v12",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2023-11-28T16:00:24+00:00",
-            "UpdateDate": "2026-02-12T18:00:32+00:00"
+            "UpdateDate": "2026-05-20T22:27:23+00:00"
         },
         {
             "PolicyName": "AWSServiceRoleForNeptuneGraphPolicy",
@@ -14453,12 +14453,12 @@
             "PolicyId": "ANPAZKAPJZG4C4YINGFPW",
             "Arn": "arn:aws:iam::aws:policy/AmazonQDeveloperAccess",
             "Path": "/",
-            "DefaultVersionId": "v6",
+            "DefaultVersionId": "v7",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2024-07-09T08:35:15+00:00",
-            "UpdateDate": "2026-02-12T18:00:28+00:00"
+            "UpdateDate": "2026-05-20T23:12:16+00:00"
         },
         {
             "PolicyName": "AppStudioServiceRolePolicy",
