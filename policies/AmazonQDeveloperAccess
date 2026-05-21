@@ -40,11 +40,22 @@
                         "sts:SetContext"
                     ],
                     "Resource": "arn:aws:sts::*:self"
+                },
+                {
+                    "Sid": "AllowQArtifactsAccess",
+                    "Effect": "Allow",
+                    "Action": [
+                        "q:CreateArtifact",
+                        "q:GetArtifact",
+                        "q:GetArtifactActionResult",
+                        "q:PerformArtifactAction"
+                    ],
+                    "Resource": "*"
                 }
             ]
         },
-        "VersionId": "v6",
+        "VersionId": "v7",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-02-12T18:00:28+00:00"
+        "CreateDate": "2026-05-20T23:12:16+00:00"
     }
 }
