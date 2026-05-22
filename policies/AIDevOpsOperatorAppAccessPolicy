@@ -72,11 +72,25 @@
                             "aws:ResourceAccount": "${aws:PrincipalAccount}"
                         }
                     }
+                },
+                {
+                    "Sid": "AllowSecretsManagerOperatorActions",
+                    "Effect": "Allow",
+                    "Action": [
+                        "secretsmanager:CreateSecret",
+                        "secretsmanager:ListSecrets"
+                    ],
+                    "Resource": "*",
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }
                 }
             ]
         },
-        "VersionId": "v3",
+        "VersionId": "v4",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-05-07T00:42:18+00:00"
+        "CreateDate": "2026-05-22T00:12:17+00:00"
     }
 }
