@@ -32,7 +32,8 @@
                         "scheduler:*",
                         "sqlworkbench:*",
                         "emr-serverless:*",
-                        "airflow-serverless:*"
+                        "airflow-serverless:*",
+                        "airflow:*"
                     ],
                     "Resource": "*"
                 },
@@ -130,9 +131,7 @@
                         "datazone:UpdateEnvironment",
                         "datazone:UpdateProject",
                         "datazone:UpdateSubscriptionRequest",
-                        "datazone:CreateNotebook",
-                        "datazone:UpdateNotebook",
-                        "datazone:DeleteNotebook",
+                        "datazone:*Notebook*",
                         "datazone:CreateCell",
                         "datazone:UpdateCell",
                         "datazone:DeleteCell",
@@ -142,13 +141,11 @@
                         "datazone:DeleteCellRun",
                         "datazone:BatchGetCellRun",
                         "datazone:PutCellRunResult",
-                        "datazone:StartNotebookCompute",
-                        "datazone:StopNotebookCompute",
                         "datazone:StartConversation",
                         "datazone:GenerateCode",
                         "datazone:SendMessage",
-                        "datazone:StartNotebookImport",
-                        "datazone:StartNotebookExport"
+                        "datazone:CancelMessage",
+                        "datazone:QueryGraph"
                     ],
                     "Resource": "*"
                 },
@@ -594,8 +591,8 @@
                 }
             ]
         },
-        "VersionId": "v18",
+        "VersionId": "v19",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-05-11T21:42:12+00:00"
+        "CreateDate": "2026-05-26T17:27:19+00:00"
     }
 }
