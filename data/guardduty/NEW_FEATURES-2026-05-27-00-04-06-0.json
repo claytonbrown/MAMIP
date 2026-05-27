@@ -1,0 +1,18 @@
+{
+  "type": "NEW_FEATURES",
+  "detected_at": "2026-05-27T00:04:06Z",
+  "description": "Amazon GuardDuty Malware Protection for AWS Backup now supports malware scanning for S3 continuous backups, also known as point-in-time recovery (PITR). You can now scan S3 continuous backup recovery points for malware, enabling you to confidently restore S3 data to any second within your retention period knowing the recovery point is clean. You can enable this capability even if GuardDuty foundational data sources are not enabled in your account.",
+  "short_description": "Amazon GuardDuty Malware Protection for AWS Backup now supports malware scanning for S3 continuous backups, also known as point-in-time recovery (PITR",
+  "link": "https://docs.aws.amazon.com/guardduty/latest/ug/malware-protection-backup.html",
+  "gist_url": "",
+  "raw_sns_message": {
+    "version": "1",
+    "type": "NEW_FEATURES",
+    "featureDetails": [
+      {
+        "featureDescription": "Amazon GuardDuty Malware Protection for AWS Backup now supports malware scanning for S3 continuous backups, also known as point-in-time recovery (PITR). You can now scan S3 continuous backup recovery points for malware, enabling you to confidently restore S3 data to any second within your retention period knowing the recovery point is clean. You can enable this capability even if GuardDuty foundational data sources are not enabled in your account.",
+        "featureLink": "https://docs.aws.amazon.com/guardduty/latest/ug/malware-protection-backup.html"
+      }
+    ]
+  }
+}
