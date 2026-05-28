@@ -1,0 +1,26 @@
+{
+    "PolicyVersion": {
+        "Document": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "AWSResilienceHubOrganizationsReadStatement",
+                    "Effect": "Allow",
+                    "Action": [
+                        "organizations:DescribeOrganization",
+                        "organizations:DescribeOrganizationalUnit",
+                        "organizations:ListAccounts",
+                        "organizations:ListChildren",
+                        "organizations:ListOrganizationalUnitsForParent",
+                        "organizations:ListParents",
+                        "organizations:ListRoots"
+                    ],
+                    "Resource": "*"
+                }
+            ]
+        },
+        "VersionId": "v1",
+        "IsDefaultVersion": true,
+        "CreateDate": "2026-05-28T17:42:17+00:00"
+    }
+}
