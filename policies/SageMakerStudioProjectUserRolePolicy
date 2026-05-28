@@ -2446,7 +2446,8 @@
                     "Effect": "Allow",
                     "Action": [
                         "dynamodb:ListTables",
-                        "glue:ManagedConnector"
+                        "glue:ManagedConnector",
+                        "glue:TestConnection"
                     ],
                     "Resource": "*"
                 },
@@ -2816,8 +2817,8 @@
                 }
             ]
         },
-        "VersionId": "v67",
+        "VersionId": "v68",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-05-11T20:42:10+00:00"
+        "CreateDate": "2026-05-28T16:27:24+00:00"
     }
 }
