@@ -1,0 +1,19 @@
+{
+  "detected_at": "2026-05-28T20:32:09.056Z",
+  "botocore_commit": "fe24c47682f1e83483a32aba0d545c667774d6a2",
+  "botocore_commit_url": "https://github.com/boto/botocore/commit/fe24c47682f1e83483a32aba0d545c667774d6a2",
+  "summary": "1 service expansion(s)",
+  "changes": [
+    {
+      "type": "service_expansion",
+      "partition": "aws",
+      "service": "rekognition",
+      "id": "rekognition",
+      "new_regions": [
+        "ap-southeast-5",
+        "ap-southeast-7"
+      ],
+      "description": "rekognition expanded to ap-southeast-5, ap-southeast-7"
+    }
+  ]
+}
