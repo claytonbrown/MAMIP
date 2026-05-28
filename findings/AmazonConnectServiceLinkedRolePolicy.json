@@ -11,7 +11,7 @@
             "value": "Statement"
           },
           {
-            "index": 15
+            "index": 9
           },
           {
             "value": "Action"
@@ -23,13 +23,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 4306,
-            "offset": 4306
+            "column": 2142,
+            "offset": 2142
           },
           "end": {
             "line": 1,
-            "column": 4356,
-            "offset": 4356
+            "column": 2192,
+            "offset": 2192
           }
         }
       },
@@ -39,7 +39,7 @@
             "value": "Statement"
           },
           {
-            "index": 15
+            "index": 9
           },
           {
             "value": "Condition"
@@ -54,13 +54,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 4751,
-            "offset": 4751
+            "column": 2587,
+            "offset": 2587
           },
           "end": {
             "line": 1,
-            "column": 4789,
-            "offset": 4789
+            "column": 2625,
+            "offset": 2625
           }
         }
       }
@@ -78,7 +78,7 @@
             "value": "Statement"
           },
           {
-            "index": 16
+            "index": 10
           },
           {
             "value": "Action"
@@ -90,13 +90,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 4887,
-            "offset": 4887
+            "column": 2723,
+            "offset": 2723
           },
           "end": {
             "line": 1,
-            "column": 4897,
-            "offset": 4897
+            "column": 2733,
+            "offset": 2733
           }
         }
       },
@@ -106,7 +106,7 @@
             "value": "Statement"
           },
           {
-            "index": 16
+            "index": 10
           },
           {
             "value": "Condition"
@@ -121,13 +121,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 4948,
-            "offset": 4948
+            "column": 2784,
+            "offset": 2784
           },
           "end": {
             "line": 1,
-            "column": 4986,
-            "offset": 4986
+            "column": 2822,
+            "offset": 2822
           }
         }
       }
