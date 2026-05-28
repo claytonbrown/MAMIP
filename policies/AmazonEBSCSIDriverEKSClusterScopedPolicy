@@ -115,6 +115,20 @@
                     }
                 },
                 {
+                    "Sid": "AttachDetachVolumesToEKSStandardTaggedInstance",
+                    "Effect": "Allow",
+                    "Action": [
+                        "ec2:AttachVolume",
+                        "ec2:DetachVolume"
+                    ],
+                    "Resource": "arn:aws:ec2:*:*:instance/*",
+                    "Condition": {
+                        "StringEquals": {
+                            "ec2:ResourceTag/eks:eks-cluster-name": "${aws:PrincipalTag/eks-cluster-name}"
+                        }
+                    }
+                },
+                {
                     "Sid": "AttachDetachVolumesToManuallyTaggedInstance",
                     "Effect": "Allow",
                     "Action": [
@@ -188,8 +202,8 @@
                 }
             ]
         },
-        "VersionId": "v1",
+        "VersionId": "v2",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-04-16T17:27:16+00:00"
+        "CreateDate": "2026-05-28T17:27:10+00:00"
     }
 }
