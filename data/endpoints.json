@@ -51791,7 +51791,8 @@
                   ]
                 }
               ]
-            }
+            },
+            "us-isob-west-1": {}
           }
         },
         "elasticloadbalancing": {

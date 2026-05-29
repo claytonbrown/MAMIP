@@ -1,0 +1,18 @@
+{
+  "detected_at": "2026-05-29T20:33:52.409Z",
+  "botocore_commit": "61ab7a466df90eadabbaea28501e5648d25291d8",
+  "botocore_commit_url": "https://github.com/boto/botocore/commit/61ab7a466df90eadabbaea28501e5648d25291d8",
+  "summary": "1 service expansion(s)",
+  "changes": [
+    {
+      "type": "service_expansion",
+      "partition": "aws-iso-b",
+      "service": "elasticfilesystem",
+      "id": "elasticfilesystem",
+      "new_regions": [
+        "us-isob-west-1"
+      ],
+      "description": "elasticfilesystem expanded to us-isob-west-1"
+    }
+  ]
+}
