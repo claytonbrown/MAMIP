@@ -289,7 +289,8 @@
                         "secretsmanager:DescribeSecret",
                         "secretsmanager:GetSecretValue",
                         "secretsmanager:UpdateSecret",
-                        "secretsmanager:PutResourcePolicy"
+                        "secretsmanager:PutResourcePolicy",
+                        "secretsmanager:PutSecretValue"
                     ],
                     "Resource": "*",
                     "Condition": {
@@ -305,7 +306,8 @@
                         "secretsmanager:CreateSecret",
                         "secretsmanager:DescribeSecret",
                         "secretsmanager:GetSecretValue",
-                        "secretsmanager:UpdateSecret"
+                        "secretsmanager:UpdateSecret",
+                        "secretsmanager:PutSecretValue"
                     ],
                     "Resource": "*",
                     "Condition": {
@@ -591,8 +593,8 @@
                 }
             ]
         },
-        "VersionId": "v19",
+        "VersionId": "v20",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-05-26T17:27:19+00:00"
+        "CreateDate": "2026-05-29T20:27:23+00:00"
     }
 }
