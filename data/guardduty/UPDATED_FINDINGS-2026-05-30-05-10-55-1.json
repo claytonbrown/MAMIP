@@ -1,0 +1,24 @@
+{
+  "type": "UPDATED_FINDINGS",
+  "detected_at": "2026-05-30T05:10:55Z",
+  "description": "This finding type is replaced by Persistence:Kubernetes/AnomalousBehavior.WorkloadDeployed!ContainerWithSensitiveMount, which provides enhanced detection coverage using anomaly-based machine learning.",
+  "short_description": "Persistence:Kubernetes/ContainerWithSensitiveMount",
+  "link": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-retired.html",
+  "gist_url": "",
+  "raw_sns_message": {
+    "type": "UPDATED_FINDINGS",
+    "version": "1",
+    "findingDetails": [
+      {
+        "description": "This finding type is replaced by PrivilegeEscalation:Kubernetes/AnomalousBehavior.WorkloadDeployed!PrivilegedContainer, which provides enhanced detection coverage using anomaly-based machine learning.",
+        "link": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-retired.html",
+        "findingType": "PrivilegeEscalation:Kubernetes/PrivilegedContainer"
+      },
+      {
+        "description": "This finding type is replaced by Persistence:Kubernetes/AnomalousBehavior.WorkloadDeployed!ContainerWithSensitiveMount, which provides enhanced detection coverage using anomaly-based machine learning.",
+        "link": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-retired.html",
+        "findingType": "Persistence:Kubernetes/ContainerWithSensitiveMount"
+      }
+    ]
+  }
+}
