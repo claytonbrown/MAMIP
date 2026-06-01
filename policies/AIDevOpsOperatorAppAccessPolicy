@@ -86,11 +86,24 @@
                             "aws:ResourceAccount": "${aws:PrincipalAccount}"
                         }
                     }
+                },
+                {
+                    "Sid": "AllowTranscribeOperatorActions",
+                    "Effect": "Allow",
+                    "Action": [
+                        "transcribe:StartStreamTranscriptionWebSocket"
+                    ],
+                    "Resource": "*",
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }
                 }
             ]
         },
-        "VersionId": "v4",
+        "VersionId": "v5",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-05-22T00:12:17+00:00"
+        "CreateDate": "2026-06-01T22:42:21+00:00"
     }
 }
