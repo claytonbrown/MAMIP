@@ -9305,12 +9305,12 @@
             "PolicyId": "ANPAZKAPJZG4HPQNMM2HL",
             "Arn": "arn:aws:iam::aws:policy/AWSApplicationMigrationFullAccess",
             "Path": "/",
-            "DefaultVersionId": "v11",
+            "DefaultVersionId": "v12",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2021-04-07T06:56:05+00:00",
-            "UpdateDate": "2026-02-12T18:03:17+00:00"
+            "UpdateDate": "2026-05-31T13:12:11+00:00"
         },
         {
             "PolicyName": "AWSApplicationMigrationAgentPolicy",
@@ -9365,12 +9365,12 @@
             "PolicyId": "ANPAZKAPJZG4PXFWAA3SE",
             "Arn": "arn:aws:iam::aws:policy/service-role/AWSApplicationMigrationReplicationServerPolicy",
             "Path": "/service-role/",
-            "DefaultVersionId": "v1",
+            "DefaultVersionId": "v2",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2021-04-07T07:21:57+00:00",
-            "UpdateDate": "2021-04-07T07:21:57+00:00"
+            "UpdateDate": "2026-05-31T13:27:26+00:00"
         },
         {
             "PolicyName": "AmazonLookoutEquipmentFullAccess",
@@ -17891,6 +17891,30 @@
             "IsAttachable": true,
             "CreateDate": "2026-05-28T17:42:17+00:00",
             "UpdateDate": "2026-05-28T17:42:17+00:00"
+        },
+        {
+            "PolicyName": "AWSApplicationMigrationFSxProxyPolicy",
+            "PolicyId": "ANPAZKAPJZG4NQPHG73TS",
+            "Arn": "arn:aws:iam::aws:policy/service-role/AWSApplicationMigrationFSxProxyPolicy",
+            "Path": "/service-role/",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 0,
+            "PermissionsBoundaryUsageCount": 0,
+            "IsAttachable": true,
+            "CreateDate": "2026-05-31T13:12:14+00:00",
+            "UpdateDate": "2026-05-31T13:12:14+00:00"
+        },
+        {
+            "PolicyName": "AWSApplicationMigrationFSxProxyVPCPolicy",
+            "PolicyId": "ANPAZKAPJZG4L3KO63LXL",
+            "Arn": "arn:aws:iam::aws:policy/service-role/AWSApplicationMigrationFSxProxyVPCPolicy",
+            "Path": "/service-role/",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 0,
+            "PermissionsBoundaryUsageCount": 0,
+            "IsAttachable": true,
+            "CreateDate": "2026-05-31T13:27:13+00:00",
+            "UpdateDate": "2026-05-31T13:27:13+00:00"
         },
         {
             "PolicyName": "AWSConfigRole",
