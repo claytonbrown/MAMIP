@@ -19,7 +19,8 @@
                         "mgn:UpdateAgentReplicationProcessStateForMgn",
                         "mgn:NotifyAgentReplicationProgressForMgn",
                         "mgn:NotifyAgentConnectedForMgn",
-                        "mgn:NotifyAgentDisconnectedForMgn"
+                        "mgn:NotifyAgentDisconnectedForMgn",
+                        "mgn:StartSnapshotGroupForMgn"
                     ],
                     "Resource": "*"
                 },
@@ -67,8 +68,8 @@
                 }
             ]
         },
-        "VersionId": "v1",
+        "VersionId": "v2",
         "IsDefaultVersion": true,
-        "CreateDate": "2021-04-07T07:21:57+00:00"
+        "CreateDate": "2026-05-31T13:27:26+00:00"
     }
 }
