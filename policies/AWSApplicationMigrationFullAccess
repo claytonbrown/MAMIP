@@ -254,11 +254,36 @@
                             ]
                         }
                     }
+                },
+                {
+                    "Sid": "FSxReadPermissions",
+                    "Effect": "Allow",
+                    "Action": [
+                        "fsx:DescribeStorageVirtualMachines"
+                    ],
+                    "Resource": [
+                        "*"
+                    ]
+                },
+                {
+                    "Sid": "AllowTagSVMWithMapMigrated",
+                    "Effect": "Allow",
+                    "Action": [
+                        "fsx:TagResource"
+                    ],
+                    "Resource": "arn:aws:fsx:*:*:storage-virtual-machine/*",
+                    "Condition": {
+                        "ForAllValues:StringEquals": {
+                            "aws:TagKeys": [
+                                "map-migrated"
+                            ]
+                        }
+                    }
                 }
             ]
         },
-        "VersionId": "v11",
+        "VersionId": "v12",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-02-12T18:03:17+00:00"
+        "CreateDate": "2026-05-31T13:12:11+00:00"
     }
 }
