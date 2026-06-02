@@ -27,11 +27,16 @@
                     "Action": "s3:GetObject",
                     "Resource": [
                         "arn:aws:s3:::default-env-blueprint-*/*",
-                        "arn:aws:s3:*:*:accesspoint/env-blueprint-accesspoint*"
+                        "arn:aws:s3:::awssmuscompute-blueprint-bucket-*/*",
+                        "arn:aws:s3:*:*:accesspoint/env-blueprint-accesspoint*",
+                        "arn:aws:s3:*:*:accesspoint/env-partner-blueprint-accesspoint*"
                     ],
                     "Condition": {
                         "ArnLike": {
-                            "s3:DataAccessPointArn": "arn:aws:s3:*:*:accesspoint/env-blueprint-accesspoint"
+                            "s3:DataAccessPointArn": [
+                                "arn:aws:s3:*:*:accesspoint/env-blueprint-accesspoint",
+                                "arn:aws:s3:*:*:accesspoint/env-partner-blueprint-accesspoint"
+                            ]
                         },
                         "StringNotEquals": {
                             "aws:ResourceAccount": "${aws:PrincipalAccount}"
@@ -134,8 +139,8 @@
                 }
             ]
         },
-        "VersionId": "v3",
+        "VersionId": "v4",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-02-12T17:57:24+00:00"
+        "CreateDate": "2026-06-01T23:27:10+00:00"
     }
 }
