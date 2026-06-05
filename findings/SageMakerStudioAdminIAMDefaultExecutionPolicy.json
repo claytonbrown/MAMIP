@@ -1,6 +1,6 @@
 [
   {
-    "findingDetails": "The 17775 characters in the identity policy, excluding whitespace, exceed the 10240 character maximum for inline and managed policies. We recommend that you use multiple granular policies.",
+    "findingDetails": "The 18251 characters in the identity policy, excluding whitespace, exceed the 10240 character maximum for inline and managed policies. We recommend that you use multiple granular policies.",
     "findingType": "WARNING",
     "issueCode": "POLICY_SIZE_EXCEEDS_IDENTITY_POLICY_QUOTA",
     "learnMoreLink": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-policy-checks.html#access-analyzer-reference-policy-checks-general-warning-policy-size-exceeds-identity-policy-quota",
@@ -15,8 +15,75 @@
           },
           "end": {
             "line": 1,
-            "column": 18742,
-            "offset": 18742
+            "column": 19233,
+            "offset": 19233
+          }
+        }
+      }
+    ]
+  },
+  {
+    "findingDetails": "Using the effect Deny with the condition key aws:ResourceTag/AmazonDataZoneSessionOwner and actions for services with the following prefixes can be overly permissive: elasticmapreduce. The actions for the listed services are not denied by this statement. We recommend that you move these actions to a different statement without this condition key.",
+    "findingType": "SECURITY_WARNING",
+    "issueCode": "DENY_WITH_UNSUPPORTED_TAG_CONDITION_KEY_FOR_SERVICE",
+    "learnMoreLink": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-policy-checks.html#access-analyzer-reference-policy-checks-security-warning-deny-with-unsupported-tag-condition-key-for-service",
+    "locations": [
+      {
+        "path": [
+          {
+            "value": "Statement"
+          },
+          {
+            "index": 25
+          },
+          {
+            "value": "Action"
+          },
+          {
+            "index": 8
+          }
+        ],
+        "span": {
+          "start": {
+            "line": 1,
+            "column": 7516,
+            "offset": 7516
+          },
+          "end": {
+            "line": 1,
+            "column": 7544,
+            "offset": 7544
+          }
+        }
+      },
+      {
+        "path": [
+          {
+            "value": "Statement"
+          },
+          {
+            "index": 25
+          },
+          {
+            "value": "Condition"
+          },
+          {
+            "value": "StringNotEquals"
+          },
+          {
+            "key": "aws:ResourceTag/AmazonDataZoneSessionOwner"
+          }
+        ],
+        "span": {
+          "start": {
+            "line": 1,
+            "column": 8048,
+            "offset": 8048
+          },
+          "end": {
+            "line": 1,
+            "column": 8092,
+            "offset": 8092
           }
         }
       }
