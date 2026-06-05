@@ -1,0 +1,15 @@
+{
+  "detected_at": "2026-06-05T20:05:37.086Z",
+  "botocore_commit": "",
+  "botocore_commit_url": null,
+  "summary": "1 new service(s)",
+  "changes": [
+    {
+      "type": "new_service",
+      "partition": "aws-eusc",
+      "id": "mq",
+      "description": "mq (1 endpoint)",
+      "endpoint_count": 1
+    }
+  ]
+}
