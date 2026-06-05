@@ -90,7 +90,8 @@
                     ],
                     "Resource": [
                         "arn:aws:aws-marketplace:*:*:AWSMarketplace*/*",
-                        "arn:aws:aws-marketplace:*:*:catalog/AWSMarketplace*/*"
+                        "arn:aws:aws-marketplace:*:*:catalog/AWSMarketplace*/*",
+                        "arn:aws:aws-marketplace:*:*:verification-type/*/verification-evidence/*"
                     ]
                 },
                 {
@@ -119,6 +120,27 @@
                         "invoicing:ListInvoiceSummaries",
                         "invoicing:GetInvoicePDF",
                         "aws-marketplace:ListIssuedTaxInvoices"
+                    ],
+                    "Resource": "*"
+                },
+                {
+                    "Sid": "MarketplaceSellerVerificationEvidenceManagement",
+                    "Effect": "Allow",
+                    "Action": [
+                        "aws-marketplace:CreateVerificationEvidence",
+                        "aws-marketplace:UpdateVerificationEvidence",
+                        "aws-marketplace:GetVerificationEvidence"
+                    ],
+                    "Resource": "arn:aws:aws-marketplace:*:*:verification-type/*/verification-evidence/*"
+                },
+                {
+                    "Sid": "MarketplaceSellerVerificationManagement",
+                    "Effect": "Allow",
+                    "Action": [
+                        "aws-marketplace:ListVerificationEvidence",
+                        "aws-marketplace:StartVerification",
+                        "aws-marketplace:GetVerification",
+                        "aws-marketplace:ListVerifications"
                     ],
                     "Resource": "*"
                 },
@@ -250,8 +272,8 @@
                 }
             ]
         },
-        "VersionId": "v29",
+        "VersionId": "v30",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-05-07T18:27:21+00:00"
+        "CreateDate": "2026-06-05T18:12:20+00:00"
     }
 }
