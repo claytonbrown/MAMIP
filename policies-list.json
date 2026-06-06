@@ -5861,12 +5861,12 @@
             "PolicyId": "ANPAZKAPJZG4JF7OFUANW",
             "Arn": "arn:aws:iam::aws:policy/AWSMarketplaceSellerFullAccess",
             "Path": "/",
-            "DefaultVersionId": "v29",
+            "DefaultVersionId": "v30",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2019-07-02T20:40:09+00:00",
-            "UpdateDate": "2026-05-07T18:27:21+00:00"
+            "UpdateDate": "2026-06-05T18:12:20+00:00"
         },
         {
             "PolicyName": "AWSMarketplaceSellerProductsFullAccess",
@@ -17573,36 +17573,36 @@
             "PolicyId": "ANPAZKAPJZG4KEX6FTLTS",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsAgentAccessPolicy",
             "Path": "/",
-            "DefaultVersionId": "v5",
+            "DefaultVersionId": "v6",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:09+00:00",
-            "UpdateDate": "2026-06-01T22:42:11+00:00"
+            "UpdateDate": "2026-06-06T02:27:33+00:00"
         },
         {
             "PolicyName": "AIDevOpsOperatorAppAccessPolicy",
             "PolicyId": "ANPAZKAPJZG4ELWEUAH5T",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsOperatorAppAccessPolicy",
             "Path": "/",
-            "DefaultVersionId": "v5",
+            "DefaultVersionId": "v6",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:13+00:00",
-            "UpdateDate": "2026-06-01T22:42:21+00:00"
+            "UpdateDate": "2026-06-06T02:27:16+00:00"
         },
         {
             "PolicyName": "AIDevOpsAgentFullAccess",
             "PolicyId": "ANPAZKAPJZG4G7KA3NAK3",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsAgentFullAccess",
             "Path": "/",
-            "DefaultVersionId": "v2",
+            "DefaultVersionId": "v3",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:16+00:00",
-            "UpdateDate": "2026-05-11T21:12:21+00:00"
+            "UpdateDate": "2026-06-06T02:27:20+00:00"
         },
         {
             "PolicyName": "AWSBedrockAgentCoreGatewayNetworkServiceRolePolicy",
