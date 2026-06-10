@@ -1,0 +1,18 @@
+{
+  "type": "NEW_FEATURES",
+  "detected_at": "2026-06-09T22:59:33Z",
+  "description": "Amazon GuardDuty has increased the Malware Protection for S3 archive extraction quotas. The maximum number of files that can be extracted and analyzed from an archive has increased from 10,000 to 100,000, and the maximum archive depth levels have increased from 5 to 100.",
+  "short_description": "Amazon GuardDuty has increased the Malware Protection for S3 archive extraction quotas. The maximum number of files that can be extracted and analyzed",
+  "link": "https://docs.aws.amazon.com/guardduty/latest/ug/malware-protection-s3-quotas-guardduty.html",
+  "gist_url": "",
+  "raw_sns_message": {
+    "version": "1",
+    "type": "NEW_FEATURES",
+    "featureDetails": [
+      {
+        "featureDescription": "Amazon GuardDuty has increased the Malware Protection for S3 archive extraction quotas. The maximum number of files that can be extracted and analyzed from an archive has increased from 10,000 to 100,000, and the maximum archive depth levels have increased from 5 to 100.",
+        "featureLink": "https://docs.aws.amazon.com/guardduty/latest/ug/malware-protection-s3-quotas-guardduty.html"
+      }
+    ]
+  }
+}
