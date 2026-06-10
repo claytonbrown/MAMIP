@@ -60,11 +60,26 @@
                             "ec2:Owner": "amazon"
                         }
                     }
+                },
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "logs:CreateLogGroup"
+                    ],
+                    "Resource": "arn:aws:logs:*:*:log-group:*"
+                },
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "logs:CreateLogStream",
+                        "logs:PutLogEvents"
+                    ],
+                    "Resource": "arn:aws:logs:*:*:log-group:*:log-stream:*"
                 }
             ]
         },
-        "VersionId": "v4",
+        "VersionId": "v5",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-04-23T20:42:16+00:00"
+        "CreateDate": "2026-06-10T20:27:31+00:00"
     }
 }
