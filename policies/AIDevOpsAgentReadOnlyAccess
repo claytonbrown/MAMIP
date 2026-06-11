@@ -7,6 +7,8 @@
                     "Sid": "AIDevOpsAgentReadOnlyAccess",
                     "Effect": "Allow",
                     "Action": [
+                        "aidevops:DescribePrivateConnection",
+                        "aidevops:DescribeServices",
                         "aidevops:Get*",
                         "aidevops:List*",
                         "aidevops:SearchServiceAccessibleResource"
@@ -15,8 +17,8 @@
                 }
             ]
         },
-        "VersionId": "v1",
+        "VersionId": "v2",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-03-26T03:42:07+00:00"
+        "CreateDate": "2026-06-11T00:57:11+00:00"
     }
 }
