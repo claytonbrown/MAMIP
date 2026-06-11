@@ -17,11 +17,13 @@
                         "aidevops:CreateKnowledgeItem",
                         "aidevops:CreateOneTimeLoginSession",
                         "aidevops:CreatePrivateConnection",
+                        "aidevops:CreateTrigger",
                         "aidevops:DeleteAgentSpace",
                         "aidevops:DeleteAsset",
                         "aidevops:DeleteAssetFile",
                         "aidevops:DeleteKnowledgeItem",
                         "aidevops:DeletePrivateConnection",
+                        "aidevops:DeleteTrigger",
                         "aidevops:DeregisterService",
                         "aidevops:DescribePrivateConnection",
                         "aidevops:DescribeServices",
@@ -42,6 +44,7 @@
                         "aidevops:GetOperatorApp",
                         "aidevops:GetRecommendation",
                         "aidevops:GetService",
+                        "aidevops:GetTrigger",
                         "aidevops:InitiateChatForCase",
                         "aidevops:ListAgentSpaces",
                         "aidevops:ListAssetFiles",
@@ -61,6 +64,7 @@
                         "aidevops:ListRecommendations",
                         "aidevops:ListServices",
                         "aidevops:ListTagsForResource",
+                        "aidevops:ListTriggers",
                         "aidevops:ListWebhooks",
                         "aidevops:RegisterService",
                         "aidevops:SearchServiceAccessibleResource",
@@ -77,14 +81,15 @@
                         "aidevops:UpdateOperatorAppIdpConfig",
                         "aidevops:UpdatePrivateConnectionCertificate",
                         "aidevops:UpdateRecommendation",
+                        "aidevops:UpdateTrigger",
                         "aidevops:ValidateAwsAssociations"
                     ],
                     "Resource": "*"
                 }
             ]
         },
-        "VersionId": "v3",
+        "VersionId": "v4",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-06-06T02:27:20+00:00"
+        "CreateDate": "2026-06-11T00:57:23+00:00"
     }
 }
