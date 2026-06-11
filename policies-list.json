@@ -16829,12 +16829,12 @@
             "PolicyId": "ANPAZKAPJZG4CTZCLDWVS",
             "Arn": "arn:aws:iam::aws:policy/AWSApplicationMigrationNetworkMigrationMultiAccount",
             "Path": "/",
-            "DefaultVersionId": "v3",
+            "DefaultVersionId": "v4",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2025-11-10T09:04:09+00:00",
-            "UpdateDate": "2026-02-12T17:58:43+00:00"
+            "UpdateDate": "2026-06-11T07:42:18+00:00"
         },
         {
             "PolicyName": "AmazonECSInfrastructureRoleforExpressGatewayServices",
@@ -17081,12 +17081,12 @@
             "PolicyId": "ANPAZKAPJZG4LOIC3J7IX",
             "Arn": "arn:aws:iam::aws:policy/AWSLambdaManagedEC2ResourceOperator",
             "Path": "/",
-            "DefaultVersionId": "v4",
+            "DefaultVersionId": "v5",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2025-11-30T08:34:09+00:00",
-            "UpdateDate": "2026-04-23T20:42:16+00:00"
+            "UpdateDate": "2026-06-10T20:27:31+00:00"
         },
         {
             "PolicyName": "AWSPartnerCentralMarketingManagement",
@@ -17561,12 +17561,12 @@
             "PolicyId": "ANPAZKAPJZG4OY4V5OH2U",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsAgentReadOnlyAccess",
             "Path": "/",
-            "DefaultVersionId": "v1",
+            "DefaultVersionId": "v2",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:07+00:00",
-            "UpdateDate": "2026-03-26T03:42:07+00:00"
+            "UpdateDate": "2026-06-11T00:57:11+00:00"
         },
         {
             "PolicyName": "AIDevOpsAgentAccessPolicy",
@@ -17585,24 +17585,24 @@
             "PolicyId": "ANPAZKAPJZG4ELWEUAH5T",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsOperatorAppAccessPolicy",
             "Path": "/",
-            "DefaultVersionId": "v6",
+            "DefaultVersionId": "v7",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:13+00:00",
-            "UpdateDate": "2026-06-06T02:27:16+00:00"
+            "UpdateDate": "2026-06-11T00:57:20+00:00"
         },
         {
             "PolicyName": "AIDevOpsAgentFullAccess",
             "PolicyId": "ANPAZKAPJZG4G7KA3NAK3",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsAgentFullAccess",
             "Path": "/",
-            "DefaultVersionId": "v3",
+            "DefaultVersionId": "v4",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:16+00:00",
-            "UpdateDate": "2026-06-06T02:27:20+00:00"
+            "UpdateDate": "2026-06-11T00:57:23+00:00"
         },
         {
             "PolicyName": "AWSBedrockAgentCoreGatewayNetworkServiceRolePolicy",
@@ -17999,6 +17999,18 @@
             "IsAttachable": true,
             "CreateDate": "2026-06-04T17:12:14+00:00",
             "UpdateDate": "2026-06-04T17:12:14+00:00"
+        },
+        {
+            "PolicyName": "ReInventTicketApprovalAccess",
+            "PolicyId": "ANPAZKAPJZG4AEQBPVMF7",
+            "Arn": "arn:aws:iam::aws:policy/ReInventTicketApprovalAccess",
+            "Path": "/",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 0,
+            "PermissionsBoundaryUsageCount": 0,
+            "IsAttachable": true,
+            "CreateDate": "2026-06-10T18:57:15+00:00",
+            "UpdateDate": "2026-06-10T18:57:15+00:00"
         },
         {
             "PolicyName": "AWSConfigRole",
