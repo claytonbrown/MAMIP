@@ -1,0 +1,20 @@
+{
+  "detected_at": "2026-06-12T20:19:38.409Z",
+  "botocore_commit": "0b96b9b98182255957e756408e5e6d3abe642511",
+  "botocore_commit_url": "https://github.com/boto/botocore/commit/0b96b9b98182255957e756408e5e6d3abe642511",
+  "summary": "1 service expansion(s)",
+  "changes": [
+    {
+      "type": "service_expansion",
+      "partition": "aws",
+      "service": "lightsail",
+      "id": "lightsail",
+      "new_regions": [
+        "ap-east-1",
+        "eu-south-2",
+        "sa-east-1"
+      ],
+      "description": "lightsail expanded to ap-east-1, eu-south-2, sa-east-1"
+    }
+  ]
+}
