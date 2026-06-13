@@ -17585,24 +17585,24 @@
             "PolicyId": "ANPAZKAPJZG4ELWEUAH5T",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsOperatorAppAccessPolicy",
             "Path": "/",
-            "DefaultVersionId": "v7",
+            "DefaultVersionId": "v8",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:13+00:00",
-            "UpdateDate": "2026-06-11T00:57:20+00:00"
+            "UpdateDate": "2026-06-12T23:27:27+00:00"
         },
         {
             "PolicyName": "AIDevOpsAgentFullAccess",
             "PolicyId": "ANPAZKAPJZG4G7KA3NAK3",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsAgentFullAccess",
             "Path": "/",
-            "DefaultVersionId": "v4",
+            "DefaultVersionId": "v5",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:16+00:00",
-            "UpdateDate": "2026-06-11T00:57:23+00:00"
+            "UpdateDate": "2026-06-12T23:27:07+00:00"
         },
         {
             "PolicyName": "AWSBedrockAgentCoreGatewayNetworkServiceRolePolicy",
@@ -17633,12 +17633,12 @@
             "PolicyId": "ANPAZKAPJZG4PVRRB6AVZ",
             "Arn": "arn:aws:iam::aws:policy/AnthropicLimitedAccess",
             "Path": "/",
-            "DefaultVersionId": "v5",
+            "DefaultVersionId": "v6",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-04-01T04:57:18+00:00",
-            "UpdateDate": "2026-05-08T22:27:10+00:00"
+            "UpdateDate": "2026-06-12T16:57:32+00:00"
         },
         {
             "PolicyName": "AnthropicFullAccess",
@@ -18023,6 +18023,18 @@
             "IsAttachable": true,
             "CreateDate": "2026-06-11T23:42:19+00:00",
             "UpdateDate": "2026-06-11T23:42:19+00:00"
+        },
+        {
+            "PolicyName": "AnthropicSelfHostedEnvironmentAccess",
+            "PolicyId": "ANPAZKAPJZG4N7XFKNX2G",
+            "Arn": "arn:aws:iam::aws:policy/AnthropicSelfHostedEnvironmentAccess",
+            "Path": "/",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 0,
+            "PermissionsBoundaryUsageCount": 0,
+            "IsAttachable": true,
+            "CreateDate": "2026-06-12T17:12:29+00:00",
+            "UpdateDate": "2026-06-12T17:12:29+00:00"
         },
         {
             "PolicyName": "AWSConfigRole",
