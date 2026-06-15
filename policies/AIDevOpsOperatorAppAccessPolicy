@@ -7,6 +7,7 @@
                     "Sid": "AllowOperatorAgentSpaceActions",
                     "Effect": "Allow",
                     "Action": [
+                        "aidevops:CreateAccessToken",
                         "aidevops:CreateAsset",
                         "aidevops:CreateAssetFile",
                         "aidevops:CreateBacklogTask",
@@ -21,6 +22,7 @@
                         "aidevops:DescribeSupportLevel",
                         "aidevops:DiscoverTopology",
                         "aidevops:EndChatForCase",
+                        "aidevops:GetAccessToken",
                         "aidevops:GetAgentSpace",
                         "aidevops:GetAsset",
                         "aidevops:GetAssetContent",
@@ -31,6 +33,7 @@
                         "aidevops:GetRecommendation",
                         "aidevops:GetTrigger",
                         "aidevops:InitiateChatForCase",
+                        "aidevops:ListAccessTokens",
                         "aidevops:ListAssetFiles",
                         "aidevops:ListAssets",
                         "aidevops:ListAssetTypes",
@@ -46,6 +49,8 @@
                         "aidevops:ListPendingMessages",
                         "aidevops:ListRecommendations",
                         "aidevops:ListTriggers",
+                        "aidevops:RevokeAccessToken",
+                        "aidevops:RotateAccessToken",
                         "aidevops:SendMessage",
                         "aidevops:UpdateAsset",
                         "aidevops:UpdateAssetFile",
@@ -120,8 +125,8 @@
                 }
             ]
         },
-        "VersionId": "v7",
+        "VersionId": "v8",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-06-11T00:57:20+00:00"
+        "CreateDate": "2026-06-12T23:27:27+00:00"
     }
 }
