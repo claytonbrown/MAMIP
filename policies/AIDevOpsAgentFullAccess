@@ -9,6 +9,7 @@
                     "Action": [
                         "aidevops:AllowVendedLogDeliveryForResource",
                         "aidevops:AssociateService",
+                        "aidevops:CreateAccessToken",
                         "aidevops:CreateAgentSpace",
                         "aidevops:CreateAsset",
                         "aidevops:CreateAssetFile",
@@ -33,6 +34,7 @@
                         "aidevops:DiscoverTopology",
                         "aidevops:EnableOperatorApp",
                         "aidevops:EndChatForCase",
+                        "aidevops:GetAccessToken",
                         "aidevops:GetAccountUsage",
                         "aidevops:GetAgentSpace",
                         "aidevops:GetAsset",
@@ -46,6 +48,7 @@
                         "aidevops:GetService",
                         "aidevops:GetTrigger",
                         "aidevops:InitiateChatForCase",
+                        "aidevops:ListAccessTokens",
                         "aidevops:ListAgentSpaces",
                         "aidevops:ListAssetFiles",
                         "aidevops:ListAssets",
@@ -67,6 +70,8 @@
                         "aidevops:ListTriggers",
                         "aidevops:ListWebhooks",
                         "aidevops:RegisterService",
+                        "aidevops:RevokeAccessToken",
+                        "aidevops:RotateAccessToken",
                         "aidevops:SearchServiceAccessibleResource",
                         "aidevops:SendMessage",
                         "aidevops:TagResource",
@@ -88,8 +93,8 @@
                 }
             ]
         },
-        "VersionId": "v4",
+        "VersionId": "v5",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-06-11T00:57:23+00:00"
+        "CreateDate": "2026-06-12T23:27:07+00:00"
     }
 }
