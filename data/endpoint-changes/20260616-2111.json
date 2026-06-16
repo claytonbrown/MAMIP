@@ -1,0 +1,18 @@
+{
+  "detected_at": "2026-06-16T21:11:16.423Z",
+  "botocore_commit": "8565d4212d7c03ee7f1354f9fe0145836f2eb0be",
+  "botocore_commit_url": "https://github.com/boto/botocore/commit/8565d4212d7c03ee7f1354f9fe0145836f2eb0be",
+  "summary": "1 service expansion(s)",
+  "changes": [
+    {
+      "type": "service_expansion",
+      "partition": "aws-iso-b",
+      "service": "datasync",
+      "id": "datasync",
+      "new_regions": [
+        "us-isob-west-1"
+      ],
+      "description": "datasync expanded to us-isob-west-1"
+    }
+  ]
+}
