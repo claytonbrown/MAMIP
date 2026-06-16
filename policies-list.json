@@ -29,12 +29,12 @@
             "PolicyId": "ANPAILL3HVNFSB6DCOWYQ",
             "Arn": "arn:aws:iam::aws:policy/ReadOnlyAccess",
             "Path": "/",
-            "DefaultVersionId": "v185",
+            "DefaultVersionId": "v186",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2015-02-06T18:39:48+00:00",
-            "UpdateDate": "2026-05-18T15:42:10+00:00"
+            "UpdateDate": "2026-06-15T20:27:24+00:00"
         },
         {
             "PolicyName": "AWSCloudFormationReadOnlyAccess",
@@ -701,12 +701,12 @@
             "PolicyId": "ANPAIX2T3QCXHR2OGGCTO",
             "Arn": "arn:aws:iam::aws:policy/SecurityAudit",
             "Path": "/",
-            "DefaultVersionId": "v88",
+            "DefaultVersionId": "v89",
             "AttachmentCount": 3,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2015-02-06T18:41:01+00:00",
-            "UpdateDate": "2026-05-18T15:42:13+00:00"
+            "UpdateDate": "2026-06-15T20:27:11+00:00"
         },
         {
             "PolicyName": "AmazonSESFullAccess",
@@ -14789,12 +14789,12 @@
             "PolicyId": "ANPAZKAPJZG4BAR6P5E2F",
             "Arn": "arn:aws:iam::aws:policy/AmazonEKSLoadBalancingPolicy",
             "Path": "/",
-            "DefaultVersionId": "v8",
+            "DefaultVersionId": "v9",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2024-10-30T20:18:06+00:00",
-            "UpdateDate": "2026-06-03T22:12:23+00:00"
+            "UpdateDate": "2026-06-16T00:12:08+00:00"
         },
         {
             "PolicyName": "AmazonEKSBlockStoragePolicy",
