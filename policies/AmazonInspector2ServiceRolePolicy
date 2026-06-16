@@ -31,6 +31,7 @@
                         "ec2:DescribeTransitGatewayAttachments",
                         "ec2:DescribeTransitGatewayConnects",
                         "ec2:DescribeTransitGatewayPeeringAttachments",
+                        "ec2:DescribeTransitGatewayPolicyTables",
                         "ec2:DescribeTransitGatewayRouteTables",
                         "ec2:DescribeTransitGatewayVpcAttachments",
                         "ec2:DescribeTransitGateways",
@@ -41,6 +42,9 @@
                         "ec2:DescribeVpnConnections",
                         "ec2:DescribeVpnGateways",
                         "ec2:GetManagedPrefixListEntries",
+                        "ec2:GetSecurityGroupsForVpc",
+                        "ec2:GetTransitGatewayPolicyTableAssociations",
+                        "ec2:GetTransitGatewayPolicyTableEntries",
                         "ec2:GetTransitGatewayRouteTablePropagations",
                         "ec2:SearchTransitGatewayRoutes",
                         "elasticloadbalancing:DescribeListeners",
@@ -345,8 +349,8 @@
                 }
             ]
         },
-        "VersionId": "v26",
+        "VersionId": "v27",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-02-13T17:12:07+00:00"
+        "CreateDate": "2026-06-16T19:27:15+00:00"
     }
 }
