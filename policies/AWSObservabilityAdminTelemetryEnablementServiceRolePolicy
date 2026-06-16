@@ -241,7 +241,21 @@
                     "Sid": "TelemetryOperationsForBedrock",
                     "Effect": "Allow",
                     "Action": [
-                        "bedrock-agentcore:AllowVendedLogDeliveryForResource"
+                        "bedrock-agentcore:AllowVendedLogDeliveryForResource",
+                        "bedrock:AllowVendedLogDeliveryForResource"
+                    ],
+                    "Resource": "*",
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                        }
+                    }
+                },
+                {
+                    "Sid": "TelemetryOperationsForS3",
+                    "Effect": "Allow",
+                    "Action": [
+                        "s3:AllowVendedLogDeliveryForResource"
                     ],
                     "Resource": "*",
                     "Condition": {
@@ -533,8 +547,8 @@
                 }
             ]
         },
-        "VersionId": "v10",
+        "VersionId": "v11",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-04-29T21:12:11+00:00"
+        "CreateDate": "2026-06-16T20:42:10+00:00"
     }
 }
