@@ -10277,12 +10277,12 @@
             "PolicyId": "ANPAZKAPJZG4BINOILVQW",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AmazonInspector2ServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v26",
+            "DefaultVersionId": "v27",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2021-11-16T20:27:48+00:00",
-            "UpdateDate": "2026-02-13T17:12:07+00:00"
+            "UpdateDate": "2026-06-16T19:27:15+00:00"
         },
         {
             "PolicyName": "AWSElasticDisasterRecoveryRecoveryInstancePolicy",
@@ -14897,12 +14897,12 @@
             "PolicyId": "ANPAZKAPJZG4OANYBNL3Z",
             "Arn": "arn:aws:iam::aws:policy/AWSPartnerCentralOpportunityManagement",
             "Path": "/",
-            "DefaultVersionId": "v9",
+            "DefaultVersionId": "v10",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2024-11-14T19:09:05+00:00",
-            "UpdateDate": "2026-03-12T17:12:09+00:00"
+            "UpdateDate": "2026-06-16T13:27:14+00:00"
         },
         {
             "PolicyName": "AWSPartnerCentralSandboxFullAccess",
@@ -16433,12 +16433,12 @@
             "PolicyId": "ANPAZKAPJZG4ABS5BMRXG",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AWSObservabilityAdminTelemetryEnablementServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v10",
+            "DefaultVersionId": "v11",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2025-08-01T18:04:06+00:00",
-            "UpdateDate": "2026-04-29T21:12:11+00:00"
+            "UpdateDate": "2026-06-16T20:42:10+00:00"
         },
         {
             "PolicyName": "AWSQuickSetupStartStopInstancesExecutionPolicy",
