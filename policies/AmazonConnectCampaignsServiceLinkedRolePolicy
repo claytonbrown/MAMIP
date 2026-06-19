@@ -12,6 +12,14 @@
                     "Resource": "*"
                 },
                 {
+                    "Sid": "ConnectCampaignsMetricsAccess",
+                    "Effect": "Allow",
+                    "Action": [
+                        "connect:GetMetricDataV2"
+                    ],
+                    "Resource": "arn:aws:connect-campaigns:*:*:campaign/*"
+                },
+                {
                     "Sid": "ConnectAccess",
                     "Effect": "Allow",
                     "Action": [
@@ -138,8 +146,8 @@
                 }
             ]
         },
-        "VersionId": "v4",
+        "VersionId": "v5",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-05-27T01:42:13+00:00"
+        "CreateDate": "2026-06-18T23:12:23+00:00"
     }
 }
