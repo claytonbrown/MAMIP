@@ -8765,12 +8765,12 @@
             "PolicyId": "ANPAZKAPJZG4P24YZ52G4",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AmazonEMRContainersServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v4",
+            "DefaultVersionId": "v5",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2020-12-09T00:38:19+00:00",
-            "UpdateDate": "2025-02-06T21:07:07+00:00"
+            "UpdateDate": "2026-06-19T16:27:19+00:00"
         },
         {
             "PolicyName": "EC2InstanceProfileForImageBuilderECRContainerBuilds",
@@ -17801,12 +17801,12 @@
             "PolicyId": "ANPAZKAPJZG4GRZA2WAIB",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/EC2ApplicationStatusChecksServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v1",
+            "DefaultVersionId": "v2",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-04-27T23:42:19+00:00",
-            "UpdateDate": "2026-04-27T23:42:19+00:00"
+            "UpdateDate": "2026-06-19T17:27:31+00:00"
         },
         {
             "PolicyName": "AWSMarketplaceDiscoveryFullAccess",
