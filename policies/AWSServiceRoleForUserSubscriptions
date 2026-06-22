@@ -15,7 +15,8 @@
                         "sso:DescribeApplication",
                         "sso:DescribeInstance",
                         "sso:ListInstances",
-                        "sso-directory:DescribeUser"
+                        "sso-directory:DescribeUser",
+                        "sso:ListApplicationAssignments"
                     ],
                     "Resource": [
                         "*"
@@ -55,8 +56,8 @@
                 }
             ]
         },
-        "VersionId": "v7",
+        "VersionId": "v8",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-02-12T17:58:18+00:00"
+        "CreateDate": "2026-06-22T08:27:22+00:00"
     }
 }
