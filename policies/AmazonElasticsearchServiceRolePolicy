@@ -102,6 +102,16 @@
                     "Resource": "arn:aws:ec2:*:*:network-interface/*"
                 },
                 {
+                    "Sid": "Stmt1480452973194",
+                    "Effect": "Allow",
+                    "Action": [
+                        "ec2:CreateTags"
+                    ],
+                    "Resource": [
+                        "arn:aws:ec2:*:*:network-interface/*"
+                    ]
+                },
+                {
                     "Sid": "Stmt1480452973202",
                     "Effect": "Allow",
                     "Action": [
@@ -116,8 +126,8 @@
                 }
             ]
         },
-        "VersionId": "v7",
+        "VersionId": "v8",
         "IsDefaultVersion": true,
-        "CreateDate": "2023-10-23T06:58:31+00:00"
+        "CreateDate": "2026-06-22T12:27:26+00:00"
     }
 }
