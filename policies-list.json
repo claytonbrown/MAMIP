@@ -2765,12 +2765,12 @@
             "PolicyId": "ANPAJFEWZPHXKLCVHEUIC",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AmazonElasticsearchServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v7",
+            "DefaultVersionId": "v8",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2017-07-07T00:15:31+00:00",
-            "UpdateDate": "2023-10-23T06:58:31+00:00"
+            "UpdateDate": "2026-06-22T12:27:26+00:00"
         },
         {
             "PolicyName": "AmazonVPCCrossAccountNetworkInterfaceOperations",
@@ -8225,12 +8225,12 @@
             "PolicyId": "ANPAJ7W6266ELXF5MISDS",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AWSSupportServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v57",
+            "DefaultVersionId": "v58",
             "AttachmentCount": 1,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2018-04-19T18:04:44+00:00",
-            "UpdateDate": "2026-04-22T18:27:07+00:00"
+            "UpdateDate": "2026-06-22T22:42:15+00:00"
         },
         {
             "PolicyName": "AWSBudgetsReadOnlyAccess",
@@ -17069,12 +17069,12 @@
             "PolicyId": "ANPAZKAPJZG4CUXRY3KLO",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AWSLambdaServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v1",
+            "DefaultVersionId": "v2",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2025-11-30T08:04:07+00:00",
-            "UpdateDate": "2025-11-30T08:04:07+00:00"
+            "UpdateDate": "2026-06-22T15:12:14+00:00"
         },
         {
             "PolicyName": "AWSLambdaManagedEC2ResourceOperator",
@@ -18047,6 +18047,42 @@
             "IsAttachable": true,
             "CreateDate": "2026-06-17T22:57:15+00:00",
             "UpdateDate": "2026-06-17T22:57:15+00:00"
+        },
+        {
+            "PolicyName": "AWSLambdaNetworkConnectorOperatorPolicy",
+            "PolicyId": "ANPAZKAPJZG4G6GMZ6R3P",
+            "Arn": "arn:aws:iam::aws:policy/AWSLambdaNetworkConnectorOperatorPolicy",
+            "Path": "/",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 0,
+            "PermissionsBoundaryUsageCount": 0,
+            "IsAttachable": true,
+            "CreateDate": "2026-06-22T15:27:20+00:00",
+            "UpdateDate": "2026-06-22T15:27:20+00:00"
+        },
+        {
+            "PolicyName": "AWSConfigThirdPartyServiceRolePolicy",
+            "PolicyId": "ANPAZKAPJZG4LUUEA7F4N",
+            "Arn": "arn:aws:iam::aws:policy/aws-service-role/AWSConfigThirdPartyServiceRolePolicy",
+            "Path": "/aws-service-role/",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 0,
+            "PermissionsBoundaryUsageCount": 0,
+            "IsAttachable": true,
+            "CreateDate": "2026-06-22T17:57:23+00:00",
+            "UpdateDate": "2026-06-22T17:57:23+00:00"
+        },
+        {
+            "PolicyName": "AmazonEMRServicePolicyForSessions",
+            "PolicyId": "ANPAZKAPJZG4APNK3CDXF",
+            "Arn": "arn:aws:iam::aws:policy/service-role/AmazonEMRServicePolicyForSessions",
+            "Path": "/service-role/",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 0,
+            "PermissionsBoundaryUsageCount": 0,
+            "IsAttachable": true,
+            "CreateDate": "2026-06-22T19:57:31+00:00",
+            "UpdateDate": "2026-06-22T19:57:31+00:00"
         },
         {
             "PolicyName": "AWSConfigRole",
