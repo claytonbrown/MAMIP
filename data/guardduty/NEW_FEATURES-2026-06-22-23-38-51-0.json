@@ -1,0 +1,18 @@
+{
+  "type": "NEW_FEATURES",
+  "detected_at": "2026-06-22T23:38:51Z",
+  "description": "Amazon GuardDuty now offers AI-powered investigations in public preview, a new capability that automatically analyzes GuardDuty findings and accounts to help you quickly distinguish true threats from benign findings. Each investigation delivers a structured summary in minutes with confidence-scored disposition, MITRE ATT&CK technique classification, and actionable recommendations. You can initiate investigations from the GuardDuty console, CLI, API, or AWS MCP Server. This feature is available in 10 AWS Regions: US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), and Asia Pacific (Tokyo). To learn more, visit the Amazon GuardDuty User Guide.",
+  "short_description": "Amazon GuardDuty now offers AI-powered investigations in public preview, a new capability that automatically analyzes GuardDuty findings and accounts ",
+  "link": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-investigation.html",
+  "gist_url": "",
+  "raw_sns_message": {
+    "version": "1",
+    "type": "NEW_FEATURES",
+    "featureDetails": [
+      {
+        "featureLink": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-investigation.html",
+        "featureDescription": "Amazon GuardDuty now offers AI-powered investigations in public preview, a new capability that automatically analyzes GuardDuty findings and accounts to help you quickly distinguish true threats from benign findings. Each investigation delivers a structured summary in minutes with confidence-scored disposition, MITRE ATT&CK technique classification, and actionable recommendations. You can initiate investigations from the GuardDuty console, CLI, API, or AWS MCP Server. This feature is available in 10 AWS Regions: US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), Europe (Frankfurt), Europe (Ireland), Europe (London), Europe (Paris), Europe (Stockholm), and Asia Pacific (Tokyo). To learn more, visit the Amazon GuardDuty User Guide."
+      }
+    ]
+  }
+}
