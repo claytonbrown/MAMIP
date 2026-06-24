@@ -17573,12 +17573,12 @@
             "PolicyId": "ANPAZKAPJZG4KEX6FTLTS",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsAgentAccessPolicy",
             "Path": "/",
-            "DefaultVersionId": "v6",
+            "DefaultVersionId": "v7",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:09+00:00",
-            "UpdateDate": "2026-06-06T02:27:33+00:00"
+            "UpdateDate": "2026-06-24T04:57:22+00:00"
         },
         {
             "PolicyName": "AIDevOpsOperatorAppAccessPolicy",
@@ -18083,6 +18083,18 @@
             "IsAttachable": true,
             "CreateDate": "2026-06-22T19:57:31+00:00",
             "UpdateDate": "2026-06-22T19:57:31+00:00"
+        },
+        {
+            "PolicyName": "AIDevOpsAgentActionsPolicy",
+            "PolicyId": "ANPAZKAPJZG4CFKTYWRT7",
+            "Arn": "arn:aws:iam::aws:policy/AIDevOpsAgentActionsPolicy",
+            "Path": "/",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 0,
+            "PermissionsBoundaryUsageCount": 0,
+            "IsAttachable": true,
+            "CreateDate": "2026-06-23T22:27:27+00:00",
+            "UpdateDate": "2026-06-23T22:27:27+00:00"
         },
         {
             "PolicyName": "AWSConfigRole",

@@ -1,6 +1,6 @@
 [
   {
-    "findingDetails": "The 23428 characters in the identity policy, excluding whitespace, exceed the 10240 character maximum for inline and managed policies. We recommend that you use multiple granular policies.",
+    "findingDetails": "The 23698 characters in the identity policy, excluding whitespace, exceed the 10240 character maximum for inline and managed policies. We recommend that you use multiple granular policies.",
     "findingType": "WARNING",
     "issueCode": "POLICY_SIZE_EXCEEDS_IDENTITY_POLICY_QUOTA",
     "learnMoreLink": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-policy-checks.html#access-analyzer-reference-policy-checks-general-warning-policy-size-exceeds-identity-policy-quota",
@@ -15,8 +15,8 @@
           },
           "end": {
             "line": 1,
-            "column": 24289,
-            "offset": 24289
+            "column": 24575,
+            "offset": 24575
           }
         }
       }
@@ -34,7 +34,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -46,13 +46,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 23542,
-            "offset": 23542
+            "column": 23828,
+            "offset": 23828
           },
           "end": {
             "line": 1,
-            "column": 23577,
-            "offset": 23577
+            "column": 23863,
+            "offset": 23863
           }
         }
       },
@@ -62,7 +62,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -74,13 +74,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 23579,
-            "offset": 23579
+            "column": 23865,
+            "offset": 23865
           },
           "end": {
             "line": 1,
-            "column": 23626,
-            "offset": 23626
+            "column": 23912,
+            "offset": 23912
           }
         }
       },
@@ -90,7 +90,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -102,13 +102,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 23628,
-            "offset": 23628
+            "column": 23914,
+            "offset": 23914
           },
           "end": {
             "line": 1,
-            "column": 23677,
-            "offset": 23677
+            "column": 23963,
+            "offset": 23963
           }
         }
       },
@@ -118,7 +118,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -130,13 +130,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 23679,
-            "offset": 23679
+            "column": 23965,
+            "offset": 23965
           },
           "end": {
             "line": 1,
-            "column": 23749,
-            "offset": 23749
+            "column": 24035,
+            "offset": 24035
           }
         }
       },
@@ -146,7 +146,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -158,13 +158,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 23751,
-            "offset": 23751
+            "column": 24037,
+            "offset": 24037
           },
           "end": {
             "line": 1,
-            "column": 23823,
-            "offset": 23823
+            "column": 24109,
+            "offset": 24109
           }
         }
       },
@@ -174,7 +174,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -186,13 +186,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 23825,
-            "offset": 23825
+            "column": 24111,
+            "offset": 24111
           },
           "end": {
             "line": 1,
-            "column": 23867,
-            "offset": 23867
+            "column": 24153,
+            "offset": 24153
           }
         }
       },
@@ -202,7 +202,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -214,13 +214,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 23869,
-            "offset": 23869
+            "column": 24155,
+            "offset": 24155
           },
           "end": {
             "line": 1,
-            "column": 23913,
-            "offset": 23913
+            "column": 24199,
+            "offset": 24199
           }
         }
       }
@@ -238,7 +238,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -250,13 +250,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 23946,
-            "offset": 23946
+            "column": 24232,
+            "offset": 24232
           },
           "end": {
             "line": 1,
-            "column": 23977,
-            "offset": 23977
+            "column": 24263,
+            "offset": 24263
           }
         }
       },
@@ -266,7 +266,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -278,13 +278,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 23979,
-            "offset": 23979
+            "column": 24265,
+            "offset": 24265
           },
           "end": {
             "line": 1,
-            "column": 24022,
-            "offset": 24022
+            "column": 24308,
+            "offset": 24308
           }
         }
       },
@@ -294,7 +294,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -306,13 +306,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 24024,
-            "offset": 24024
+            "column": 24310,
+            "offset": 24310
           },
           "end": {
             "line": 1,
-            "column": 24069,
-            "offset": 24069
+            "column": 24355,
+            "offset": 24355
           }
         }
       },
@@ -322,7 +322,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -334,13 +334,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 24071,
-            "offset": 24071
+            "column": 24357,
+            "offset": 24357
           },
           "end": {
             "line": 1,
-            "column": 24115,
-            "offset": 24115
+            "column": 24401,
+            "offset": 24401
           }
         }
       },
@@ -350,7 +350,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -362,13 +362,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 24117,
-            "offset": 24117
+            "column": 24403,
+            "offset": 24403
           },
           "end": {
             "line": 1,
-            "column": 24163,
-            "offset": 24163
+            "column": 24449,
+            "offset": 24449
           }
         }
       },
@@ -378,7 +378,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -390,13 +390,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 24165,
-            "offset": 24165
+            "column": 24451,
+            "offset": 24451
           },
           "end": {
             "line": 1,
-            "column": 24203,
-            "offset": 24203
+            "column": 24489,
+            "offset": 24489
           }
         }
       },
@@ -406,7 +406,7 @@
             "value": "Statement"
           },
           {
-            "index": 1
+            "index": 2
           },
           {
             "value": "Resource"
@@ -418,13 +418,13 @@
         "span": {
           "start": {
             "line": 1,
-            "column": 24205,
-            "offset": 24205
+            "column": 24491,
+            "offset": 24491
           },
           "end": {
             "line": 1,
-            "column": 24245,
-            "offset": 24245
+            "column": 24531,
+            "offset": 24531
           }
         }
       }
