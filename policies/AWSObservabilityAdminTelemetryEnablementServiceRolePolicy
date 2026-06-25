@@ -13,7 +13,9 @@
                         "logs:DescribeResourcePolicies",
                         "logs:ListLogGroups",
                         "ec2:MonitorInstances",
-                        "logs:DescribeDeliverySources"
+                        "logs:DescribeDeliverySources",
+                        "logs:DescribeDeliveries",
+                        "logs:DescribeDeliveryDestinations"
                     ],
                     "Resource": "*",
                     "Condition": {
@@ -547,8 +549,8 @@
                 }
             ]
         },
-        "VersionId": "v11",
+        "VersionId": "v12",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-06-16T20:42:10+00:00"
+        "CreateDate": "2026-06-25T01:42:28+00:00"
     }
 }
