@@ -3233,12 +3233,12 @@
             "PolicyId": "ANPAIXJ26NUGBA3TCV7EC",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AmazonSSMServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v16",
+            "DefaultVersionId": "v17",
             "AttachmentCount": 1,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2017-11-13T19:20:08+00:00",
-            "UpdateDate": "2025-07-15T17:22:08+00:00"
+            "UpdateDate": "2026-06-26T19:12:18+00:00"
         },
         {
             "PolicyName": "AmazonECSTaskExecutionRolePolicy",
@@ -4925,12 +4925,12 @@
             "PolicyId": "ANPAJQPCESDDYDLLSOGYO",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AWSSecurityHubServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v15",
+            "DefaultVersionId": "v16",
             "AttachmentCount": 1,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2018-11-27T23:47:51+00:00",
-            "UpdateDate": "2026-04-29T14:27:11+00:00"
+            "UpdateDate": "2026-06-27T00:42:14+00:00"
         },
         {
             "PolicyName": "AWSSecurityHubFullAccess",
@@ -14081,12 +14081,12 @@
             "PolicyId": "ANPAZKAPJZG4BVNAOGKEU",
             "Arn": "arn:aws:iam::aws:policy/AmazonDataZoneSageMakerEnvironmentRolePermissionsBoundary",
             "Path": "/",
-            "DefaultVersionId": "v11",
+            "DefaultVersionId": "v12",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2024-04-23T23:01:14+00:00",
-            "UpdateDate": "2026-03-11T21:12:10+00:00"
+            "UpdateDate": "2026-06-27T00:57:10+00:00"
         },
         {
             "PolicyName": "AmazonDataZoneSageMakerProvisioningRolePolicy",
@@ -16121,12 +16121,12 @@
             "PolicyId": "ANPAZKAPJZG4AAHRX2W6F",
             "Arn": "arn:aws:iam::aws:policy/aws-service-role/AWSSecurityHubV2ServiceRolePolicy",
             "Path": "/aws-service-role/",
-            "DefaultVersionId": "v7",
+            "DefaultVersionId": "v8",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2025-06-10T17:37:06+00:00",
-            "UpdateDate": "2026-05-05T20:57:18+00:00"
+            "UpdateDate": "2026-06-27T00:42:11+00:00"
         },
         {
             "PolicyName": "AWSNetworkFirewallReadOnlyAccess",
@@ -17573,36 +17573,36 @@
             "PolicyId": "ANPAZKAPJZG4KEX6FTLTS",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsAgentAccessPolicy",
             "Path": "/",
-            "DefaultVersionId": "v7",
+            "DefaultVersionId": "v8",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:09+00:00",
-            "UpdateDate": "2026-06-24T04:57:22+00:00"
+            "UpdateDate": "2026-06-26T23:42:27+00:00"
         },
         {
             "PolicyName": "AIDevOpsOperatorAppAccessPolicy",
             "PolicyId": "ANPAZKAPJZG4ELWEUAH5T",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsOperatorAppAccessPolicy",
             "Path": "/",
-            "DefaultVersionId": "v8",
+            "DefaultVersionId": "v9",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:13+00:00",
-            "UpdateDate": "2026-06-12T23:27:27+00:00"
+            "UpdateDate": "2026-06-26T23:57:22+00:00"
         },
         {
             "PolicyName": "AIDevOpsAgentFullAccess",
             "PolicyId": "ANPAZKAPJZG4G7KA3NAK3",
             "Arn": "arn:aws:iam::aws:policy/AIDevOpsAgentFullAccess",
             "Path": "/",
-            "DefaultVersionId": "v5",
+            "DefaultVersionId": "v6",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2026-03-26T03:42:16+00:00",
-            "UpdateDate": "2026-06-12T23:27:07+00:00"
+            "UpdateDate": "2026-06-26T23:57:19+00:00"
         },
         {
             "PolicyName": "AWSBedrockAgentCoreGatewayNetworkServiceRolePolicy",
@@ -18095,6 +18095,18 @@
             "IsAttachable": true,
             "CreateDate": "2026-06-23T22:27:27+00:00",
             "UpdateDate": "2026-06-23T22:27:27+00:00"
+        },
+        {
+            "PolicyName": "AmazonInspector2ThirdPartyServiceRolePolicy",
+            "PolicyId": "ANPAZKAPJZG4E3NMS7BB2",
+            "Arn": "arn:aws:iam::aws:policy/aws-service-role/AmazonInspector2ThirdPartyServiceRolePolicy",
+            "Path": "/aws-service-role/",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 0,
+            "PermissionsBoundaryUsageCount": 0,
+            "IsAttachable": true,
+            "CreateDate": "2026-06-26T15:27:27+00:00",
+            "UpdateDate": "2026-06-26T15:27:27+00:00"
         },
         {
             "PolicyName": "AWSConfigRole",
