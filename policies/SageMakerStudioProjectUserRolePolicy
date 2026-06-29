@@ -980,7 +980,8 @@
                         "datazone:ListEnvironmentBlueprints",
                         "datazone:ListProjects",
                         "datazone:UpdateConnection",
-                        "datazone:PostLineageEvent"
+                        "datazone:PostLineageEvent",
+                        "datazone:*Compute*"
                     ],
                     "Resource": "arn:aws:datazone:*:*:domain/${aws:PrincipalTag/AmazonDataZoneDomain}"
                 },
@@ -2812,8 +2813,8 @@
                 }
             ]
         },
-        "VersionId": "v70",
+        "VersionId": "v71",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-06-29T16:12:27+00:00"
+        "CreateDate": "2026-06-29T20:27:23+00:00"
     }
 }
