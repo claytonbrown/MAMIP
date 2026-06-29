@@ -52,6 +52,7 @@
                         "aidevops:RevokeAccessToken",
                         "aidevops:RotateAccessToken",
                         "aidevops:SendMessage",
+                        "aidevops:UpdateApprovalAction",
                         "aidevops:UpdateAsset",
                         "aidevops:UpdateAssetFile",
                         "aidevops:UpdateBacklogTask",
@@ -125,8 +126,8 @@
                 }
             ]
         },
-        "VersionId": "v8",
+        "VersionId": "v9",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-06-12T23:27:27+00:00"
+        "CreateDate": "2026-06-26T23:57:22+00:00"
     }
 }
