@@ -16829,12 +16829,12 @@
             "PolicyId": "ANPAZKAPJZG4CTZCLDWVS",
             "Arn": "arn:aws:iam::aws:policy/AWSApplicationMigrationNetworkMigrationMultiAccount",
             "Path": "/",
-            "DefaultVersionId": "v4",
+            "DefaultVersionId": "v5",
             "AttachmentCount": 0,
             "PermissionsBoundaryUsageCount": 0,
             "IsAttachable": true,
             "CreateDate": "2025-11-10T09:04:09+00:00",
-            "UpdateDate": "2026-06-11T07:42:18+00:00"
+            "UpdateDate": "2026-06-29T08:57:29+00:00"
         },
         {
             "PolicyName": "AmazonECSInfrastructureRoleforExpressGatewayServices",
