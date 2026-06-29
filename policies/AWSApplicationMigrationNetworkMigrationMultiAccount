@@ -28,7 +28,8 @@
                         "ec2:DescribeSecurityGroups",
                         "ec2:DescribeSubnets",
                         "ec2:DescribeVpcs",
-                        "ec2:DescribeNetworkInterfaces"
+                        "ec2:DescribeNetworkInterfaces",
+                        "ec2:DescribeAvailabilityZones"
                     ],
                     "Resource": [
                         "*"
@@ -1060,8 +1061,8 @@
                 }
             ]
         },
-        "VersionId": "v4",
+        "VersionId": "v5",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-06-11T07:42:18+00:00"
+        "CreateDate": "2026-06-29T08:57:29+00:00"
     }
 }
