@@ -14,7 +14,14 @@
                         "redshift-serverless:*",
                         "redshift:*",
                         "s3:*",
-                        "s3tables:*"
+                        "s3tables:*",
+                        "comprehend:*",
+                        "textract:*",
+                        "rekognition:*",
+                        "sagemaker-data-science-assistant:*",
+                        "rds:*",
+                        "quicksight:*",
+                        "events:*"
                     ],
                     "Resource": "*"
                 },
@@ -34,7 +41,8 @@
                         "sqlworkbench:*",
                         "emr-serverless:*",
                         "airflow-serverless:*",
-                        "airflow:*"
+                        "airflow:*",
+                        "application-autoscaling:*"
                     ],
                     "Resource": "*"
                 },
@@ -152,7 +160,9 @@
                         "datazone:GenerateCode",
                         "datazone:SendMessage",
                         "datazone:CancelMessage",
-                        "datazone:QueryGraph"
+                        "datazone:QueryGraph",
+                        "datazone:StartCompute",
+                        "datazone:StopCompute"
                     ],
                     "Resource": "*"
                 },
@@ -340,15 +350,27 @@
                     "Sid": "CodeConnectionsUser",
                     "Effect": "Allow",
                     "Action": [
-                        "codeconnections:UseConnection",
-                        "codeconnections:ListConnections",
                         "codeconnections:GetConnection",
-                        "codeconnections:GetHost",
-                        "codeconnections:ListTagsForResource",
-                        "codestar-connections:UseConnection",
-                        "codestar-connections:ListConnections",
+                        "codeconnections:UseConnection",
                         "codestar-connections:GetConnection",
+                        "codestar-connections:UseConnection"
+                    ],
+                    "Resource": "*",
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceTag/for-use-with-all-datazone-projects": "true"
+                        }
+                    }
+                },
+                {
+                    "Sid": "CodeConnectionsUserList",
+                    "Effect": "Allow",
+                    "Action": [
+                        "codeconnections:GetHost",
+                        "codeconnections:ListConnections",
+                        "codeconnections:ListTagsForResource",
                         "codestar-connections:GetHost",
+                        "codestar-connections:ListConnections",
                         "codestar-connections:ListTagsForResource"
                     ],
                     "Resource": "*"
@@ -584,7 +606,8 @@
                         "ec2:CreateNetworkInterface",
                         "ec2:DeleteNetworkInterface",
                         "ec2:CreateNetworkInterfacePermission",
-                        "ec2:DeleteNetworkInterfacePermission"
+                        "ec2:DeleteNetworkInterfacePermission",
+                        "ec2:CreateVpcEndpoint"
                     ],
                     "Resource": "*"
                 },
@@ -601,8 +624,8 @@
                 }
             ]
         },
-        "VersionId": "v21",
+        "VersionId": "v22",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-06-04T21:27:28+00:00"
+        "CreateDate": "2026-06-29T16:12:34+00:00"
     }
 }
