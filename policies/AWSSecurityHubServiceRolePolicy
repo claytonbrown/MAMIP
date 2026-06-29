@@ -85,6 +85,7 @@
                     "Effect": "Allow",
                     "Action": [
                         "config:PutServiceLinkedConfigurationRecorder",
+                        "config:PutThirdPartyServiceLinkedConfigurationRecorder",
                         "config:DeleteServiceLinkedConfigurationRecorder",
                         "config:DescribeConfigurationRecorders",
                         "config:DescribeConfigurationRecorderStatus"
@@ -92,6 +93,15 @@
                     "Resource": [
                         "arn:aws:config:*:*:configuration-recorder/*ConfigurationRecorderForSecurityHubCSPM*"
                     ]
+                },
+                {
+                    "Sid": "SecurityHubCSPMServiceRoleConfigListAndGet",
+                    "Effect": "Allow",
+                    "Action": [
+                        "config:ListConfigurationRecorders",
+                        "config:GetConnector"
+                    ],
+                    "Resource": "*"
                 },
                 {
                     "Sid": "SecurityHubCSPMServiceRoleIamPermissions",
@@ -105,11 +115,17 @@
                             "iam:AWSServiceName": "config.amazonaws.com"
                         }
                     }
+                },
+                {
+                    "Sid": "SecurityHubCSPMServiceRoleConfigMetricsPermissions",
+                    "Effect": "Allow",
+                    "Action": "cloudwatch:GetMetricData",
+                    "Resource": "*"
                 }
             ]
         },
-        "VersionId": "v15",
+        "VersionId": "v16",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-04-29T14:27:11+00:00"
+        "CreateDate": "2026-06-27T00:42:14+00:00"
     }
 }
