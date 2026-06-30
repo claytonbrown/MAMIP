@@ -115,6 +115,8 @@
                         "tax:PutSupplementalTaxRegistration",
                         "tax:DeleteSupplementalTaxRegistration",
                         "tax:GetTaxRegistration",
+                        "tax:PutTaxRegistration",
+                        "tax:ListTaxRegistrations",
                         "aws-marketplace:ListPayables",
                         "aws-marketplace:ListInvoiceSubmissionTasks",
                         "invoicing:ListInvoiceSummaries",
@@ -272,8 +274,8 @@
                 }
             ]
         },
-        "VersionId": "v30",
+        "VersionId": "v31",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-06-05T18:12:20+00:00"
+        "CreateDate": "2026-06-30T17:12:18+00:00"
     }
 }
