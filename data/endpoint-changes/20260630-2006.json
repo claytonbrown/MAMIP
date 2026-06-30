@@ -1,0 +1,56 @@
+{
+  "detected_at": "2026-06-30T20:06:34.507Z",
+  "botocore_commit": "e7f2f1384022ca464afaab7c88d33182e322ce8c",
+  "botocore_commit_url": "https://github.com/boto/botocore/commit/e7f2f1384022ca464afaab7c88d33182e322ce8c",
+  "summary": "8 removed service(s)",
+  "changes": [
+    {
+      "type": "removed_service",
+      "partition": "aws",
+      "id": "iotevents",
+      "description": "iotevents"
+    },
+    {
+      "type": "removed_service",
+      "partition": "aws",
+      "id": "ioteventsdata",
+      "description": "ioteventsdata"
+    },
+    {
+      "type": "removed_service",
+      "partition": "aws",
+      "id": "simspaceweaver",
+      "description": "simspaceweaver"
+    },
+    {
+      "type": "removed_service",
+      "partition": "aws-cn",
+      "id": "iotevents",
+      "description": "iotevents"
+    },
+    {
+      "type": "removed_service",
+      "partition": "aws-cn",
+      "id": "ioteventsdata",
+      "description": "ioteventsdata"
+    },
+    {
+      "type": "removed_service",
+      "partition": "aws-us-gov",
+      "id": "iotevents",
+      "description": "iotevents"
+    },
+    {
+      "type": "removed_service",
+      "partition": "aws-us-gov",
+      "id": "ioteventsdata",
+      "description": "ioteventsdata"
+    },
+    {
+      "type": "removed_service",
+      "partition": "aws-us-gov",
+      "id": "simspaceweaver",
+      "description": "simspaceweaver"
+    }
+  ]
+}
