@@ -546,11 +546,25 @@
                             "iam:AWSServiceName": "resource-explorer-2.amazonaws.com"
                         }
                     }
+                },
+                {
+                    "Sid": "TelemetryReadTagsForLogs",
+                    "Effect": "Allow",
+                    "Action": [
+                        "logs:ListTagsForResource"
+                    ],
+                    "Resource": "*",
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:ResourceAccount": "${aws:PrincipalAccount}",
+                            "aws:ResourceTag/CloudWatchTelemetryRuleManaged": "true"
+                        }
+                    }
                 }
             ]
         },
-        "VersionId": "v12",
+        "VersionId": "v13",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-06-25T01:42:28+00:00"
+        "CreateDate": "2026-06-30T18:57:30+00:00"
     }
 }
