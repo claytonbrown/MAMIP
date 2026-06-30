@@ -303,7 +303,8 @@
                         "kms:DescribeKey",
                         "kms:ListAliases",
                         "iam:ListRoles",
-                        "ec2:DescribeVpcs"
+                        "ec2:DescribeVpcs",
+                        "servicequotas:ListServiceQuotas"
                     ],
                     "Resource": "*",
                     "Condition": {
@@ -501,8 +502,8 @@
                 }
             ]
         },
-        "VersionId": "v1",
+        "VersionId": "v2",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-05-26T18:57:29+00:00"
+        "CreateDate": "2026-06-30T16:57:19+00:00"
     }
 }
