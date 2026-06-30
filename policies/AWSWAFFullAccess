@@ -231,11 +231,29 @@
                             ]
                         }
                     }
+                },
+                {
+                    "Sid": "AllowActionsForAgentCoreGateway",
+                    "Effect": "Allow",
+                    "Action": [
+                        "bedrock-agentcore:GatewayAssociateWebACL",
+                        "bedrock-agentcore:GatewayDisassociateWebACL",
+                        "bedrock-agentcore:GatewayGetWebACLForResource"
+                    ],
+                    "Resource": "arn:aws:bedrock-agentcore:*:*:gateway/*"
+                },
+                {
+                    "Sid": "AllowListActionsForAgentCoreGateway",
+                    "Effect": "Allow",
+                    "Action": [
+                        "bedrock-agentcore:GatewayListResourcesForWebACL"
+                    ],
+                    "Resource": "*"
                 }
             ]
         },
-        "VersionId": "v15",
+        "VersionId": "v16",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-04-08T22:27:12+00:00"
+        "CreateDate": "2026-06-30T22:42:20+00:00"
     }
 }
