@@ -1,0 +1,31 @@
+{
+    "PolicyVersion": {
+        "Document": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "ListAndCreateComplianceInquiryActions",
+                    "Effect": "Allow",
+                    "Action": [
+                        "artifact:ListComplianceInquiries",
+                        "artifact:CreateComplianceInquiry"
+                    ],
+                    "Resource": "*"
+                },
+                {
+                    "Sid": "ComplianceInquiryActions",
+                    "Effect": "Allow",
+                    "Action": [
+                        "artifact:ListComplianceInquiryQueries",
+                        "artifact:GetComplianceInquiryMetadata",
+                        "artifact:ExportComplianceInquiry"
+                    ],
+                    "Resource": "arn:aws:artifact:*:*:compliance-inquiry/*"
+                }
+            ]
+        },
+        "VersionId": "v1",
+        "IsDefaultVersion": true,
+        "CreateDate": "2026-06-30T19:27:34+00:00"
+    }
+}
