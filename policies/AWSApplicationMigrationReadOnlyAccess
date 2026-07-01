@@ -41,11 +41,18 @@
                         "servicequotas:GetServiceQuota"
                     ],
                     "Resource": "*"
+                },
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "ssm:GetParameter"
+                    ],
+                    "Resource": "*"
                 }
             ]
         },
-        "VersionId": "v5",
+        "VersionId": "v6",
         "IsDefaultVersion": true,
-        "CreateDate": "2023-03-20T08:58:08+00:00"
+        "CreateDate": "2026-07-01T14:57:15+00:00"
     }
 }
