@@ -1,0 +1,29 @@
+{
+  "detected_at": "2026-07-01T20:03:55.806Z",
+  "botocore_commit": "bcfbd50cca39b6ed8cebf81ba3ad33eaa69bffc5",
+  "botocore_commit_url": "https://github.com/boto/botocore/commit/bcfbd50cca39b6ed8cebf81ba3ad33eaa69bffc5",
+  "summary": "2 service expansion(s)",
+  "changes": [
+    {
+      "type": "service_expansion",
+      "partition": "aws",
+      "service": "drs",
+      "id": "drs",
+      "new_regions": [
+        "ap-southeast-6",
+        "ca-west-1"
+      ],
+      "description": "drs expanded to ap-southeast-6, ca-west-1"
+    },
+    {
+      "type": "service_expansion",
+      "partition": "aws",
+      "service": "kinesisvideo",
+      "id": "kinesisvideo",
+      "new_regions": [
+        "il-central-1"
+      ],
+      "description": "kinesisvideo expanded to il-central-1"
+    }
+  ]
+}
