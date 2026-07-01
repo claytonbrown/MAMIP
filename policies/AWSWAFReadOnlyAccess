@@ -162,11 +162,27 @@
                         "elasticloadbalancing:DescribeWebACLAssociation"
                     ],
                     "Resource": "*"
+                },
+                {
+                    "Sid": "AllowReadActionsForAgentCoreGateway",
+                    "Effect": "Allow",
+                    "Action": [
+                        "bedrock-agentcore:GatewayGetWebACLForResource"
+                    ],
+                    "Resource": "arn:aws:bedrock-agentcore:*:*:gateway/*"
+                },
+                {
+                    "Sid": "AllowListActionsForAgentCoreGateway",
+                    "Effect": "Allow",
+                    "Action": [
+                        "bedrock-agentcore:GatewayListResourcesForWebACL"
+                    ],
+                    "Resource": "*"
                 }
             ]
         },
-        "VersionId": "v12",
+        "VersionId": "v13",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-04-08T22:27:09+00:00"
+        "CreateDate": "2026-07-01T04:27:31+00:00"
     }
 }
