@@ -372,11 +372,31 @@
                     "Effect": "Allow",
                     "Action": "pricingplanmanager:ListSubscriptions",
                     "Resource": "*"
+                },
+                {
+                    "Sid": "AllowActionsForAgentCoreGateway",
+                    "Effect": "Allow",
+                    "Action": [
+                        "bedrock-agentcore:GatewayAssociateWebACL",
+                        "bedrock-agentcore:GatewayDisassociateWebACL",
+                        "bedrock-agentcore:GatewayGetWebACLForResource",
+                        "bedrock-agentcore:GetGateway"
+                    ],
+                    "Resource": "arn:aws:bedrock-agentcore:*:*:gateway/*"
+                },
+                {
+                    "Sid": "AllowListActionsForAgentCoreGateway",
+                    "Effect": "Allow",
+                    "Action": [
+                        "bedrock-agentcore:GatewayListResourcesForWebACL",
+                        "bedrock-agentcore:ListGateways"
+                    ],
+                    "Resource": "*"
                 }
             ]
         },
-        "VersionId": "v21",
+        "VersionId": "v22",
         "IsDefaultVersion": true,
-        "CreateDate": "2026-04-08T22:12:10+00:00"
+        "CreateDate": "2026-07-01T04:12:13+00:00"
     }
 }
