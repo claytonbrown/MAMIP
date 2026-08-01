@@ -11251,6 +11251,7 @@
           "endpoints": {
             "af-south-1": {},
             "ap-east-1": {},
+            "ap-east-2": {},
             "ap-northeast-1": {},
             "ap-northeast-2": {},
             "ap-northeast-3": {},
@@ -11260,7 +11261,9 @@
             "ap-southeast-2": {},
             "ap-southeast-3": {},
             "ap-southeast-4": {},
+            "ap-southeast-5": {},
             "ap-southeast-6": {},
+            "ap-southeast-7": {},
             "ca-central-1": {},
             "ca-west-1": {},
             "eu-central-1": {},
@@ -11302,6 +11305,7 @@
             "il-central-1": {},
             "me-central-1": {},
             "me-south-1": {},
+            "mx-central-1": {},
             "sa-east-1": {},
             "us-east-1": {
               "variants": [
@@ -23878,6 +23882,7 @@
         },
         "omics": {
           "endpoints": {
+            "ap-northeast-1": {},
             "ap-northeast-2": {},
             "ap-southeast-1": {
               "credentialScope": {
@@ -23937,6 +23942,7 @@
                 }
               ]
             },
+            "us-east-2": {},
             "us-west-2": {
               "credentialScope": {
                 "region": "us-west-2"
@@ -38099,6 +38105,7 @@
             "ap-southeast-2": {},
             "ap-southeast-3": {},
             "ap-southeast-4": {},
+            "ap-southeast-5": {},
             "ca-central-1": {},
             "ca-west-1": {},
             "eu-central-1": {},
@@ -39461,6 +39468,7 @@
         },
         "wisdom": {
           "endpoints": {
+            "af-south-1": {},
             "ap-northeast-1": {},
             "ap-northeast-2": {},
             "ap-southeast-1": {},
@@ -49595,6 +49603,12 @@
             "us-iso-west-1": {}
           }
         },
+        "appstream2": {
+          "endpoints": {
+            "us-iso-east-1": {},
+            "us-iso-west-1": {}
+          }
+        },
         "arc-zonal-shift": {
           "endpoints": {
             "us-iso-east-1": {},
@@ -49764,6 +49778,11 @@
             }
           }
         },
+        "compute-optimizer": {
+          "endpoints": {
+            "us-iso-east-1": {}
+          }
+        },
         "config": {
           "endpoints": {
             "fips-us-iso-east-1": {
@@ -49800,6 +49819,11 @@
                 }
               ]
             }
+          }
+        },
+        "cost-optimization-hub": {
+          "endpoints": {
+            "us-iso-east-1": {}
           }
         },
         "datapipeline": {
@@ -50101,6 +50125,11 @@
             }
           }
         },
+        "emr-serverless": {
+          "endpoints": {
+            "us-iso-east-1": {}
+          }
+        },
         "es": {
           "endpoints": {
             "us-iso-east-1": {},
@@ -50216,7 +50245,8 @@
             ]
           },
           "endpoints": {
-            "us-iso-east-1": {}
+            "us-iso-east-1": {},
+            "us-iso-west-1": {}
           },
           "isRegionalized": true
         },
@@ -51198,7 +51228,8 @@
         },
         "backup": {
           "endpoints": {
-            "us-isob-east-1": {}
+            "us-isob-east-1": {},
+            "us-isob-west-1": {}
           }
         },
         "batch": {
@@ -51287,6 +51318,11 @@
             "us-isob-west-1": {}
           }
         },
+        "compute-optimizer": {
+          "endpoints": {
+            "us-isob-east-1": {}
+          }
+        },
         "config": {
           "endpoints": {
             "fips-us-isob-east-1": {
@@ -51307,6 +51343,11 @@
               ]
             },
             "us-isob-west-1": {}
+          }
+        },
+        "cost-optimization-hub": {
+          "endpoints": {
+            "us-isob-east-1": {}
           }
         },
         "datasync": {
@@ -51507,6 +51548,11 @@
               ]
             },
             "us-isob-west-1": {}
+          }
+        },
+        "emr-serverless": {
+          "endpoints": {
+            "us-isob-east-1": {}
           }
         },
         "es": {
@@ -52066,7 +52112,8 @@
               },
               "deprecated": true,
               "hostname": "storagegateway-fips.us-isob-east-1.sc2s.sgov.gov"
-            }
+            },
+            "us-isob-west-1": {}
           }
         },
         "streams.dynamodb": {
@@ -52641,6 +52688,11 @@
           }
         },
         "resource-groups": {
+          "endpoints": {
+            "eu-isoe-west-1": {}
+          }
+        },
+        "rolesanywhere": {
           "endpoints": {
             "eu-isoe-west-1": {}
           }
@@ -54063,6 +54115,11 @@
             "eusc-de-east-1": {}
           }
         },
+        "emr-serverless": {
+          "endpoints": {
+            "eusc-de-east-1": {}
+          }
+        },
         "entitlement.marketplace": {
           "endpoints": {
             "eusc-de-east-1": {}
@@ -54241,6 +54298,11 @@
           }
         },
         "redshift": {
+          "endpoints": {
+            "eusc-de-east-1": {}
+          }
+        },
+        "redshift-serverless": {
           "endpoints": {
             "eusc-de-east-1": {}
           }

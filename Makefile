@@ -35,6 +35,10 @@ help:
 	@echo "	website-sync - sync existing build to S3 (no rebuild)"
 	@echo "	website-clean - clean website build artifacts"
 	@echo ""
+	@echo "Data:"
+	@echo "	action-registry - rebuild data/action-registry.json and data/policy-change-deltas.json from git history"
+	@echo "	iam-metadata - refresh data/iam-metadata.json from iam-dataset (access levels, service names)"
+	@echo ""
 	@echo "Utilities:"
 	@echo "	clean - clean all build folders"
 	@echo "	longest - show 10 longest policy names"
@@ -107,7 +111,7 @@ apply:
 		-compact-warnings
 
 ################ Subscriptions Infrastructure ###
-# Deploy subscription infra locally without pushing to master.
+# Deploy subscription infra locally without pushing to main.
 # Uses -target to scope to subscription resources only.
 
 SUBSCRIPTION_TARGETS = \
@@ -127,12 +131,14 @@ SUBSCRIPTION_TARGETS = \
 	-target=aws_ses_domain_mail_from.iamtrail \
 	-target=aws_dynamodb_table.subscriptions \
 	-target=aws_dynamodb_table.policy_changes \
+	-target=aws_dynamodb_table.action_registry \
 	-target=aws_sqs_queue.changes \
 	-target=aws_sqs_queue_policy.changes \
 	-target=aws_sns_topic_subscription.changes \
 	-target=aws_lambda_function.subscription_api \
 	-target=aws_lambda_function.change_recorder \
 	-target=aws_lambda_function.digest_sender \
+	-target=aws_lambda_function.instant_notifier \
 	-target=aws_apigatewayv2_api.subscriptions \
 	-target=aws_apigatewayv2_stage.default \
 	-target=aws_apigatewayv2_domain_name.api \
@@ -179,6 +185,18 @@ infra-apply-all:
 		-var="description=$(DESCRIPTION)" \
 		-var="notification_email=$(NOTIFICATION_EMAIL)" \
 		-compact-warnings
+####################################################
+
+################ Data ##########################
+action-registry:
+	@echo "🔁 Replaying the archive into the action registry and change deltas..."
+	@python3 automation/scripts/build_action_registry.py
+
+# Not run in CI on purpose: the Service Authorization Reference moves slowly, and
+# committing the refresh keeps the deploy from having to push to main.
+iam-metadata:
+	@echo "📚 Refreshing IAM metadata from iam-dataset..."
+	@python3 automation/scripts/build_iam_metadata.py
 ####################################################
 
 longest:
@@ -246,6 +264,8 @@ website-generate-data:
 	@cd website && npm run generate-data
 
 website-build: website-generate-data
+	@echo "🖼️  Generating OG images (incremental)..."
+	@cd website && npm run generate-og
 	@echo "🏗️  Building static website..."
 	@cd website && npm run build
 
@@ -255,35 +275,32 @@ website-build-fast:
 		echo "⚠️  No data found in website/public/data/. Running generate-data first..."; \
 		cd website && npm run generate-data; \
 	fi
+	@cd website && npm run generate-og
 	@cd website && npm run build
 
-website-deploy: website-build
-	@echo "☁️  Deploying to S3 and CloudFront..."
-	@echo "📦 Syncing to s3://iamtrail.com..."
-	@aws s3 sync website/out/ s3://iamtrail.com/ \
-		--delete \
-		--cache-control "public, max-age=31536000, immutable" \
-		--exclude "*.html" --exclude "*.json" --exclude "*.txt" --exclude "*.xml"
-	@aws s3 sync website/out/ s3://iamtrail.com/ \
-		--cache-control "public, max-age=0, must-revalidate" \
-		--exclude "*" --include "*.html" --include "*.json" --include "*.txt" --include "*.xml"
-	@echo "🔄 Creating CloudFront invalidation..."
-	@aws cloudfront create-invalidation --distribution-id E2R2N8OZK7U78U --paths "/*"
+# Upload, then invalidate only the immutable objects that changed. Everything
+# else is served "max-age=0, must-revalidate" and revalidates against S3 on its
+# own, so a blanket "/*" would flush the edge cache for no freshness gain.
+define deploy_website
+	@cd website && node scripts/deploy-s3.mjs --bucket iamtrail.com --invalidation-manifest invalidation.json
+	@paths=$$(jq -r '.paths | join(" ")' website/invalidation.json); \
+	if [ -z "$$paths" ]; then \
+		echo "🔄 Nothing to invalidate; changed objects revalidate on request."; \
+	else \
+		echo "🔄 Invalidating: $$paths"; \
+		set -f; \
+		aws cloudfront create-invalidation --distribution-id $(CF_DISTRIBUTION_ID) --paths $$paths >/dev/null; \
+	fi
 	@echo "✅ Deployed to https://iamtrail.com"
+endef
+
+website-deploy: website-build
+	@echo "☁️  Deploying to S3 and CloudFront (content-diff, changed files only)..."
+	$(deploy_website)
 
 website-deploy-fast: website-build-fast
 	@echo "☁️  Deploying to S3 and CloudFront (no data regeneration)..."
-	@echo "📦 Syncing to s3://iamtrail.com..."
-	@aws s3 sync website/out/ s3://iamtrail.com/ \
-		--delete \
-		--cache-control "public, max-age=31536000, immutable" \
-		--exclude "*.html" --exclude "*.json" --exclude "*.txt" --exclude "*.xml"
-	@aws s3 sync website/out/ s3://iamtrail.com/ \
-		--cache-control "public, max-age=0, must-revalidate" \
-		--exclude "*" --include "*.html" --include "*.json" --include "*.txt" --include "*.xml"
-	@echo "🔄 Creating CloudFront invalidation..."
-	@aws cloudfront create-invalidation --distribution-id E2R2N8OZK7U78U --paths "/*"
-	@echo "✅ Deployed to https://iamtrail.com"
+	$(deploy_website)
 
 website-sync:
 	@echo "☁️  Syncing to S3 and CloudFront (no rebuild)..."
@@ -291,17 +308,7 @@ website-sync:
 		echo "❌ Error: website/out directory not found. Run 'make website-build' first."; \
 		exit 1; \
 	fi
-	@echo "📦 Syncing to s3://iamtrail.com..."
-	@aws s3 sync website/out/ s3://iamtrail.com/ \
-		--delete \
-		--cache-control "public, max-age=31536000, immutable" \
-		--exclude "*.html" --exclude "*.json" --exclude "*.txt" --exclude "*.xml"
-	@aws s3 sync website/out/ s3://iamtrail.com/ \
-		--cache-control "public, max-age=0, must-revalidate" \
-		--exclude "*" --include "*.html" --include "*.json" --include "*.txt" --include "*.xml"
-	@echo "🔄 Creating CloudFront invalidation..."
-	@aws cloudfront create-invalidation --distribution-id E2R2N8OZK7U78U --paths "/*"
-	@echo "✅ Deployed to https://iamtrail.com"
+	$(deploy_website)
 
 website-clean:
 	@echo "🧹 Cleaning website build artifacts..."
@@ -309,6 +316,8 @@ website-clean:
 	@rm -fr website/out/
 	@rm -fr website/node_modules/
 	@rm -fr website/public/data/*.json
+	@rm -fr website/public/policies/
+	@rm -f website/.og-manifest.json
 	@find website -name '.DS_Store' -exec rm -fr {} +
 ################################################
 

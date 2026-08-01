@@ -5,10 +5,16 @@ import traceback
 import boto3
 import bluesky_publisher
 import discord_notifier as discord
-import x_poster  # noqa: F401  # TODO(X-API): re-enable x_poster.post(...) below
 
 TABLE_NAME = os.environ.get("GUARDDUTY_TABLE", "")
-X_SECRET_ARN = os.environ.get("X_API_SECRET_ARN", "")
+
+# Bluesky rejects a post longer than this. Tags are the only discovery surface
+# the account has, so they are budgeted alongside the link rather than dropped.
+BLUESKY_LIMIT = 300
+BLUESKY_TAGS = "#AWS #GuardDuty #CloudSecurity"
+
+# Discord truncates an embed description past this, so cut it ourselves.
+DISCORD_DESC_LIMIT = 4096
 
 TYPE_CONFIG = {
     "NEW_FINDINGS": {
@@ -18,7 +24,7 @@ TYPE_CONFIG = {
         "link_fn": lambda d: d.get("link", ""),
         "discord_color": 0xE74C3C,
         "discord_title": "New GuardDuty Finding",
-        "tweet_prefix": "New AWS GuardDuty Finding:",
+        "post_prefix": "New AWS GuardDuty Finding:",
     },
     "UPDATED_FINDINGS": {
         "detail_key": "findingDetails",
@@ -27,7 +33,7 @@ TYPE_CONFIG = {
         "link_fn": lambda d: d.get("link", ""),
         "discord_color": 0xF39C12,
         "discord_title": "Updated GuardDuty Finding",
-        "tweet_prefix": "Updated AWS GuardDuty Finding:",
+        "post_prefix": "Updated AWS GuardDuty Finding:",
     },
     "NEW_FEATURES": {
         "detail_key": "featureDetails",
@@ -36,7 +42,7 @@ TYPE_CONFIG = {
         "link_fn": lambda d: d.get("featureLink", ""),
         "discord_color": 0x2ECC71,
         "discord_title": "New GuardDuty Feature",
-        "tweet_prefix": "New Feature on AWS GuardDuty:",
+        "post_prefix": "New Feature on AWS GuardDuty:",
     },
     "NEW_REGION": {
         "detail_key": "regionDetails",
@@ -45,14 +51,14 @@ TYPE_CONFIG = {
         "link_fn": lambda d: d.get("link", ""),
         "discord_color": 0x3498DB,
         "discord_title": "New GuardDuty Region",
-        "tweet_prefix": "New AWS GuardDuty Region:",
+        "post_prefix": "New AWS GuardDuty Region:",
     },
 }
 
 GENERAL_CONFIG = {
     "discord_color": 0x95A5A6,
     "discord_title": "GuardDuty Announcement",
-    "tweet_prefix": "AWS GuardDuty Update:",
+    "post_prefix": "AWS GuardDuty Update:",
 }
 
 
@@ -138,19 +144,21 @@ def _process_typed(message, msg_type, table, today, timestamp_id, now):
             footer="GuardDuty Monitor",
         )
 
+        # The public embed names the finding in the title and explains it in the
+        # body. It used to do the opposite: a generic title and a description
+        # that was only the finding type ID, so the channel announced
+        # "Execution:Runtime/SuspiciousTool" and never said what that meant.
         page_url = link if link else "https://iamtrail.com/guardduty"
         discord.send_public(
-            config["discord_title"],
-            short_desc or full_desc[:200],
+            f"{config['discord_title']}: {short_desc}" if short_desc else config["discord_title"],
+            full_desc[:DISCORD_DESC_LIMIT] or short_desc,
             config["discord_color"],
             fields=fields,
             footer="GuardDuty",
             url=page_url,
         )
 
-        tweet_text = _build_tweet(config["tweet_prefix"], short_desc, link)
-        # TODO(X-API): x_poster.post(tweet_text, X_SECRET_ARN)
-        bluesky_publisher.post(f"[GuardDuty] {tweet_text}")
+        bluesky_publisher.post(_build_post(config["post_prefix"], short_desc, link))
 
     print(f"Recorded {len(details)} {msg_type} announcements")
 
@@ -193,31 +201,41 @@ def _process_general(message, table, today, timestamp_id, now):
             footer="GuardDuty Monitor",
         )
 
+        # Title carries the announcement, body carries the whole text: Discord
+        # allows 4096 characters, so there is no reason to cut it at 300 the way
+        # the ops embed does.
         page_url = link if link else "https://iamtrail.com/guardduty"
         discord.send_public(
-            GENERAL_CONFIG["discord_title"],
-            f"**{title}**\n{body[:300]}",
+            f"{GENERAL_CONFIG['discord_title']}: {title}" if title else GENERAL_CONFIG["discord_title"],
+            body[:DISCORD_DESC_LIMIT],
             GENERAL_CONFIG["discord_color"],
             fields=fields,
             footer="GuardDuty",
             url=page_url,
         )
 
-        tweet_text = _build_tweet(GENERAL_CONFIG["tweet_prefix"], title, link)
-        # TODO(X-API): x_poster.post(tweet_text, X_SECRET_ARN)
-        bluesky_publisher.post(f"[GuardDuty] {tweet_text}")
+        bluesky_publisher.post(_build_post(GENERAL_CONFIG["post_prefix"], title, link))
 
     print(f"Recorded {len(entries)} GENERAL announcements")
 
 
-def _build_tweet(prefix, description, link):
-    max_desc_len = 280 - len(prefix) - 2
+def _build_post(prefix, description, link):
+    """A GuardDuty post: what happened, the doc link, then the tags.
+
+    Budgeted against Bluesky's 300-character cap with the link and the tags held
+    back, since a truncated link is worthless and a post without tags reaches
+    nobody. The description yields whatever room is left.
+    """
+    fixed = len(prefix) + len(BLUESKY_TAGS) + 4
     if link:
-        max_desc_len -= 24
+        fixed += len(link) + 2
+    max_desc_len = max(0, BLUESKY_LIMIT - fixed)
+
     desc = description[:max_desc_len]
     if len(description) > max_desc_len:
-        desc = desc[:max_desc_len - 3] + "..."
+        desc = desc[:max(0, max_desc_len - 3)] + "..."
+
     parts = [prefix, desc]
     if link:
         parts.append(link)
-    return " ".join(parts)
+    return f"{' '.join(p for p in parts if p)}\n\n{BLUESKY_TAGS}"

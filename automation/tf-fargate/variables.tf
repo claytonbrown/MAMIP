@@ -25,20 +25,37 @@ variable "description" {
   description = "Project Description"
 }
 
-variable "qtweeter_sqs_name" {
-  default = "qtweet-mamip-sqs-queue"
-}
-
 variable "qbsky_sqs_name" {
   default = "qbsky-mamip-prod-sqs-queue"
 }
 
-variable "qmasto_sqs_name" {
-  default = "qmasto-development-sqs-queue"
-}
-
 variable "log_group_retention" {
   default = "14"
+}
+
+variable "waf_rate_limit_action" {
+  default     = "block"
+  description = "What the CloudFront rate limits do when breached. Set to count to watch the CloudWatch metrics for a week before enforcing."
+
+  validation {
+    condition     = contains(["block", "count"], var.waf_rate_limit_action)
+    error_message = "waf_rate_limit_action must be either block or count."
+  }
+}
+
+variable "waf_bulk_json_rate_limit" {
+  default     = 500
+  description = "Requests per IP per 5 minutes to /api/ and /data/. A browsing session pulls a handful and the documented API loops pull a few dozen, so this is roughly ten times real usage."
+}
+
+variable "waf_site_rate_limit" {
+  default     = 5000
+  description = "Requests per IP per 5 minutes across every path. Loose on purpose: it stops one host hammering the site without policing large offices behind a single NAT address."
+}
+
+variable "waf_blocked_request_alarm_threshold" {
+  default     = 100
+  description = "Blocked requests in a 5 minute window before the WAF alarm fires."
 }
 
 variable "artifacts_bucket" {
@@ -100,5 +117,17 @@ variable "notification_email" {
 variable "guardduty_sns_topic_arn" {
   default     = "arn:aws:sns:eu-west-1:965013871422:GuardDutyAnnouncements"
   description = "AWS-owned GuardDuty Announcements SNS topic ARN (eu-west-1)"
+}
+
+# ──────────────────────────────
+# Telegram discoveries channel
+# ──────────────────────────────
+
+# The channel handle is not a secret, unlike the bot token, which lives in SSM at
+# /iamtrail/telegram-bot-token. Emptying this makes posting inert. Keep it in step
+# with TELEGRAM_HANDLE in website/lib/social.ts.
+variable "telegram_chat_id" {
+  default     = "@iamtrail"
+  description = "Telegram channel handle for IAMTrail discoveries, e.g. @iamtrail"
 }
 

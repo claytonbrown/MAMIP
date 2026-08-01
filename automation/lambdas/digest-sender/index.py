@@ -1,13 +1,13 @@
-import json
 import os
-import time
 import traceback
-import urllib.request
-import urllib.error
 from datetime import datetime, timedelta, timezone
+import action_registry
 import boto3
 from boto3.dynamodb.conditions import Key
 import discord_notifier as discord
+import iam_metadata
+import policy_diff
+import telegram_publisher
 
 dynamodb = boto3.resource("dynamodb")
 ses = boto3.client("ses", region_name=os.environ.get("SES_REGION", "eu-west-3"))
@@ -18,15 +18,13 @@ ENDPOINT_CHANGES_TABLE = os.environ.get("ENDPOINT_CHANGES_TABLE", "")
 GUARDDUTY_TABLE = os.environ.get("GUARDDUTY_TABLE", "")
 SENDER_EMAIL = os.environ["SENDER_EMAIL"]
 SITE_URL = os.environ["SITE_URL"]
-GITHUB_REPO = os.environ["GITHUB_REPO"]
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 
 subs_table = dynamodb.Table(SUBSCRIPTIONS_TABLE)
 changes_table = dynamodb.Table(CHANGES_TABLE)
 endpoint_table = dynamodb.Table(ENDPOINT_CHANGES_TABLE) if ENDPOINT_CHANGES_TABLE else None
 guardduty_table = dynamodb.Table(GUARDDUTY_TABLE) if GUARDDUTY_TABLE else None
 
-_diff_cache = {}
+_resolved_changes = {}
 
 
 def get_recent_policy_changes(days):
@@ -72,152 +70,31 @@ def get_recent_guardduty_changes(days):
     return changes
 
 
-_MAX_CACHED_LINES = 500
-_DISPLAY_LINES = 30
+def _change_key(item):
+    return (item["policy_name"], item.get("commit_sha", ""))
 
 
-def _fetch_commit_diff(commit_sha, _max_retries=3):
-    """Fetch full commit diff from GitHub API with caching and retry."""
-    if commit_sha in _diff_cache:
-        return _diff_cache[commit_sha]
-
-    headers = {
-        "Accept": "application/vnd.github.v3.diff",
-        "User-Agent": "IAMTrail-Digest/1.0",
-    }
-    if GITHUB_TOKEN:
-        headers["Authorization"] = f"token {GITHUB_TOKEN}"
-
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/commits/{commit_sha}"
-
-    for attempt in range(_max_retries):
-        try:
-            req = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                diff_text = resp.read().decode("utf-8", errors="replace")
-
-            lines = diff_text.split("\n")[:_MAX_CACHED_LINES]
-            _diff_cache[commit_sha] = lines
-            return lines
-        except urllib.error.HTTPError as e:
-            if e.code in (403, 429) and attempt < _max_retries - 1:
-                wait = 2 ** (attempt + 1)
-                print(f"Rate limited fetching {commit_sha[:8]}, retrying in {wait}s (attempt {attempt + 1}/{_max_retries})")
-                time.sleep(wait)
-                continue
-            print(f"Failed to fetch diff for {commit_sha[:8]}: {e}")
-            break
-        except Exception as e:
-            print(f"Failed to fetch diff for {commit_sha[:8]}: {e}")
-            break
-
-    _diff_cache[commit_sha] = []
-    return []
-
-
-def _extract_file_diff(all_lines, policy_name):
-    """Extract only the diff hunk for a specific policy file."""
-    target = f"policies/{policy_name}"
-    result = []
-    in_target = False
-
-    for line in all_lines:
-        if line.startswith("diff --git"):
-            in_target = target in line
-        if in_target:
-            result.append(line)
-
-    return result if result else all_lines
-
-
-def fetch_diff(commit_sha, policy_name=None):
-    """Return (lines, truncated) for a policy, filtered from the cached commit diff."""
-    all_lines = _fetch_commit_diff(commit_sha)
-    if not all_lines:
-        return [], False
-
-    lines = _extract_file_diff(all_lines, policy_name) if policy_name else all_lines
-    truncated = len(lines) > _DISPLAY_LINES
-    return lines[:_DISPLAY_LINES], truncated
-
-
-def format_diff_html(lines, truncated, commit_url):
-    """Render diff lines as email-safe HTML."""
-    if not lines:
-        return ""
-
-    html_lines = []
-    for line in lines:
-        if line.startswith("+") and not line.startswith("+++"):
-            color = "#22863a"
-        elif line.startswith("-") and not line.startswith("---"):
-            color = "#cb2431"
-        elif line.startswith("@@"):
-            color = "#6f42c1"
-        else:
-            color = "#24292e"
-
-        escaped = (
-            line.replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
+def resolve_policy_changes(items):
+    """Turn DynamoDB change rows into change records, resolving each one once."""
+    pending = []
+    seen = set()
+    for item in items:
+        key = _change_key(item)
+        if key in _resolved_changes or key in seen:
+            continue
+        seen.add(key)
+        pending.append(
+            {
+                "name": item["policy_name"],
+                "commit_sha": item.get("commit_sha", ""),
+                "commit_url": item.get("commit_url", ""),
+            }
         )
-        html_lines.append(f'<span style="color:{color};">{escaped}</span>')
 
-    joined = "\n".join(html_lines)
-    suffix = ""
-    if truncated:
-        suffix = f'\n<a href="{commit_url}" style="color:#2563eb;font-size:12px;">View full diff on GitHub &rarr;</a>'
+    for item, record in zip(pending, policy_diff.resolve_changes(pending)):
+        _resolved_changes[(item["name"], item["commit_sha"])] = record
 
-    return (
-        f'<pre style="background:#f6f8fa;padding:12px;border-radius:6px;'
-        f'font-size:12px;line-height:1.4;overflow-x:auto;font-family:monospace;">'
-        f"{joined}{suffix}</pre>"
-    )
-
-
-def _build_policy_section(changes):
-    """Build the IAM policy changes section HTML."""
-    sections = []
-    for change in changes:
-        policy_name = change["policy_name"]
-        commit_url = change.get("commit_url", "")
-        commit_sha = change.get("commit_sha", "")
-        policy_url = f"{SITE_URL}/policies/{policy_name}"
-
-        diff_html = ""
-        if commit_sha:
-            lines, truncated = fetch_diff(commit_sha, policy_name=policy_name)
-            diff_html = format_diff_html(lines, truncated, commit_url)
-
-        section = f"""
-        <div style="margin-bottom:12px;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
-            <div style="background:#f8fafc;padding:12px 16px;border-bottom:1px solid #e2e8f0;">
-                <a href="{policy_url}" style="color:#2563eb;font-weight:600;text-decoration:none;font-size:14px;">
-                    {policy_name}
-                </a>
-                {f' &middot; <a href="{commit_url}" style="color:#64748b;font-size:12px;text-decoration:none;">view commit</a>' if commit_url else ''}
-            </div>
-            {f'<div style="padding:12px 16px;">{diff_html}</div>' if diff_html else ''}
-        </div>
-        """
-        sections.append(section)
-
-    count = len(changes)
-    return f"""
-    <div style="margin-bottom:32px;">
-        <h2 style="margin:0 0 4px;font-size:16px;color:#1e293b;">
-            IAM Policy Changes
-        </h2>
-        <p style="margin:0 0 16px;color:#64748b;font-size:13px;">
-            {count} {'policy' if count == 1 else 'policies'} changed
-        </p>
-        {"".join(sections)}
-        <p style="margin:8px 0 0;font-size:12px;">
-            <a href="{SITE_URL}/policies" style="color:#2563eb;text-decoration:none;">Browse all policies &rarr;</a>
-        </p>
-    </div>
-    """
+    return [_resolved_changes[_change_key(item)] for item in items]
 
 
 def _build_endpoint_section(changes):
@@ -316,90 +193,129 @@ def _build_guardduty_section(changes):
     """
 
 
-def build_email_html(subscriber, policy_changes, endpoint_changes, guardduty_changes):
-    """Compose the multi-topic digest email HTML."""
-    manage_url = f"{SITE_URL}/manage?token={subscriber['manage_token']}"
-    unsubscribe_url = f"{SITE_URL}/manage?token={subscriber['manage_token']}&action=unsubscribe"
+def _policy_selection(changes, topics):
+    """The policy changes a subscriber's topics entitle them to.
 
-    sections = []
-    total_changes = 0
-
-    if policy_changes:
-        sections.append(_build_policy_section(policy_changes))
-        total_changes += len(policy_changes)
-
-    if endpoint_changes:
-        sections.append(_build_endpoint_section(endpoint_changes))
-        total_changes += len(endpoint_changes)
-
-    if guardduty_changes:
-        sections.append(_build_guardduty_section(guardduty_changes))
-        total_changes += len(guardduty_changes)
-
-    body_html = "\n".join(sections)
-
-    summary_parts = []
-    if policy_changes:
-        n = len(policy_changes)
-        summary_parts.append(f"{n} {'policy' if n == 1 else 'policies'}")
-    if endpoint_changes:
-        n = len(endpoint_changes)
-        summary_parts.append(f"{n} endpoint {'change' if n == 1 else 'changes'}")
-    if guardduty_changes:
-        n = len(guardduty_changes)
-        summary_parts.append(f"{n} GuardDuty {'announcement' if n == 1 else 'announcements'}")
-    summary = ", ".join(summary_parts)
-
-    return f"""
-    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:640px;margin:0 auto;color:#1e293b;">
-        <div style="padding:24px 0;border-bottom:2px solid #2563eb;">
-            <h1 style="margin:0;font-size:24px;color:#1e293b;">
-                IAMTrail Digest
-            </h1>
-            <p style="margin:8px 0 0;color:#64748b;font-size:14px;">
-                {summary}
-            </p>
-        </div>
-
-        <div style="padding:24px 0;">
-            {body_html}
-        </div>
-
-        <div style="border-top:1px solid #e2e8f0;padding:24px 0;text-align:center;">
-            <p style="color:#94a3b8;font-size:12px;margin:0 0 8px;">
-                You're receiving this because you subscribed to IAMTrail notifications.
-            </p>
-            <p style="margin:0;">
-                <a href="{manage_url}" style="color:#2563eb;font-size:12px;">Manage subscription</a>
-                &nbsp;&middot;&nbsp;
-                <a href="{unsubscribe_url}" style="color:#94a3b8;font-size:12px;">Unsubscribe</a>
-            </p>
-            <p style="color:#cbd5e1;font-size:11px;margin:12px 0 0;">
-                <a href="{SITE_URL}" style="color:#94a3b8;">IAMTrail</a> by <a href="https://zoph.io" style="color:#94a3b8;">zoph.io</a>
-            </p>
-        </div>
-    </div>
+    Holding discoveries without iam_policies means "only tell me about actions
+    AWS has never used before", not every version bump.
     """
+    if "iam_policies" in topics:
+        return changes
+    if "discoveries" in topics:
+        return [c for c in changes if policy_diff.is_discovery(c)]
+    return []
 
 
-def build_subject(policy_changes, endpoint_changes, guardduty_changes):
-    """Build a concise email subject reflecting all included topics."""
+def _summary_parts(policy_changes, endpoint_changes, guardduty_changes, brief=False):
+    """Topic counts used for both the subject line and the header subtitle."""
     parts = []
     if policy_changes:
-        n = len(policy_changes)
-        parts.append(f"{n} {'policy' if n == 1 else 'policies'}")
+        parts.append(policy_diff.summarize_counts(policy_changes, brief=brief))
     if endpoint_changes:
         n = len(endpoint_changes)
         parts.append(f"{n} endpoint {'change' if n == 1 else 'changes'}")
     if guardduty_changes:
         n = len(guardduty_changes)
         parts.append(f"{n} GuardDuty {'update' if n == 1 else 'updates'}")
+    return parts
+
+
+def build_email_html(subscriber, policy_changes, endpoint_changes, guardduty_changes):
+    """Compose the multi-topic digest email HTML."""
+    sections = []
+
+    if policy_changes:
+        sections.append(policy_diff.render_policy_section(policy_changes, SITE_URL))
+    if endpoint_changes:
+        sections.append(_build_endpoint_section(endpoint_changes))
+    if guardduty_changes:
+        sections.append(_build_guardduty_section(guardduty_changes))
+
+    return policy_diff.render_email(
+        title="IAMTrail Digest",
+        summary=", ".join(_summary_parts(policy_changes, endpoint_changes, guardduty_changes)),
+        accent="#2563eb",
+        body_html="\n".join(sections),
+        site_url=SITE_URL,
+        manage_token=subscriber["manage_token"],
+        intro="You're receiving this because you subscribed to IAMTrail notifications.",
+    )
+
+
+def build_subject(policy_changes, endpoint_changes, guardduty_changes):
+    """Build a concise email subject reflecting all included topics."""
+    parts = _summary_parts(
+        policy_changes, endpoint_changes, guardduty_changes, brief=True
+    )
     return f"IAMTrail: {', '.join(parts)}"
+
+
+def build_telegram_recap(now, policy_changes, endpoint_changes, guardduty_changes):
+    """The Monday recap for the Telegram channel.
+
+    The channel carries discoveries only, so it can go quiet for weeks and a
+    reader has no way to tell whether it is working or whether AWS has simply
+    been still. One post a week is enough of a pulse, and it doubles as the
+    summary a reader who muted the busy days would want.
+    """
+    esc = telegram_publisher.escape
+    week_of = (now - timedelta(days=7)).strftime("%-d %B")
+
+    lines = [
+        "<b>IAMTrail weekly recap</b>",
+        f"{week_of} to {now.strftime('%-d %B %Y')}",
+        "",
+    ]
+
+    if policy_changes:
+        lines.append(
+            policy_diff.plural(
+                len(policy_changes), "AWS managed IAM policy", "AWS managed IAM policies"
+            )
+            + " updated"
+        )
+
+    prefixes = sorted(
+        {p for c in policy_changes for p in c.get("new_service_prefixes") or []}
+    )
+    with_new_actions = [
+        c for c in policy_changes if c.get("new_actions") and not c.get("new_service_prefixes")
+    ]
+
+    if prefixes:
+        named = ", ".join(iam_metadata.label_service(p) for p in prefixes)
+        lines.append(
+            f"<b>{policy_diff.sentence(policy_diff.new_service_phrase(prefixes))}</b>: {esc(named)}"
+        )
+    if with_new_actions:
+        total = sum(len(c.get("new_actions") or []) for c in with_new_actions)
+        lines.append(
+            f"<b>{policy_diff.sentence(policy_diff.never_before_seen(total))}</b> across "
+            + policy_diff.plural(len(with_new_actions), "policy", "policies")
+        )
+    if not prefixes and not with_new_actions:
+        lines.append("No never-before-seen actions or services this week")
+
+    if endpoint_changes:
+        lines.append(policy_diff.plural(len(endpoint_changes), "AWS endpoint change"))
+    if guardduty_changes:
+        lines.append(
+            policy_diff.plural(len(guardduty_changes), "GuardDuty announcement")
+        )
+
+    lines.append("")
+    lines.append(f"{SITE_URL}/discoveries")
+
+    body = "\n".join(lines)
+    if len(body) > telegram_publisher.MESSAGE_LIMIT:
+        body = body[: telegram_publisher.MESSAGE_LIMIT]
+    return body
 
 
 def handler(event, context):
     try:
-        _diff_cache.clear()
+        policy_diff.clear_cache()
+        _resolved_changes.clear()
         now = datetime.now(timezone.utc)
         is_monday = now.weekday() == 0
 
@@ -417,6 +333,10 @@ def handler(event, context):
 
         if not has_daily and not has_weekly:
             print("No changes to report across any topic")
+            # The recap still goes out, because a quiet week is itself the news
+            # and silence would read as a broken channel.
+            if is_monday:
+                telegram_publisher.post(build_telegram_recap(now, [], [], []))
             discord.send(
                 "Digest - No Changes",
                 "No changes to report today (policies, endpoints, GuardDuty)",
@@ -425,12 +345,32 @@ def handler(event, context):
             )
             return {"statusCode": 200, "body": "No changes"}
 
-        all_policy = daily_policy + weekly_policy
-        unique_shas = {c["commit_sha"] for c in all_policy if c.get("commit_sha")}
-        if unique_shas:
-            print(f"Pre-fetching diffs for {len(unique_shas)} unique commits")
-            for sha in unique_shas:
-                _fetch_commit_diff(sha)
+        # Resolve every change once up front, under a single detail budget, so
+        # the per-subscriber loop is pure rendering.
+        print(f"Resolving {len(daily_policy) + len(weekly_policy)} policy changes")
+        resolve_policy_changes(daily_policy + weekly_policy)
+        daily_policy = resolve_policy_changes(daily_policy)
+        weekly_policy = resolve_policy_changes(weekly_policy)
+
+        # Daily and weekly share these record objects, so one pass annotates both.
+        action_registry.classify(list(_resolved_changes.values()))
+
+        failed = [
+            c["name"]
+            for c in _resolved_changes.values()
+            if c["detailed"] and not c["resolved"]
+        ]
+        if failed:
+            print(f"Could not resolve diffs for {len(failed)}: {failed[:10]}")
+
+        # Posted before the per-subscriber loop, so a slow or partly failing send
+        # cannot cost the channel its weekly pulse.
+        if is_monday:
+            telegram_publisher.post(
+                build_telegram_recap(
+                    now, weekly_policy, weekly_endpoints, weekly_guardduty
+                )
+            )
 
         subscribers = []
         scan_kwargs = {
@@ -463,11 +403,11 @@ def handler(event, context):
                 continue
 
             if frequency == "daily" or frequency == "instant":
-                pc = daily_policy if "iam_policies" in topics else []
+                pc = _policy_selection(daily_policy, topics)
                 ec = daily_endpoints if "endpoints" in topics else []
                 gc = daily_guardduty if "guardduty" in topics else []
             elif frequency == "weekly":
-                pc = weekly_policy if "iam_policies" in topics else []
+                pc = _policy_selection(weekly_policy, topics)
                 ec = weekly_endpoints if "endpoints" in topics else []
                 gc = weekly_guardduty if "guardduty" in topics else []
             else:
@@ -479,7 +419,7 @@ def handler(event, context):
 
             # Filter IAM policies by subscription preference
             if pc and "*" not in subscribed_policies:
-                pc = [c for c in pc if c["policy_name"] in subscribed_policies]
+                pc = [c for c in pc if c["name"] in subscribed_policies]
 
             if not pc and not ec and not gc:
                 continue

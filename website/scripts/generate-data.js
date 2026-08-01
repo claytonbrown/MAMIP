@@ -4,6 +4,7 @@ const https = require("https");
 const { simpleGit } = require("simple-git");
 const yaml = require("js-yaml");
 const { generateUsageStats } = require("./generate-usage-stats");
+const wording = require("./change-wording");
 
 const REPO_ROOT = path.join(__dirname, "../..");
 const POLICIES_DIR = path.join(REPO_ROOT, "policies");
@@ -12,9 +13,23 @@ const PATHFINDING_PATHS_JSON = path.join(
   REPO_ROOT,
   "data/pathfinding/paths.json"
 );
+const ACTION_REGISTRY_JSON = path.join(REPO_ROOT, "data/action-registry.json");
+const POLICY_DELTAS_JSON = path.join(
+  REPO_ROOT,
+  "data/policy-change-deltas.json"
+);
+const IAM_METADATA_JSON = path.join(REPO_ROOT, "data/iam-metadata.json");
 const OUTPUT_DIR = path.join(__dirname, "../public/data");
 const PUBLIC_DIR = path.join(__dirname, "../public");
 const FEEDS_DIR = path.join(PUBLIC_DIR, "feeds");
+// The public contract, held apart from public/data so the site's own files stay
+// free to change shape without breaking anyone consuming the API.
+const API_VERSION = "v1";
+const API_DIR = path.join(PUBLIC_DIR, "api", API_VERSION);
+const API_POLICIES_DIR = path.join(API_DIR, "policies");
+// One timestamp for the whole run, so a consumer that fetches two resources can
+// tell whether they came from the same build.
+const GENERATED_AT = new Date().toISOString();
 const SITE_URL = "https://iamtrail.com";
 const GITHUB_REPO = "https://github.com/zoph-io/IAMTrail";
 const git = simpleGit(REPO_ROOT);
@@ -26,6 +41,136 @@ function displayAuthorName(name) {
   if (/^mamip\s*bot$/i.test(t)) return "IAMTrail";
   if (/mamip-github-actions/i.test(t)) return "IAMTrail";
   return name;
+}
+
+/**
+ * First-ever sighting of each IAM action and service prefix, from
+ * data/action-registry.json (built by automation/scripts/build_action_registry.py).
+ *
+ * The registry replays the whole archive, so it knows when an action appeared for
+ * the first time anywhere - which the per-policy git history cannot answer, since
+ * a prefix new to AWS can arrive inside a policy that has existed since 2019.
+ *
+ * Keys are lowercased there because IAM matches actions case-insensitively and
+ * AWS is inconsistent about it. Returns empty maps when the file is absent, so
+ * the site still builds without it.
+ *
+ * Anything whose first sighting is the archive's own first commit is flagged
+ * sinceStart: those actions already existed in 2019 when tracking began, so their
+ * date is the archive's floor and says nothing about when AWS shipped them.
+ */
+function loadActionRegistry() {
+  if (!fs.existsSync(ACTION_REGISTRY_JSON)) {
+    console.log(
+      "   ⚠️  No data/action-registry.json found, action pages will omit first-seen dates"
+    );
+    return { actions: {}, services: {}, actionLabels: {}, archiveStart: "" };
+  }
+
+  const raw = JSON.parse(fs.readFileSync(ACTION_REGISTRY_JSON, "utf8"));
+  const entries = Object.entries(raw.entries || {});
+
+  // Derived rather than hardcoded, so a rebased or re-imported archive stays right.
+  let baseline = null;
+  for (const [, value] of entries) {
+    if (!baseline || (value.first_seen_at || "") < baseline.first_seen_at) {
+      baseline = value;
+    }
+  }
+  const baselineCommit = baseline ? baseline.first_commit_sha : "";
+  const archiveStart = baseline ? baseline.first_seen_at.slice(0, 10) : "";
+
+  const actions = {};
+  const services = {};
+  // Registry keys are lowercased because IAM is case-insensitive; this keeps the
+  // casing AWS shipped, for display. Held apart from the sightings so it does not
+  // get spread into every entry of the action index.
+  const actionLabels = {};
+  let sinceStartCount = 0;
+  for (const [key, value] of entries) {
+    // Day precision is all an action page shows, and it keeps the index small.
+    const firstSeen = (value.first_seen_at || "").slice(0, 10);
+    if (!firstSeen) continue;
+    const sighting = { firstSeen, firstPolicy: value.first_policy || "" };
+    if (value.first_commit_sha && value.first_commit_sha === baselineCommit) {
+      sighting.sinceStart = true;
+      sinceStartCount++;
+    }
+    if (key.startsWith("act#")) {
+      actions[key.slice(4)] = sighting;
+      actionLabels[key.slice(4)] = value.first_action || key.slice(4);
+    } else if (key.startsWith("svc#")) {
+      services[key.slice(4)] = sighting;
+    }
+  }
+  console.log(
+    `   🕵️  Action registry: first-seen for ${Object.keys(actions).length} actions, ` +
+      `${Object.keys(services).length} services (${sinceStartCount} present at archive start ${archiveStart})`
+  );
+  return { actions, services, actionLabels, archiveStart };
+}
+
+/**
+ * What each recent commit actually changed, from data/policy-change-deltas.json
+ * (built by the same archive replay as the action registry).
+ *
+ * Keyed by "<sha>:<policyName>" because one commit can touch several policies.
+ * Insertion order is the file's own newest-first order, so iterating the values
+ * gives a ready-made timeline for /changes.
+ *
+ * Returns an empty map when the file is absent, so the feeds fall back to naming
+ * the policy rather than failing the build.
+ *
+ * Memoized: the per-policy history, the changes timeline, the public API and the
+ * feeds all want the same map, and it is a 400 KB parse.
+ */
+let policyChangeDeltasCache = null;
+function loadPolicyChangeDeltas() {
+  if (policyChangeDeltasCache) return policyChangeDeltasCache;
+
+  if (!fs.existsSync(POLICY_DELTAS_JSON)) {
+    console.log(
+      "   ⚠️  No data/policy-change-deltas.json found, feeds will omit action changes"
+    );
+    policyChangeDeltasCache = new Map();
+    return policyChangeDeltasCache;
+  }
+
+  const raw = JSON.parse(fs.readFileSync(POLICY_DELTAS_JSON, "utf8"));
+  const byCommit = new Map();
+  for (const change of raw.changes || []) {
+    if (!change.sha || !change.policyName) continue;
+    byCommit.set(`${change.sha}:${change.policyName}`, change);
+  }
+  console.log(`   🧾 Change deltas: ${byCommit.size} recent policy changes`);
+  policyChangeDeltasCache = byCommit;
+  return byCommit;
+}
+
+/**
+ * Access levels and friendly service names, from data/iam-metadata.json.
+ *
+ * The same file ships inside the notification Lambdas, so a feed item and a post
+ * about the same change describe it in the same words.
+ */
+let iamMetadataCache = null;
+function loadIamMetadata() {
+  if (iamMetadataCache) return iamMetadataCache;
+
+  if (!fs.existsSync(IAM_METADATA_JSON)) {
+    console.log(
+      "   ⚠️  No data/iam-metadata.json found, feeds will show bare service prefixes"
+    );
+    iamMetadataCache = { permissionsManagement: new Set(), serviceNames: {} };
+    return iamMetadataCache;
+  }
+
+  const raw = JSON.parse(fs.readFileSync(IAM_METADATA_JSON, "utf8"));
+  iamMetadataCache = {
+    permissionsManagement: new Set(raw.permissionsManagement || []),
+    serviceNames: raw.serviceNames || {},
+  };
+  return iamMetadataCache;
 }
 
 function iamActionToSlug(action) {
@@ -112,6 +257,105 @@ function pathRequiredPermissionsSatisfied(allowInfo, requiredEntries) {
 
 function pathfindingPathUrl(pathId) {
   return `https://pathfinding.cloud/paths/${encodeURIComponent(pathId)}`;
+}
+
+/**
+ * Build per-policy git history from a SINGLE `git log --name-only` pass over
+ * policies/ instead of spawning one `git log` subprocess per policy
+ * (~1,566 sequential spawns, the dominant cost of data generation).
+ *
+ * Stored history entries are newest-first and uncapped: the seven-year archive
+ * is the point of the site, and truncating it only pushed readers to GitHub to
+ * see the rest. The deepest policy is ReadOnlyAccess at 115 commits, so the
+ * whole history costs a few KB per file. Modification counts and first-seen
+ * dates come from the same pass, and bulk-reformat days are detected here so
+ * every consumer shares one definition.
+ *
+ * Returns:
+ * - historyByPolicy: Map<name, entries[]> (newest-first, full history)
+ * - versionsCountByPolicy: Map<name, count> of real modifications (excluding
+ *   bulk-reformat days)
+ * - firstSeenByPolicy: Map<name, ISO date> of the oldest commit
+ * - bulkDays: Set<YYYY-MM-DD> of false-positive bulk-reformat days
+ */
+async function buildPolicyHistory() {
+  const BULK_DAY_THRESHOLD = 50;
+  const COMMIT_PREFIX = "__C__";
+  // --no-renames matches the previous per-path behavior (no --follow, no
+  // false rename/copy detection).
+  const raw = await git.raw([
+    "log",
+    "--no-renames",
+    `--format=${COMMIT_PREFIX}%H|%aI|%s|%an`,
+    "--name-only",
+    "--",
+    "policies/",
+  ]);
+  const historyByPolicy = new Map();
+  const daysByPolicy = new Map();
+  const firstSeenByPolicy = new Map();
+  const commitsByDate = {};
+  let current = null;
+  for (const line of (raw || "").split("\n")) {
+    if (line.startsWith(COMMIT_PREFIX)) {
+      const [hash, date, message, author_name] = line
+        .slice(COMMIT_PREFIX.length)
+        .split("|");
+      current = { hash, date, message, author_name };
+      continue;
+    }
+    if (!current) continue;
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("policies/")) continue;
+    const policyName = trimmed.slice("policies/".length);
+    if (!policyName || policyName.includes("/")) continue;
+
+    let entries = historyByPolicy.get(policyName);
+    if (!entries) {
+      entries = [];
+      historyByPolicy.set(policyName, entries);
+    }
+    entries.push(current);
+
+    // Uncapped per-policy day tracking for accurate modification counts.
+    const day = new Date(current.date).toISOString().slice(0, 10);
+    let days = daysByPolicy.get(policyName);
+    if (!days) {
+      days = [];
+      daysByPolicy.set(policyName, days);
+    }
+    days.push(day);
+
+    // Log is newest-first, so the last commit seen per policy is its oldest.
+    firstSeenByPolicy.set(policyName, current.date);
+
+    // Global per-policy-file changes per day (2019 import excluded, matching
+    // the chart-data bulk-day logic).
+    if (!day.startsWith("2019-")) {
+      commitsByDate[day] = (commitsByDate[day] || 0) + 1;
+    }
+  }
+
+  // Bulk-reformat days: any day where >= BULK_DAY_THRESHOLD policy files
+  // changed (e.g. jq -S key-sorting, invisible character normalization) is
+  // treated as false-positive churn rather than real modifications.
+  const bulkDays = new Set(
+    Object.entries(commitsByDate)
+      .filter(([, count]) => count >= BULK_DAY_THRESHOLD)
+      .map(([day]) => day)
+  );
+
+  // Real modification count per policy: uncapped, excluding bulk-reformat days.
+  const versionsCountByPolicy = new Map();
+  for (const [policyName, days] of daysByPolicy) {
+    let count = 0;
+    for (const day of days) {
+      if (!bulkDays.has(day)) count++;
+    }
+    versionsCountByPolicy.set(policyName, count);
+  }
+
+  return { historyByPolicy, versionsCountByPolicy, firstSeenByPolicy, bulkDays };
 }
 
 function buildPathfindingFindingsForPolicy(allowInfo, catalogPaths) {
@@ -244,10 +488,22 @@ async function generatePolicyData() {
     return parts.length > 0 ? parts.join(", ") : "< 1 month";
   }
 
+  console.log("🕘 Building git history (single pass)...");
+  const {
+    historyByPolicy,
+    versionsCountByPolicy,
+    firstSeenByPolicy,
+    bulkDays,
+  } = await buildPolicyHistory();
+
+  // What each recent commit actually changed, so a version history row can say
+  // "31 actions added" instead of only naming the version it bumped to.
+  const changeDeltas = loadPolicyChangeDeltas();
+  const iamMeta = loadIamMetadata();
+
   for (const policyName of policyFiles) {
     try {
       const policyPath = path.join(POLICIES_DIR, policyName);
-      const relativePath = `policies/${policyName}`;
 
       // Read policy content
       const content = fs.readFileSync(policyPath, "utf8");
@@ -259,22 +515,7 @@ async function generatePolicyData() {
         continue;
       }
 
-      // Get git history (without --follow to avoid false rename/copy detection)
-      const rawLog = await git.raw([
-        "log",
-        "--max-count=100",
-        "--format=%H|%aI|%s|%an",
-        "--",
-        relativePath,
-      ]);
-      const logEntries = (rawLog || "")
-        .trim()
-        .split("\n")
-        .filter((line) => line.length > 0)
-        .map((line) => {
-          const [hash, date, message, author_name] = line.split("|");
-          return { hash, date, message, author_name };
-        });
+      const logEntries = historyByPolicy.get(policyName) || [];
 
       for (const entry of logEntries) {
         allCommitEntries.push({
@@ -345,9 +586,10 @@ async function generatePolicyData() {
       }
 
       const firstSeenDate =
-        logEntries.length > 0
+        firstSeenByPolicy.get(policyName) ||
+        (logEntries.length > 0
           ? logEntries[logEntries.length - 1].date
-          : stats.mtime.toISOString();
+          : stats.mtime.toISOString());
 
       const policy = {
         name: policyName,
@@ -356,11 +598,15 @@ async function generatePolicyData() {
         lastModified: logEntries.length > 0
           ? logEntries[0].date
           : stats.mtime.toISOString(),
-        versionsCount: logEntries.length,
+        versionsCount: versionsCountByPolicy.get(policyName) ?? logEntries.length,
         size: stats.size,
         actionCount,
         servicePrefixes: [...servicePrefixes],
         firstSeen: firstSeenDate,
+        // Deliberately short: this object is also spread into summary.json's
+        // stats lists (mostModified, recentlyUpdated, newest, oldest), and the
+        // full history belongs in the per-policy file that the detail page
+        // actually loads.
         history: logEntries.slice(0, 10).map((entry) => ({
           hash: entry.hash,
           date: entry.date,
@@ -370,6 +616,23 @@ async function generatePolicyData() {
       };
 
       policies.push(policy);
+
+      // The detail page gets every version, each carrying what it changed when
+      // the archive replay reached back far enough to know.
+      const fullHistory = logEntries.map((entry) => {
+        const row = {
+          hash: entry.hash,
+          date: entry.date,
+          message: entry.message,
+          author: displayAuthorName(entry.author_name),
+        };
+        const delta = normalizeDelta(
+          changeDeltas.get(`${entry.hash}:${policyName}`),
+          iamMeta
+        );
+        if (delta) row.delta = delta;
+        return row;
+      });
 
       const allowInfo = extractAllowActionInfo(policyData);
       const pathfindingFindings = buildPathfindingFindingsForPolicy(
@@ -399,6 +662,7 @@ async function generatePolicyData() {
       // Save individual policy with full content
       const policyDetail = {
         ...policy,
+        history: fullHistory,
         content: policyData,
         deprecation: deprecated[policyName]
           ? {
@@ -424,6 +688,28 @@ async function generatePolicyData() {
         path.join(OUTPUT_DIR, `${policyName}.json`),
         JSON.stringify(policyDetail, null, 2)
       );
+
+      // Public API twin. Named fields only, so a consumer is not exposed to the
+      // site's UI-shaped extras (securitySignals, servicePrefixes) that exist to
+      // serve a component and may be reshaped at any time.
+      fs.writeFileSync(
+        path.join(API_POLICIES_DIR, `${policyName}.json`),
+        JSON.stringify({
+          schemaVersion: 1,
+          generatedAt: GENERATED_AT,
+          name: policyName,
+          arn: `arn:aws:iam::aws:policy/${policyName}`,
+          versionId: policy.versionId,
+          createDate: policy.createDate,
+          lastModified: policy.lastModified,
+          firstSeen: policy.firstSeen,
+          versionsCount: policy.versionsCount,
+          actionCount,
+          deprecatedOn: deprecated[policyName] || null,
+          document: policyData.PolicyVersion?.Document ?? null,
+          history: fullHistory,
+        })
+      );
     } catch (error) {
       errors.push({ policyName, error: error.message });
       console.error(`❌ Error processing ${policyName}:`, error.message);
@@ -433,15 +719,20 @@ async function generatePolicyData() {
   // Sort and calculate stats
   policies.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
 
-  // Find brand new policies (v1 version = new AWS service/feature)
+  // Brand new policies: v1 (never updated by AWS) created within a recent
+  // window, so this genuinely spotlights new services/features instead of every
+  // old-but-unchanged v1 policy. Tune the window with BRAND_NEW_WINDOW_DAYS.
+  const BRAND_NEW_WINDOW_DAYS = 90;
+  const brandNewCutoff = new Date();
+  brandNewCutoff.setDate(brandNewCutoff.getDate() - BRAND_NEW_WINDOW_DAYS);
   const brandNewPolicies = [...policies]
-    .filter((p) => p.versionId === "v1")
-    .sort(
-      (a, b) =>
-        new Date(b.createDate || b.lastModified) -
-        new Date(a.createDate || a.lastModified)
+    .filter(
+      (p) =>
+        p.versionId === "v1" &&
+        p.createDate &&
+        new Date(p.createDate) >= brandNewCutoff
     )
-    .slice(0, 20);
+    .sort((a, b) => new Date(b.createDate) - new Date(a.createDate));
 
   const wildcardPoliciesByServiceCounts = {};
   for (const [svc, set] of Object.entries(wildcardPoliciesByService)) {
@@ -466,6 +757,7 @@ async function generatePolicyData() {
       .sort((a, b) => new Date(a.lastModified) - new Date(b.lastModified))
       .slice(0, 10),
     brandNew: brandNewPolicies,
+    brandNewWindowDays: BRAND_NEW_WINDOW_DAYS,
   };
 
   // Policies by year (based on first-seen in git)
@@ -532,24 +824,13 @@ async function generatePolicyData() {
     (e) => new Date(e.date).getUTCFullYear() !== 2019
   );
 
-  // Exclude bulk-reformat days where detection logic changes (e.g. jq -S
-  // key-sorting, invisible character normalization) caused every policy to
-  // appear modified. Any day with >= BULK_DAY_THRESHOLD per-policy changes
-  // is treated as a false-positive bulk day.
-  const BULK_DAY_THRESHOLD = 50;
-  const commitsByDate = {};
-  for (const e of filteredEntries) {
-    const dateKey = new Date(e.date).toISOString().slice(0, 10);
-    commitsByDate[dateKey] = (commitsByDate[dateKey] || 0) + 1;
-  }
-  const bulkDays = new Set(
-    Object.entries(commitsByDate)
-      .filter(([, count]) => count >= BULK_DAY_THRESHOLD)
-      .map(([date]) => date)
-  );
+  // Bulk-reformat days (jq -S key-sorting, invisible character normalization,
+  // etc. that made every policy appear modified) are detected once, uncapped,
+  // in buildPolicyHistory() and reused here so chart data, modification counts,
+  // and volatility all share one definition.
   if (bulkDays.size > 0) {
     console.log(
-      `   ⚠️  Excluding ${bulkDays.size} bulk-reformat day(s): ${[...bulkDays].join(", ")}`
+      `   ⚠️  Excluding ${wording.plural(bulkDays.size, "bulk-reformat day")}: ${[...bulkDays].join(", ")}`
     );
   }
   const cleanEntries = filteredEntries.filter(
@@ -618,24 +899,25 @@ async function generatePolicyData() {
     return { year: yr, total, newPolicies: np, updates: total - np };
   });
 
-  // Most volatile this year (trailing 12 months)
+  // Most volatile this year (trailing 12 months). Counted from cleanEntries
+  // (excludes 2019 + bulk-reformat days) so it reflects real changes and is not
+  // capped by the truncated per-policy history array.
   const oneYearAgo = new Date();
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
   const recentChanges = {};
-  for (const p of policies) {
-    let count = 0;
-    for (const h of p.history) {
-      if (new Date(h.date) >= oneYearAgo) count++;
+  for (const e of cleanEntries) {
+    if (new Date(e.date) >= oneYearAgo) {
+      recentChanges[e.policyName] = (recentChanges[e.policyName] || 0) + 1;
     }
-    if (count > 1) recentChanges[p.name] = count;
   }
   stats.volatileThisYear = Object.entries(recentChanges)
-    .sort((a, b) => b[1] - a[1])
+    .filter(([, count]) => count > 1)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
     .slice(0, 10)
     .map(([name, changesThisYear]) => ({ name, changesThisYear }));
 
   console.log(
-    `   📈 Chart data: ${cleanEntries.length} commit entries (excl. 2019 + ${bulkDays.size} bulk day(s)), ` +
+    `   📈 Chart data: ${cleanEntries.length} commit entries (excl. 2019 + ${wording.plural(bulkDays.size, "bulk day")}), ` +
       `${reinventYears.length} re:Invent years, ` +
       `${stats.volatileThisYear.length} volatile policies`
   );
@@ -643,18 +925,21 @@ async function generatePolicyData() {
   // deprecated dict was loaded before the per-policy loop
 
   // IAM action inverse index (literal strings only; wildcards excluded from keys)
+  const registry = loadActionRegistry();
   const actionsOut = {};
   for (const action of [...uniqueLiteralActions].sort()) {
     const b = actionBucket(action);
+    const sighting = registry.actions[action.toLowerCase()];
     actionsOut[action] = {
       actionAllowPolicies: [...b.actionAllow].sort(),
       actionDenyPolicies: [...b.actionDeny].sort(),
       notActionPolicies: [...b.notAction].sort(),
+      ...(sighting || {}),
     };
   }
   const actionIndexPayload = {
     schemaVersion: 1,
-    generatedAt: new Date().toISOString(),
+    generatedAt: GENERATED_AT,
     stats: {
       uniqueLiteralActionCount: uniqueLiteralActions.size,
       policiesWithWildcardActions: policiesWithWildcard.size,
@@ -662,13 +947,102 @@ async function generatePolicyData() {
     },
     effectiveGrantPreview: null,
     actions: actionsOut,
+    // Per service prefix rather than repeated on every action, since a prefix
+    // arrives only once and thousands of actions can share it.
+    services: registry.services,
+    archiveStart: registry.archiveStart,
   };
   fs.writeFileSync(
     path.join(OUTPUT_DIR, "action-index.json"),
     JSON.stringify(actionIndexPayload)
   );
+  // One file rather than 14,928 per-action files: it is 272 KB over the wire
+  // compressed, and a consumer that wants one action can index it locally far
+  // faster than it could make one request per action.
+  fs.writeFileSync(
+    path.join(API_DIR, "actions.json"),
+    JSON.stringify(actionIndexPayload)
+  );
   console.log(
     `   🔑 Action index: ${uniqueLiteralActions.size} literal actions, ${policiesWithWildcard.size} policies with wildcards`
+  );
+
+  // Discoveries feed: first-ever sightings, newest first. A dedicated file rather
+  // than the 4.4 MB action index, so the page loads only what it renders. Nothing
+  // is capped: the page fetches this file to search it, and a capped file would
+  // mean a search box that silently misses older sightings. CloudFront compresses
+  // it, and the repetition across dates and policy names compresses well.
+
+  // Actions per prefix, counted from the registry so it reflects the whole
+  // archive rather than only the actions still present today.
+  const registryActionsByPrefix = {};
+  for (const action of Object.keys(registry.actions)) {
+    const prefix = action.split(":", 1)[0];
+    registryActionsByPrefix[prefix] = (registryActionsByPrefix[prefix] || 0) + 1;
+  }
+
+  // Anything present at the 2019 import is excluded throughout: its date is when
+  // tracking began, not when AWS introduced it.
+  const discoveredServices = Object.entries(registry.services)
+    .filter(([, v]) => !v.sinceStart)
+    .map(([prefix, v]) => ({
+      prefix,
+      firstSeen: v.firstSeen,
+      firstPolicy: v.firstPolicy,
+      actionCount: registryActionsByPrefix[prefix] || 0,
+    }))
+    .sort((a, b) => b.firstSeen.localeCompare(a.firstSeen));
+
+  const newServiceDates = new Set(
+    discoveredServices.map((s) => `${s.prefix}|${s.firstSeen}`)
+  );
+  // Canonical casing of actions still present today, which is what the action
+  // page slugs are built from. Anything since removed gets no link.
+  const currentActionCasing = {};
+  for (const action of Object.keys(actionsOut)) {
+    currentActionCasing[action.toLowerCase()] = action;
+  }
+  // Actions that landed on a service prefix that already existed. The ones that
+  // arrived with their prefix are already represented by the service entry.
+  const discoveredActions = Object.entries(registry.actions)
+    .filter(
+      ([action, v]) =>
+        !v.sinceStart &&
+        !newServiceDates.has(`${action.split(":", 1)[0]}|${v.firstSeen}`)
+    )
+    .map(([action, v]) => ({
+      action: currentActionCasing[action] || registry.actionLabels[action] || action,
+      firstSeen: v.firstSeen,
+      firstPolicy: v.firstPolicy,
+      hasPage: Boolean(currentActionCasing[action]),
+    }))
+    .sort((a, b) => b.firstSeen.localeCompare(a.firstSeen));
+
+  const discoveriesPayload = {
+    schemaVersion: 1,
+    generatedAt: GENERATED_AT,
+    archiveStart: registry.archiveStart,
+    stats: {
+      totalNewServices: discoveredServices.length,
+      totalNewActions: discoveredActions.length,
+      servicesSinceStart: Object.values(registry.services).filter(
+        (v) => v.sinceStart
+      ).length,
+    },
+    services: discoveredServices,
+    actions: discoveredActions,
+  };
+  fs.writeFileSync(
+    path.join(OUTPUT_DIR, "discoveries.json"),
+    JSON.stringify(discoveriesPayload)
+  );
+  fs.writeFileSync(
+    path.join(API_DIR, "discoveries.json"),
+    JSON.stringify(discoveriesPayload)
+  );
+  console.log(
+    `   🛰️  Discoveries: ${discoveredServices.length} service prefixes and ` +
+      `${discoveredActions.length} actions first seen after ${registry.archiveStart}`
   );
 
   // SAR-style action definitions (iam-dataset by Ian McKay) intersected with our action keys
@@ -719,7 +1093,7 @@ async function generatePolicyData() {
     sourceUrl: "https://github.com/iann0036/iam-dataset",
     sourceLicense: "MIT",
     attribution: attributionText,
-    generatedAt: new Date().toISOString(),
+    generatedAt: GENERATED_AT,
     definitions: {},
   };
   try {
@@ -777,6 +1151,61 @@ async function generatePolicyData() {
   fs.writeFileSync(
     path.join(OUTPUT_DIR, "summary.json"),
     JSON.stringify(summary, null, 2)
+  );
+
+  // The change timeline. The archive's whole purpose is that policies change,
+  // and until now the only place that said what changed was the RSS feed.
+  console.log("🧾 Building change timeline...");
+  const timeline = [...changeDeltas.values()]
+    .map((d) => normalizeDelta(d, iamMeta))
+    .filter(Boolean)
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  const changesOut = {
+    schemaVersion: 1,
+    generatedAt: GENERATED_AT,
+    stats: {
+      total: timeline.length,
+      discoveries: timeline.filter(isDiscovery).length,
+      permissionsManagement: timeline.filter(
+        (c) => c.permissionsManagement.length > 0
+      ).length,
+      oldest: timeline.length ? timeline[timeline.length - 1].date : null,
+      newest: timeline.length ? timeline[0].date : null,
+    },
+    changes: timeline,
+  };
+  fs.writeFileSync(
+    path.join(OUTPUT_DIR, "changes.json"),
+    JSON.stringify(changesOut)
+  );
+  console.log(
+    `   🧾 Timeline: ${timeline.length} changes, ${changesOut.stats.discoveries} carrying a discovery`
+  );
+
+  // --- Public API ---
+  console.log(`🔌 Writing /api/${API_VERSION} ...`);
+  fs.writeFileSync(
+    path.join(API_DIR, "changes.json"),
+    JSON.stringify(changesOut)
+  );
+  fs.writeFileSync(
+    path.join(API_DIR, "policies.json"),
+    JSON.stringify({
+      schemaVersion: 1,
+      generatedAt: GENERATED_AT,
+      count: policies.length,
+      policies: policies.map((p) => ({
+        name: p.name,
+        arn: `arn:aws:iam::aws:policy/${p.name}`,
+        versionId: p.versionId,
+        createDate: p.createDate,
+        lastModified: p.lastModified,
+        versionsCount: p.versionsCount,
+        actionCount: p.actionCount,
+        deprecatedOn: deprecated[p.name] || null,
+      })),
+    })
   );
 
   // Fetch known AWS accounts from fwdcloudsec community
@@ -888,6 +1317,7 @@ async function generatePolicyData() {
   const today = new Date().toISOString().split("T")[0];
   const sitemapEntries = [
     { loc: "/", priority: "1.0", changefreq: "daily" },
+    { loc: "/changes/", priority: "0.9", changefreq: "hourly" },
     { loc: "/policies/", priority: "0.9", changefreq: "daily" },
     { loc: "/findings/", priority: "0.8", changefreq: "daily" },
     { loc: "/deprecated/", priority: "0.7", changefreq: "weekly" },
@@ -895,9 +1325,11 @@ async function generatePolicyData() {
     { loc: "/accounts/", priority: "0.7", changefreq: "weekly" },
     { loc: "/largest-policies/", priority: "0.7", changefreq: "weekly" },
     { loc: "/service-growth/", priority: "0.7", changefreq: "weekly" },
+    { loc: "/discoveries/", priority: "0.8", changefreq: "daily" },
     { loc: "/endpoints/", priority: "0.8", changefreq: "daily" },
     { loc: "/guardduty/", priority: "0.8", changefreq: "daily" },
     { loc: "/feeds/", priority: "0.5", changefreq: "weekly" },
+    { loc: "/api/", priority: "0.5", changefreq: "monthly" },
     { loc: "/about/", priority: "0.5", changefreq: "monthly" },
   ];
   policies.forEach((p) => {
@@ -930,12 +1362,57 @@ ${sitemapEntries
   fs.writeFileSync(path.join(PUBLIC_DIR, "sitemap.xml"), sitemapXml);
   console.log(`   🗺️  Sitemap entries: ${sitemapEntries.length}`);
 
+  // The one URL a consumer has to hard-code. Everything else is reachable from
+  // here, so a future v2 can move files without breaking a client that starts
+  // by reading this document.
+  const apiBase = `${SITE_URL}/api/${API_VERSION}`;
+  fs.writeFileSync(
+    path.join(API_DIR, "index.json"),
+    JSON.stringify(
+      {
+        schemaVersion: 1,
+        apiVersion: API_VERSION,
+        generatedAt: GENERATED_AT,
+        name: "IAMTrail API",
+        description:
+          "An unofficial archive of AWS Managed IAM Policy changes, tracked since 2019 by zoph.io.",
+        documentation: `${SITE_URL}/api/`,
+        license: "GPL-3.0",
+        source: GITHUB_REPO,
+        counts: {
+          policies: policies.length,
+          changes: timeline.length,
+          literalActions: uniqueLiteralActions.size,
+          discoveredServices: discoveredServices.length,
+          discoveredActions: discoveredActions.length,
+        },
+        resources: {
+          policies: `${apiBase}/policies.json`,
+          policy: `${apiBase}/policies/{policyName}.json`,
+          changes: `${apiBase}/changes.json`,
+          actions: `${apiBase}/actions.json`,
+          discoveries: `${apiBase}/discoveries.json`,
+        },
+        feeds: {
+          all: `${SITE_URL}/feeds/all.xml`,
+          discoveries: `${SITE_URL}/feeds/discoveries.xml`,
+          iamPolicies: `${SITE_URL}/feeds/iam-policies.xml`,
+          endpoints: `${SITE_URL}/feeds/endpoints.xml`,
+          guardduty: `${SITE_URL}/feeds/guardduty.xml`,
+        },
+      },
+      null,
+      2
+    )
+  );
+  console.log(`   🔌 API ${API_VERSION}: ${policies.length + 5} documents`);
+
   console.log("✅ Data generation complete!");
   console.log(`   📁 Policies processed: ${policies.length}`);
   console.log(`   ⚠️  Errors: ${errors.length}`);
   console.log(`   📊 Output directory: ${OUTPUT_DIR}`);
 
-  return { policies, allCommitEntries };
+  return { policies, allCommitEntries, discoveredServices, discoveredActions };
 }
 
 const GUARDDUTY_DIR = path.join(REPO_ROOT, "data/guardduty");
@@ -1174,18 +1651,17 @@ async function generateEndpointsData() {
   );
 
   console.log(
-    `   🌐 Endpoints: ${totalRegions} regions, ${totalServices} services across ${partitions.length} partitions, ${allChangeRecords.length} change record(s)`
+    `   🌐 Endpoints: ${totalRegions} regions, ${totalServices} services across ${partitions.length} partitions, ${wording.plural(allChangeRecords.length, "change record")}`
   );
 
   return { allChangeRecords };
 }
 
 // Ensure output directories exist
-if (!fs.existsSync(OUTPUT_DIR)) {
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-}
-if (!fs.existsSync(FEEDS_DIR)) {
-  fs.mkdirSync(FEEDS_DIR, { recursive: true });
+for (const dir of [OUTPUT_DIR, FEEDS_DIR, API_POLICIES_DIR]) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
 }
 
 function toRFC2822(dateStr) {
@@ -1193,12 +1669,21 @@ function toRFC2822(dateStr) {
 }
 
 function escapeXml(str) {
-  return str
+  return String(str)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
+}
+
+/** Stable, guid-safe form of an arbitrary string. */
+function slugify(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
 }
 
 /**
@@ -1216,17 +1701,38 @@ function smartTruncate(text, max) {
   return `${sliced.slice(0, cutoff).replace(/[.,;:!?\-]+$/, "")}...`;
 }
 
+/**
+ * A deploy runs on every push to policies/, so a reader polling hourly is never
+ * ahead of the data. Six hours, the previous value, told readers to poll far
+ * less often than the feed actually changes.
+ */
+const FEED_TTL_MINUTES = 60;
+
+/**
+ * An item's guid is only a permalink when it genuinely is a URL. Declaring
+ * isPermaLink="true" on a synthetic string invites readers to resolve it.
+ */
+function isUrl(value) {
+  return typeof value === "string" && /^https?:\/\//.test(value);
+}
+
 function buildRSSFeed(channel, items) {
   const itemsXml = items
-    .map(
-      (item) => `    <item>
+    .map((item) => {
+      const categories = (item.categories || [])
+        .map((c) => `\n      <category>${escapeXml(c)}</category>`)
+        .join("");
+      const enclosure = item.enclosure
+        ? `\n      <enclosure url="${escapeXml(item.enclosure.url)}" length="${item.enclosure.length}" type="${escapeXml(item.enclosure.type)}" />`
+        : "";
+      return `    <item>
       <title>${escapeXml(item.title)}</title>
       <link>${escapeXml(item.link)}</link>
-      <guid isPermaLink="${item.permalink ? "true" : "false"}">${escapeXml(item.guid)}</guid>
-      <pubDate>${toRFC2822(item.date)}</pubDate>${item.category ? `\n      <category>${escapeXml(item.category)}</category>` : ""}
+      <guid isPermaLink="${isUrl(item.guid) ? "true" : "false"}">${escapeXml(item.guid)}</guid>
+      <pubDate>${toRFC2822(item.date)}</pubDate>${categories}${enclosure}
       <description><![CDATA[${item.description}]]></description>
-    </item>`
-    )
+    </item>`;
+    })
     .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -1237,39 +1743,367 @@ function buildRSSFeed(channel, items) {
     <description>${escapeXml(channel.description)}</description>
     <language>en-us</language>
     <lastBuildDate>${toRFC2822(new Date().toISOString())}</lastBuildDate>
-    <ttl>360</ttl>
+    <ttl>${FEED_TTL_MINUTES}</ttl>
     <atom:link href="${escapeXml(channel.feedUrl)}" rel="self" type="application/rss+xml" />
 ${itemsXml}
   </channel>
 </rss>`;
 }
 
+/**
+ * The per-policy Open Graph card, when it has already been rendered.
+ *
+ * generate-og runs after this script, so a policy AWS created today has no image
+ * on the first build. RSS requires a byte length on an enclosure, so an image we
+ * cannot measure is simply left out rather than guessed at.
+ */
+function policyEnclosure(policyName) {
+  const file = path.join(PUBLIC_DIR, "policies", policyName, "opengraph.png");
+  try {
+    return {
+      url: `${SITE_URL}/policies/${encodeURIComponent(policyName)}/opengraph.png`,
+      length: fs.statSync(file).size,
+      type: "image/png",
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** "iam:PassRole, s3:GetObject and 4 more", so a description names names. */
+function listActions(actions, cap = 12) {
+  const shown = actions.slice(0, cap).map((a) => escapeXml(a));
+  const extra = actions.length - shown.length;
+  const body = shown.join(", ");
+  return extra > 0 ? `${body} and ${extra} more` : body;
+}
+
+/**
+ * What a single policy change actually did, in words and then in detail.
+ *
+ * Falls back to naming the policy when no delta is available, which happens for
+ * a commit older than the window data/policy-change-deltas.json covers.
+ */
+function describePolicyChange(policyName, delta, meta) {
+  const policyUrl = `${SITE_URL}/policies/${encodeURIComponent(policyName)}/`;
+  const link = `<a href="${policyUrl}">${escapeXml(policyName)}</a>`;
+
+  if (!delta) {
+    return `<p>${link} was updated.</p>`;
+  }
+
+  const added = delta.actionsAdded || [];
+  const removed = delta.actionsRemoved || [];
+  const escalations = added.filter((a) =>
+    meta.permissionsManagement.has(a.toLowerCase())
+  );
+  const parts = [];
+
+  const version = delta.versionId ? ` (${escapeXml(delta.versionId)})` : "";
+  parts.push(
+    `<p>${link}${version}: ${escapeXml(
+      wording.actionDeltaPhrase(added, removed)
+    )}.</p>`
+  );
+
+  if (delta.newServicePrefixes && delta.newServicePrefixes.length) {
+    const named = delta.newServicePrefixes
+      .map((p) => escapeXml(serviceLabel(p, meta)))
+      .join(", ");
+    parts.push(
+      `<p><strong>${escapeXml(
+        wording.sentence(wording.newServicePhrase(delta.newServicePrefixes))
+      )}</strong>: ${named}. Never seen in any AWS managed policy before.</p>`
+    );
+  }
+
+  const newActions = (delta.newActions || []).filter(
+    (a) =>
+      !(delta.newServicePrefixes || []).includes(a.split(":", 1)[0].toLowerCase())
+  );
+  if (newActions.length) {
+    parts.push(
+      `<p><strong>${escapeXml(
+        wording.sentence(wording.neverBeforeSeen(newActions.length))
+      )}</strong>: ${listActions(newActions)}</p>`
+    );
+  }
+
+  if (escalations.length) {
+    parts.push(
+      `<p><strong>Permissions management</strong>: ${listActions(
+        escalations
+      )}</p>`
+    );
+  }
+
+  if (added.length) {
+    parts.push(`<p>Actions added: ${listActions(added)}</p>`);
+  }
+  if (removed.length) {
+    parts.push(`<p>Actions removed: ${listActions(removed)}</p>`);
+  }
+
+  return parts.join("");
+}
+
+/** "Amazon Bedrock (bedrock)", or the bare prefix when iam-dataset has no name. */
+function serviceLabel(prefix, meta) {
+  const name = meta.serviceNames[prefix];
+  return name ? `${name} (${prefix})` : prefix;
+}
+
+/**
+ * Collapse same-day, same-service action sightings into one entry.
+ *
+ * AWS lands a service's actions in a single policy commit, so the ungrouped feed
+ * was 48 near-identical odb items in a row and nothing else fit on the page. One
+ * item per service per day says the same thing and leaves room for the rest.
+ */
+function groupDiscoveredActions(actions) {
+  const groups = new Map();
+  for (const entry of actions) {
+    const prefix = entry.action.split(":", 1)[0].toLowerCase();
+    const key = `${entry.firstSeen}|${prefix}`;
+    if (!groups.has(key)) {
+      groups.set(key, {
+        prefix,
+        firstSeen: entry.firstSeen,
+        actions: [],
+        policies: new Set(),
+        hasPage: {},
+      });
+    }
+    const group = groups.get(key);
+    group.actions.push(entry.action);
+    group.policies.add(entry.firstPolicy);
+    group.hasPage[entry.action] = entry.hasPage;
+  }
+  for (const group of groups.values()) group.actions.sort();
+  return [...groups.values()];
+}
+
+/** The headline for one policy change, leading with the strongest signal. */
+function policyChangeTitle(policyName, delta) {
+  if (!delta) return `${policyName} updated`;
+
+  if (delta.newServicePrefixes && delta.newServicePrefixes.length) {
+    return `${policyName}: ${wording.newServicePhrase(
+      delta.newServicePrefixes
+    )}`;
+  }
+  if (delta.newActions && delta.newActions.length) {
+    return `${policyName}: ${wording.neverBeforeSeen(delta.newActions.length)}`;
+  }
+  if (delta.status === "added") {
+    const count = (delta.actionsAdded || []).length;
+    return `New policy: ${policyName} (${wording.plural(count, "action")})`;
+  }
+  if (delta.status === "removed") {
+    return `Policy removed: ${policyName}`;
+  }
+
+  const suffix = delta.versionId ? ` (${delta.versionId})` : "";
+  return `${policyName}: ${wording.actionDeltaPhrase(
+    delta.actionsAdded,
+    delta.actionsRemoved
+  )}${suffix}`;
+}
+
+/**
+ * A policy change as data rather than as feed markup.
+ *
+ * describePolicyChange renders the same delta into RSS HTML. This is the shape
+ * the /changes page, the per-policy version history and the public API all read,
+ * so none of them can end up describing a change differently from the feed.
+ * Every phrase still comes from change-wording.js, whose Python counterpart in
+ * automation/lambdas/shared/policy_diff.py words the emails and social posts.
+ *
+ * Returns null for a version with no recorded delta: policy-change-deltas.json
+ * covers the most recent 1,000 changes, so older versions have none and callers
+ * must render them as "no recorded delta" rather than as "nothing changed".
+ */
+function normalizeDelta(delta, meta) {
+  if (!delta) return null;
+
+  const added = delta.actionsAdded || [];
+  const removed = delta.actionsRemoved || [];
+  const prefixes = delta.newServicePrefixes || [];
+
+  // An action that is new only because its whole service prefix is new is
+  // already reported by the prefix; listing it twice overstates the finding.
+  const newActions = (delta.newActions || []).filter(
+    (a) => !prefixes.includes(a.split(":", 1)[0].toLowerCase())
+  );
+
+  const services = [
+    ...new Set([...added, ...removed].map((a) => a.split(":", 1)[0].toLowerCase())),
+  ].sort();
+
+  const permissionsManagement = added.filter((a) =>
+    meta.permissionsManagement.has(a.toLowerCase())
+  );
+
+  // Every phrase is rendered here rather than in the React components, so the
+  // page, the API and the feed all read the same words out of change-wording.js
+  // instead of each growing its own way of saying the same thing.
+  const phrases = {
+    summary: wording.actionDeltaPhrase(added, removed),
+    newService: prefixes.length
+      ? wording.sentence(wording.newServicePhrase(prefixes))
+      : "",
+    newActions: newActions.length
+      ? wording.sentence(wording.neverBeforeSeen(newActions.length))
+      : "",
+    permissionsManagement: wording.sentence(
+      wording.permissionsManagementPhrase(permissionsManagement)
+    ),
+  };
+
+  return {
+    sha: delta.sha,
+    date: delta.date,
+    policyName: delta.policyName,
+    versionId: delta.versionId || null,
+    status: delta.status || "modified",
+    headline: policyChangeTitle(delta.policyName, delta),
+    summary: phrases.summary,
+    phrases,
+    actionsAdded: added,
+    actionsRemoved: removed,
+    newActions,
+    newServicePrefixes: prefixes,
+    permissionsManagement,
+    services,
+    commitUrl: `${GITHUB_REPO}/commit/${delta.sha}`,
+  };
+}
+
+/** A change worth leading with: it names something never seen in the archive. */
+function isDiscovery(change) {
+  return (
+    change.newActions.length > 0 || change.newServicePrefixes.length > 0
+  );
+}
+
+/**
+ * Recount an endpoint change record rather than trusting its stored summary.
+ *
+ * botocore ships the same service in several partitions at once, so counting
+ * rows reported "5 new services" for three. Counting distinct identifiers per
+ * change type is what a reader means by "new service", and recomputing here
+ * fixes the records already committed as well as the ones still to come.
+ */
+function summarizeEndpointChanges(record) {
+  const changes = record.changes || [];
+  if (!changes.length) return record.summary || "endpoint changes detected";
+
+  const LABELS = [
+    ["new_partition", "new partition"],
+    ["new_region", "new region"],
+    ["removed_region", "removed region"],
+    ["new_service", "new service"],
+    ["removed_service", "removed service"],
+    ["service_expansion", "service expansion"],
+    ["service_contraction", "service contraction"],
+    ["region_updated", "region rename"],
+    ["removed_partition", "removed partition"],
+  ];
+
+  const distinct = {};
+  for (const c of changes) {
+    (distinct[c.type] = distinct[c.type] || new Set()).add(
+      c.id || c.service || c.description || ""
+    );
+  }
+
+  const parts = [];
+  for (const [type, label] of LABELS) {
+    if (distinct[type]) parts.push(wording.plural(distinct[type].size, label));
+  }
+  for (const type of Object.keys(distinct)) {
+    if (!LABELS.some(([t]) => t === type)) {
+      parts.push(wording.plural(distinct[type].size, type.replace(/_/g, " ")));
+    }
+  }
+  return parts.join(", ") || "endpoint changes detected";
+}
+
+/**
+ * One line per endpoint change, naming the partition.
+ *
+ * Without it the same service arriving in aws-iso and aws-iso-b renders as the
+ * identical bullet twice, which reads like a bug in the feed.
+ */
+function describeEndpointChange(change) {
+  const partition = change.partition ? ` [${escapeXml(change.partition)}]` : "";
+  return `<li>${escapeXml(change.description || change.id || "")}${partition}</li>`;
+}
+
 function generateRSSFeeds(policyData, endpointsData, guarddutyData) {
   console.log("\n📡 Generating RSS feeds...");
 
   const MAX_ITEMS = 50;
+  const deltas = loadPolicyChangeDeltas();
+  const meta = loadIamMetadata();
 
   // --- IAM Policies feed ---
-  const seenHashes = new Set();
-  const policyItems = (policyData.allCommitEntries || [])
-    .filter((e) => {
-      if (seenHashes.has(e.hash)) return false;
-      seenHashes.add(e.hash);
-      return true;
-    })
+  // Grouped by commit, because dropping every entry that repeats a hash would
+  // silently discard the other policies a multi-policy commit touched.
+  const byCommit = new Map();
+  for (const entry of policyData.allCommitEntries || []) {
+    if (!byCommit.has(entry.hash)) {
+      byCommit.set(entry.hash, {
+        hash: entry.hash,
+        date: entry.date,
+        policyNames: [],
+      });
+    }
+    byCommit.get(entry.hash).policyNames.push(entry.policyName);
+  }
+
+  const policyItems = [...byCommit.values()]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, MAX_ITEMS)
-    .map((e) => {
-      const policyUrl = `${SITE_URL}/policies/${encodeURIComponent(e.policyName)}/`;
-      const shortHash = (e.hash || "").slice(0, 7);
+    .map((commit) => {
+      const names = commit.policyNames;
+      const changes = names.map((name) => ({
+        name,
+        delta: deltas.get(`${commit.hash}:${name}`),
+      }));
+      const commitUrl = `${GITHUB_REPO}/commit/${commit.hash}`;
+
+      const title =
+        names.length === 1
+          ? policyChangeTitle(changes[0].name, changes[0].delta)
+          : `${wording.plural(names.length, "IAM policy", "IAM policies")} updated: ${names
+              .slice(0, 3)
+              .join(", ")}${names.length > 3 ? ` and ${names.length - 3} more` : ""}`;
+
+      const body = changes
+        .map((c) => describePolicyChange(c.name, c.delta, meta))
+        .join("");
+
+      // Categories let a reader filter by service, which is the axis they
+      // actually care about when a feed carries hundreds of policy names.
+      const services = new Set();
+      for (const { delta } of changes) {
+        for (const action of (delta && delta.actionsAdded) || []) {
+          services.add(action.split(":", 1)[0].toLowerCase());
+        }
+      }
+
       return {
-        title: `${e.policyName} updated`,
-        link: policyUrl,
-        guid: `${GITHUB_REPO}/commit/${e.hash}`,
-        permalink: false,
-        date: e.date,
-        category: "IAM Policy",
-        description: `<p>Policy <strong>${escapeXml(e.policyName)}</strong> was updated.</p><p>${escapeXml(e.message)}</p>${shortHash ? `<p>Commit: ${escapeXml(shortHash)}</p>` : ""}`,
+        title,
+        link:
+          names.length === 1
+            ? `${SITE_URL}/policies/${encodeURIComponent(names[0])}/`
+            : `${SITE_URL}/policies/`,
+        guid: commitUrl,
+        date: commit.date,
+        categories: ["IAM Policy", ...[...services].sort().slice(0, 10)],
+        enclosure: names.length === 1 ? policyEnclosure(names[0]) : null,
+        description: `${body}<p><a href="${commitUrl}">View the diff on GitHub</a></p>`,
       };
     });
 
@@ -1290,18 +2124,22 @@ function generateRSSFeeds(policyData, endpointsData, guarddutyData) {
     .sort((a, b) => new Date(b.detected_at) - new Date(a.detected_at))
     .slice(0, MAX_ITEMS)
     .map((r) => {
-      const changeList = r.changes
-        .map((c) => `<li>${escapeXml(c.description)}</li>`)
-        .join("");
-      const guid = r.botocore_commit_url || `iamtrail:endpoints:${r.detected_at}`;
+      const summary = summarizeEndpointChanges(r);
+      const changeList = (r.changes || []).map(describeEndpointChange).join("");
+      const partitions = [
+        ...new Set((r.changes || []).map((c) => c.partition).filter(Boolean)),
+      ].sort();
       return {
-        title: `Endpoint changes: ${r.summary}`,
+        title: `Endpoint changes: ${summary}`,
         link: `${SITE_URL}/endpoints/`,
-        guid,
-        permalink: false,
+        guid: r.botocore_commit_url || `iamtrail:endpoints:${r.detected_at}`,
         date: r.detected_at,
-        category: "Endpoints",
-        description: `<p>${escapeXml(r.summary)}</p><ul>${changeList}</ul>`,
+        categories: ["Endpoints", ...partitions],
+        description: `<p>${escapeXml(summary)}</p><ul>${changeList}</ul>${
+          r.botocore_commit_url
+            ? `<p><a href="${escapeXml(r.botocore_commit_url)}">botocore commit</a></p>`
+            : ""
+        }`,
       };
     });
 
@@ -1359,13 +2197,24 @@ function generateRSSFeeds(policyData, endpointsData, guarddutyData) {
       if (a.link) descParts.push(`<p><a href="${escapeXml(a.link)}">AWS Documentation</a></p>`);
       if (a.gist_url) descParts.push(`<p><a href="${escapeXml(a.gist_url)}">Raw SNS message</a></p>`);
       descParts.push(`<p><a href="${SITE_URL}/guardduty/">View on IAMTrail</a></p>`);
+
+      // AWS publishes several findings in one SNS batch, so detected_at and type
+      // are shared. Keying on those alone gave two distinct findings the same
+      // guid, and a reader that dedupes by guid showed only one of them.
+      //
+      // link is deliberately not part of the chain: several announcements can
+      // point at one documentation page (every retired finding links to the same
+      // "retired findings" page), so it identifies a topic, not an announcement.
+      const guid =
+        a.gist_url ||
+        `iamtrail:guardduty:${a.detected_at}:${a.type}:${slugify(sourceText)}`;
+
       return {
         title,
         link: a.link || a.gist_url || `${SITE_URL}/guardduty/`,
-        guid: a.gist_url || `guardduty-${a.detected_at}-${a.type}`,
-        permalink: !!(a.link || a.gist_url),
+        guid,
         date: a.detected_at,
-        category: "GuardDuty",
+        categories: ["GuardDuty", label.replace(/^GuardDuty /, "")],
         description: descParts.join(""),
       };
     });
@@ -1382,8 +2231,106 @@ function generateRSSFeeds(policyData, endpointsData, guarddutyData) {
   fs.writeFileSync(path.join(FEEDS_DIR, "guardduty.xml"), guarddutyFeed);
   console.log(`   📡 GuardDuty feed: ${guarddutyItems.length} items`);
 
+  // --- Discoveries feed ---
+  // The archive's strongest signal, and until now the only one with no feed: an
+  // IAM action or service prefix appearing for the very first time, which is
+  // usually how a service AWS has not announced becomes visible.
+  const discoveryItems = [
+    ...(policyData.discoveredServices || []).map((s) => ({
+      sortKey: `${s.firstSeen}|0|${s.prefix}`,
+      title: wording.sentence(wording.newServicePhrase([s.prefix])),
+      link: `${SITE_URL}/discoveries/`,
+      guid: `iamtrail:discovery:service:${s.prefix}`,
+      date: s.firstSeen,
+      categories: ["Discovery", "New AWS service", s.prefix],
+      description:
+        `<p><strong>${escapeXml(serviceLabel(s.prefix, meta))}</strong> appeared in an AWS managed IAM policy ` +
+        `for the first time, in <a href="${SITE_URL}/policies/${encodeURIComponent(
+          s.firstPolicy
+        )}/">${escapeXml(s.firstPolicy)}</a>.</p>` +
+        `<p>${escapeXml(wording.plural(s.actionCount, "action"))} on this prefix ${
+          s.actionCount === 1 ? "is" : "are"
+        } now tracked.</p>` +
+        `<p><a href="${SITE_URL}/discoveries/">View all discoveries</a></p>`,
+    })),
+    ...groupDiscoveredActions(policyData.discoveredActions || []).map((g) => {
+      const escalations = g.actions.filter((a) =>
+        meta.permissionsManagement.has(a.toLowerCase())
+      );
+      const links = g.actions
+        .slice(0, 40)
+        .map((a) =>
+          g.hasPage[a]
+            ? `<a href="${SITE_URL}/actions/${iamActionToSlug(a)}/">${escapeXml(a)}</a>`
+            : escapeXml(a)
+        )
+        .join(", ");
+      const extra = g.actions.length - Math.min(g.actions.length, 40);
+      const single = g.actions.length === 1;
+
+      return {
+        sortKey: `${g.firstSeen}|1|${g.prefix}`,
+        title: single
+          ? `${wording.sentence(wording.neverBeforeSeen(1))}: ${g.actions[0]}`
+          : `${wording.sentence(
+              wording.neverBeforeSeen(g.actions.length)
+            )} on ${serviceLabel(g.prefix, meta)}`,
+        link:
+          single && g.hasPage[g.actions[0]]
+            ? `${SITE_URL}/actions/${iamActionToSlug(g.actions[0])}/`
+            : `${SITE_URL}/discoveries/`,
+        guid: `iamtrail:discovery:actions:${g.firstSeen}:${g.prefix}`,
+        date: g.firstSeen,
+        categories: ["Discovery", "Never-before-seen action", g.prefix],
+        description:
+          `<p>${escapeXml(
+            wording.sentence(wording.neverBeforeSeen(g.actions.length))
+          )} on <strong>${escapeXml(serviceLabel(g.prefix, meta))}</strong>, ` +
+          `first seen in ${[...g.policies]
+            .slice(0, 3)
+            .map(
+              (p) =>
+                `<a href="${SITE_URL}/policies/${encodeURIComponent(p)}/">${escapeXml(p)}</a>`
+            )
+            .join(", ")}.</p>` +
+          (escalations.length
+            ? `<p><strong>Permissions management</strong>: ${listActions(escalations)}</p>`
+            : "") +
+          `<p>${links}${extra > 0 ? ` and ${extra} more` : ""}</p>` +
+          `<p><a href="${SITE_URL}/discoveries/">View all discoveries</a></p>`,
+      };
+    }),
+  ]
+    // A service prefix outranks a single action on the same day, since the
+    // prefix is the finding and the actions under it merely follow from it.
+    .sort((a, b) => b.sortKey.localeCompare(a.sortKey))
+    .slice(0, MAX_ITEMS);
+
+  const discoveriesFeed = buildRSSFeed(
+    {
+      title: "IAMTrail - Discoveries",
+      link: `${SITE_URL}/discoveries/`,
+      description:
+        "First-ever sightings of AWS IAM service prefixes and actions, often visible here before AWS announces the service. An unofficial archive by zoph.io.",
+      feedUrl: `${SITE_URL}/feeds/discoveries.xml`,
+    },
+    discoveryItems
+  );
+  fs.writeFileSync(path.join(FEEDS_DIR, "discoveries.xml"), discoveriesFeed);
+  console.log(`   📡 Discoveries feed: ${discoveryItems.length} items`);
+
   // --- All-in-One feed ---
-  const allItems = [...policyItems, ...endpointItems, ...guarddutyItems]
+  // Quotas rather than a plain merge: policy churn runs an order of magnitude
+  // hotter than the other sources, so a straight date sort left this feed with
+  // 44 policy items and a single GuardDuty one, making "All Changes" a
+  // misnomer for the very readers who chose it to avoid missing anything.
+  const QUOTAS = [
+    [discoveryItems, 8],
+    [policyItems, 22],
+    [endpointItems, 12],
+    [guarddutyItems, 8],
+  ];
+  const allItems = QUOTAS.flatMap(([items, quota]) => items.slice(0, quota))
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, MAX_ITEMS);
 
@@ -1391,7 +2338,7 @@ function generateRSSFeeds(policyData, endpointsData, guarddutyData) {
     {
       title: "IAMTrail - All Changes",
       link: SITE_URL,
-      description: "All IAMTrail changes in one feed - IAM policies, endpoints, and GuardDuty announcements. An unofficial archive by zoph.io.",
+      description: "All IAMTrail changes in one feed - discoveries, IAM policies, endpoints, and GuardDuty announcements. An unofficial archive by zoph.io.",
       feedUrl: `${SITE_URL}/feeds/all.xml`,
     },
     allItems

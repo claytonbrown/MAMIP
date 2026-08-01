@@ -6,7 +6,7 @@
 
 _Previously known as MAMIP (Monitor AWS Managed IAM Policies)._
 
-[![Build Status](https://github.com/zoph-io/IAMTrail/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/zoph-io/IAMTrail/actions/workflows/main.yml)
+[![Build Status](https://github.com/zoph-io/IAMTrail/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/zoph-io/IAMTrail/actions/workflows/main.yml)
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 [![Website](https://img.shields.io/badge/website-iamtrail.com-brightgreen)](https://iamtrail.com)
 
@@ -29,7 +29,7 @@ Explore AWS Managed IAM Policies through a searchable web interface at **[iamtra
 - Syntax-highlighted JSON policy viewer
 - New (v1) policy tracking to spot new AWS services
 - Policy validation findings from AWS Access Analyzer
-- [Known AWS Account lookup](https://iamtrail.com/accounts) - identify who owns an AWS account ID, powered by the [fwdcloudsec/known_aws_accounts](https://github.com/fwdcloudsec/known_aws_accounts) community dataset
+- [Known AWS Account lookup](https://iamtrail.com/accounts) - identify who owns one or a whole list of AWS account IDs, powered by the [fwdcloudsec/known_aws_accounts](https://github.com/fwdcloudsec/known_aws_accounts) community dataset
 
 ---
 
@@ -45,7 +45,7 @@ Subscribe to policy changes:
   - [Endpoint Changes](https://iamtrail.com/feeds/endpoints.xml) - new regions, services, and expansions from botocore
   - [GuardDuty Announcements](https://iamtrail.com/feeds/guardduty.xml) - new findings, features, and region launches
 
-See [docs/notifications-and-social.md](docs/notifications-and-social.md) for SSM parameters, Bluesky queue, GitHub Actions IAM, and why X posting is off.
+See [docs/notifications-and-social.md](docs/notifications-and-social.md) for SSM parameters, Bluesky queue, and GitHub Actions IAM.
 
 ## Browse the Data
 
@@ -57,6 +57,29 @@ All policies are stored as JSON in this repository and updated automatically eve
 | [`findings/`](./findings/) | Access Analyzer validation results |
 | [`DEPRECATED.json`](./DEPRECATED.json) | Historical record of 73+ deprecated policies |
 
+## API
+
+The whole archive is also published as versioned JSON at `https://iamtrail.com/api/v1`. No key, no sign-up, no rate limit - these are static files on the same CloudFront distribution that serves the site. Full documentation at [iamtrail.com/api](https://iamtrail.com/api).
+
+| Resource | Description |
+| --- | --- |
+| [`/api/v1/index.json`](https://iamtrail.com/api/v1/index.json) | Service index: contract version, counts, and the URL of every other resource |
+| [`/api/v1/policies.json`](https://iamtrail.com/api/v1/policies.json) | Every tracked policy with its ARN, current version and dates |
+| `/api/v1/policies/{policyName}.json` | One policy: current IAM document plus full version history with per-version action deltas |
+| [`/api/v1/changes.json`](https://iamtrail.com/api/v1/changes.json) | Recent changes, each naming the actions added and removed |
+| [`/api/v1/actions.json`](https://iamtrail.com/api/v1/actions.json) | Every literal IAM action mapped to the policies that allow, deny or NotAction it |
+| [`/api/v1/discoveries.json`](https://iamtrail.com/api/v1/discoveries.json) | Actions and service prefixes seen for the first time anywhere in the archive |
+
+```bash
+# What changed in the last day
+curl -s https://iamtrail.com/api/v1/changes.json \
+  | jq -r '.changes[]
+      | select(.date > (now - 86400 | todate))
+      | "\(.policyName) \(.versionId): \(.summary)"'
+```
+
+Fields are added, never removed or repurposed, within a version. A breaking change means a new path under `/api/v2/`.
+
 ## How It Works
 
 An automated workflow runs every hour (Mon-Fri):
@@ -65,7 +88,7 @@ An automated workflow runs every hour (Mon-Fri):
 2. Detect new, updated, or deprecated policies
 3. Validate each policy with AWS Access Analyzer
 4. Commit changes to git (one commit per policy)
-5. Notify via Bluesky, RSS, email digests, and an invite-only Discord webhook (SSM only, not linked on the site; X/Twitter posting is disabled - see `automation/scripts/x_poster.py`)
+5. Notify via Bluesky, RSS, email digests, and an invite-only Discord webhook (SSM only, not linked on the site)
 
 ## Credits
 

@@ -1,5 +1,6 @@
-import { Rss, Shield, Globe, FileText, Layers } from "lucide-react";
+import { Rss, Shield, Globe, FileText, Layers, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
+import RelatedPages from "@/components/RelatedPages";
 
 export const metadata: Metadata = {
   title: "RSS Feeds",
@@ -11,20 +12,29 @@ const SITE_URL = "https://iamtrail.com";
 
 const feeds = [
   {
+    name: "Discoveries",
+    url: `${SITE_URL}/feeds/discoveries.xml`,
+    path: "/feeds/discoveries.xml",
+    description:
+      "First-ever sightings of AWS IAM service prefixes and actions. The IAM component usually lands before the SDK and the docs, so a service often shows up here before AWS announces it.",
+    icon: Sparkles,
+    highlight: true,
+  },
+  {
     name: "All Changes",
     url: `${SITE_URL}/feeds/all.xml`,
     path: "/feeds/all.xml",
     description:
-      "Everything in one feed - IAM policy changes, endpoint updates, and GuardDuty announcements.",
+      "Everything in one feed - discoveries, IAM policy changes, endpoint updates, and GuardDuty announcements.",
     icon: Layers,
-    highlight: true,
+    highlight: false,
   },
   {
     name: "IAM Policy Changes",
     url: `${SITE_URL}/feeds/iam-policies.xml`,
     path: "/feeds/iam-policies.xml",
     description:
-      "Track updates to AWS Managed IAM Policies as they happen - new versions, permission changes, and new policies.",
+      "Every AWS Managed IAM Policy change, with the actions added and removed named in the item itself.",
     icon: FileText,
     highlight: false,
   },
@@ -142,6 +152,8 @@ export default function FeedsPage() {
           tags.
         </p>
       </div>
+
+      <RelatedPages current="/feeds" />
     </div>
   );
 }

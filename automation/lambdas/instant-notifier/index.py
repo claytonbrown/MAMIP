@@ -2,9 +2,14 @@ import json
 import os
 import re
 import traceback
-import urllib.request
+from urllib.parse import quote
+import action_registry
+import bluesky_publisher
 import boto3
 import discord_notifier as discord
+import iam_metadata
+import policy_diff
+import telegram_publisher
 
 dynamodb = boto3.resource("dynamodb")
 ses = boto3.client("ses", region_name=os.environ.get("SES_REGION", "eu-west-3"))
@@ -12,169 +17,435 @@ ses = boto3.client("ses", region_name=os.environ.get("SES_REGION", "eu-west-3"))
 SUBSCRIPTIONS_TABLE = os.environ["SUBSCRIPTIONS_TABLE"]
 SENDER_EMAIL = os.environ["SENDER_EMAIL"]
 SITE_URL = os.environ["SITE_URL"]
-GITHUB_REPO = os.environ["GITHUB_REPO"]
+
+# Bluesky rejects a post longer than this.
+BLUESKY_LIMIT = 300
+
+# Tags are the only discovery surface Bluesky gives an account this small, and
+# the posts carried none. Budgeted like the link: always present, never trimmed.
+BLUESKY_TAGS = "#AWS #IAM #CloudSecurity"
+
+# Telegram allows far more room, so the body names actions instead of teasing
+# them. These keep a bulk day from crowding out the finding itself.
+TELEGRAM_MAX_BLOCKS = 5
+TELEGRAM_MAX_ACTIONS = 12
+
+# Discord embed caps. Fields are the roomiest surface any short-form channel
+# gives us, so this is where the full action list goes.
+DISCORD_TITLE_LIMIT = 256
+DISCORD_DESC_LIMIT = 4096
+DISCORD_FIELD_LIMIT = 1024
 
 subs_table = dynamodb.Table(SUBSCRIPTIONS_TABLE)
 
-_diff_cache = {}
-_MAX_CACHED_LINES = 500
-_DISPLAY_LINES = 30
+
+def new_service_prefixes(changes):
+    """Every brand-new service prefix across a batch of changes."""
+    return sorted({p for c in changes for p in c.get("new_service_prefixes") or []})
 
 
-def _fetch_commit_diff(commit_sha):
-    """Fetch full commit diff from GitHub API with caching."""
-    if commit_sha in _diff_cache:
-        return _diff_cache[commit_sha]
-    try:
-        url = f"https://api.github.com/repos/{GITHUB_REPO}/commits/{commit_sha}"
-        req = urllib.request.Request(url, headers={
-            "Accept": "application/vnd.github.v3.diff",
-            "User-Agent": "IAMTrail-Instant/1.0",
-        })
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            diff_text = resp.read().decode("utf-8", errors="replace")
-
-        lines = diff_text.split("\n")[:_MAX_CACHED_LINES]
-        _diff_cache[commit_sha] = lines
-        return lines
-    except Exception as e:
-        print(f"Failed to fetch diff for {commit_sha}: {e}")
-        _diff_cache[commit_sha] = []
-        return []
+def policy_url(name):
+    """Link to a policy page, with the name encoded rather than trusted."""
+    return f"{SITE_URL}/policies/{quote(name, safe='')}"
 
 
-def _extract_file_diff(all_lines, policy_name):
-    """Extract only the diff hunk for a specific policy file."""
-    target = f"policies/{policy_name}"
-    result = []
-    in_target = False
+def _budget(*fixed):
+    """Characters left for a name list once every fixed part is accounted for.
 
-    for line in all_lines:
-        if line.startswith("diff --git"):
-            in_target = target in line
-        if in_target:
-            result.append(line)
-
-    return result if result else all_lines
+    Callers pass every piece that is not the list itself, including separators,
+    because the two blank lines before the link and before the tags are easy to
+    forget and a two-character miss is enough for Bluesky to reject the post.
+    """
+    return BLUESKY_LIMIT - sum(len(p) for p in fixed) - 4
 
 
-def fetch_diff(commit_sha, policy_name=None):
-    """Return (lines, truncated) for a policy, filtered from the cached commit diff."""
-    all_lines = _fetch_commit_diff(commit_sha)
-    if not all_lines:
-        return [], False
+def _fit_names(names, budget):
+    """As many whole names as fit the budget, with a count for the remainder.
 
-    lines = _extract_file_diff(all_lines, policy_name) if policy_name else all_lines
-    truncated = len(lines) > _DISPLAY_LINES
-    return lines[:_DISPLAY_LINES], truncated
+    The old scraper-side post cut the joined names at 200 bytes and appended
+    "...", so it routinely ended mid-name. This only ever drops whole names, and
+    returns "" when not even one fits, leaving the caller's count to speak alone.
+    """
+    shown = []
+    for name in names:
+        left = len(names) - len(shown) - 1
+        suffix = f" (+{left} more)" if left else ""
+        if len(", ".join(shown + [name])) + len(suffix) > budget:
+            break
+        shown.append(name)
+
+    if not shown:
+        return ""
+    left = len(names) - len(shown)
+    return ", ".join(shown) + (f" (+{left} more)" if left else "")
 
 
-def format_diff_html(lines, truncated, commit_url):
-    """Render diff lines as email-safe HTML."""
-    if not lines:
+def batch_actions(changes):
+    """Every action added and removed across a batch, de-duplicated, sorted."""
+    added, removed = set(), set()
+    for change in changes:
+        added.update(change.get("actions_added") or [])
+        removed.update(change.get("actions_removed") or [])
+    return sorted(added), sorted(removed)
+
+
+def ordered_new_actions(change):
+    """A change's never-before-seen actions, the new service's own first.
+
+    A policy that introduces a prefix usually adds unrelated actions in the same
+    commit, and an alphabetical list buries odb: behind apigateway: for the
+    reader who came for odb.
+    """
+    actions = change.get("new_actions") or []
+    prefixes = set(change.get("new_service_prefixes") or [])
+    if not prefixes:
+        return actions
+    return sorted(actions, key=lambda a: (iam_metadata.service_of(a) not in prefixes, a))
+
+
+def batch_summary(changes, policy_names):
+    """"12 AWS managed IAM policies updated: 75 actions added"."""
+    added, removed = batch_actions(changes)
+    return (
+        policy_diff.plural(
+            len(policy_names), "AWS managed IAM policy", "AWS managed IAM policies"
+        )
+        + f" updated: {policy_diff.action_delta_phrase(added, removed)}"
+    )
+
+
+def build_bluesky_post(changes, policy_names):
+    """The public post, leading with the discovery when there is one.
+
+    Bluesky hard-caps a post at 300 characters, so everything is budgeted around
+    the link and the tags, which are the parts that must survive intact.
+
+    An ordinary run used to post a bare list of policy names, which told a
+    follower that something happened without ever saying what. The delta and the
+    permissions-management callout are what a reader can act on, so they lead and
+    the names fill whatever room is left.
+    """
+    prefixes = new_service_prefixes(changes)
+
+    if prefixes:
+        introducing = next((c for c in changes if c.get("new_service_prefixes")), None)
+        policy = introducing["name"] if introducing else ""
+        link = policy_url(policy) if policy else f"{SITE_URL}/policies"
+        lead = policy_diff.sentence(policy_diff.new_service_phrase(prefixes))
+
+        count = len(introducing.get("new_actions") or []) if introducing else 0
+        detail = ""
+        if count and policy:
+            detail = (
+                f"\n\n{policy_diff.never_before_seen(count)}, first seen in {policy}"
+            )
+
+        budget = _budget(lead, ": ", detail, link, BLUESKY_TAGS)
+        if budget < len(prefixes[0]):
+            # The prefixes are the headline, so the detail line yields to them.
+            detail = ""
+            budget = _budget(lead, ": ", link, BLUESKY_TAGS)
+        # A single prefix is already named in the lead, so listing it again would
+        # only repeat the headline.
+        listed = _fit_names(prefixes, budget) if len(prefixes) > 1 else ""
+        body = f"{lead}{': ' + listed if listed else ''}{detail}"
+        return _assemble(body, link)
+
+    added, removed = batch_actions(changes)
+    escalations = iam_metadata.permissions_management(added)
+    count = len(policy_names)
+    link = f"{SITE_URL}/policies"
+
+    lead = (
+        f"{policy_diff.plural(count, 'AWS managed IAM policy', 'AWS managed IAM policies')}"
+        f" updated: {policy_diff.action_delta_phrase(added, removed)}"
+    )
+    if escalations:
+        lead += f". {policy_diff.sentence(policy_diff.permissions_management_phrase(escalations))}"
+
+    # Service prefixes rather than policy names: one prefix tells a reader
+    # whether the batch is worth opening, and ten of them fit where three policy
+    # names would not. The friendly names are left to the channels with room.
+    services = iam_metadata.services_of(added + removed)
+    names = services or policy_names
+    label = "Services" if services else "Policies"
+    listed = _fit_names(names, _budget(lead, f"\n\n{label}: ", link, BLUESKY_TAGS))
+    detail = f"\n\n{label}: {listed}" if listed else ""
+
+    return _assemble(f"{lead}{detail}", link)
+
+
+def _assemble(body, link):
+    """Join body, link and tags, dropping the name list if the cap is still hit.
+
+    The budgeting above should make this unnecessary, but Bluesky rejects an
+    over-long post outright, so the fallback is a shorter post rather than none.
+    """
+    post = f"{body}\n\n{link}\n\n{BLUESKY_TAGS}"
+    if len(post) <= BLUESKY_LIMIT:
+        return post
+
+    trimmed = body.split("\n\n")[0]
+    post = f"{trimmed}\n\n{link}\n\n{BLUESKY_TAGS}"
+    if len(post) <= BLUESKY_LIMIT:
+        return post
+
+    room = BLUESKY_LIMIT - len(link) - len(BLUESKY_TAGS) - 4
+    return f"{trimmed[:max(0, room)]}\n\n{link}\n\n{BLUESKY_TAGS}"
+
+
+def _telegram_block(change, max_actions):
+    """One discovery, rendered with as many actions as the caller allows."""
+    esc = telegram_publisher.escape
+    name = change["name"]
+    prefixes = change.get("new_service_prefixes") or []
+    actions = change.get("new_actions") or []
+    count = len(actions)
+
+    if prefixes:
+        named = ", ".join(iam_metadata.label_service(p) for p in prefixes)
+        head = f"<b>{policy_diff.sentence(policy_diff.new_service_phrase(prefixes))}</b>"
+        detail = f"{esc(named)}, never seen in any AWS managed policy before"
+    else:
+        head = f"<b>{policy_diff.sentence(policy_diff.never_before_seen(count))}</b>"
+        services = ", ".join(
+            iam_metadata.label_service(p) for p in iam_metadata.services_of(actions)
+        )
+        detail = f"On {esc(services)}" if services else ""
+
+    # Version and status, absent until now, are what tell a reader whether AWS
+    # created this policy for the discovery or slipped it into an existing one.
+    status = policy_diff.STATUS_WORDS.get(change.get("status"), "updated")
+    version = change.get("new_version") or change.get("old_version") or ""
+    where = f"First seen in {esc(name)} ({esc(status)}"
+    where += f", {esc(version)})" if version else ")"
+
+    escalations = iam_metadata.permissions_management(actions)
+    actions = ordered_new_actions(change)
+
+    shown = [esc(a) for a in actions[:max_actions]]
+    left = count - len(shown)
+    listed = ", ".join(shown) + (f", and {left} more" if left else "")
+
+    lines = [head]
+    if detail:
+        lines.append(detail)
+    lines.append(where)
+    # Kept to at least one entry even when the action list is trimmed to nothing:
+    # this line is the reason a security reader follows the channel.
+    if escalations:
+        lines.append(
+            "<b>Permissions management</b>: "
+            + esc(", ".join(escalations[: max(1, max_actions)]))
+        )
+    if listed:
+        lines.append(f"<code>{listed}</code>")
+    lines.append(esc(policy_url(name)))
+    return "\n".join(lines)
+
+
+def build_telegram_post(changes):
+    """The channel body, or "" when nothing is worth broadcasting.
+
+    The channel carries discoveries only, so an ordinary version bump produces no
+    post at all. Telegram's 4096-character budget is roomy enough to name the
+    actions rather than tease them, so a reader gets the finding without leaving
+    the app.
+    """
+    discoveries = sorted(
+        (c for c in changes if policy_diff.is_discovery(c)),
+        key=policy_diff.discovery_rank,
+    )
+    if not discoveries:
         return ""
 
-    html_lines = []
-    for line in lines:
-        if line.startswith("+") and not line.startswith("+++"):
-            color = "#22863a"
-        elif line.startswith("-") and not line.startswith("---"):
-            color = "#cb2431"
-        elif line.startswith("@@"):
-            color = "#6f42c1"
+    def render(max_actions):
+        blocks = [
+            _telegram_block(c, max_actions) for c in discoveries[:TELEGRAM_MAX_BLOCKS]
+        ]
+        left = len(discoveries) - TELEGRAM_MAX_BLOCKS
+        if left > 0:
+            blocks.append(
+                f"and {left} more with never-before-seen actions: {SITE_URL}/policies"
+            )
+        # One aggregated message per run, because the channel rate limit is per
+        # minute and a re:Invent day can carry several discoveries at once.
+        return "\n\n".join(blocks)
+
+    body = render(TELEGRAM_MAX_ACTIONS)
+    if len(body) <= telegram_publisher.MESSAGE_LIMIT:
+        return body
+
+    # Shorten every block's action list rather than dropping blocks: the old
+    # fallback kept the first discovery and threw the rest of the run away, so a
+    # busy day silently lost findings the channel exists to report.
+    for max_actions in (6, 3, 1, 0):
+        body = render(max_actions)
+        if len(body) <= telegram_publisher.MESSAGE_LIMIT:
+            return body
+    return body[: telegram_publisher.MESSAGE_LIMIT]
+
+
+def _discord_field(items, limit=DISCORD_FIELD_LIMIT):
+    """As many comma-joined items as a Discord field holds, plus a remainder count."""
+    shown, used = [], 0
+    for item in items:
+        cost = len(item) + (2 if shown else 0)
+        # Reserve room for the " and N more" tail rather than overflowing it.
+        if used + cost > limit - 20:
+            break
+        shown.append(item)
+        used += cost
+    if not shown:
+        return ""
+    left = len(items) - len(shown)
+    return ", ".join(shown) + (f" and {left} more" if left else "")
+
+
+def build_discord_public(changes, policy_names, commit_url):
+    """The public Discord embed, as keyword arguments for send_public.
+
+    Discord allows far more room than Bluesky and renders structured fields, so
+    it is the only short-form channel that can carry the whole action list. The
+    shape still mirrors the others: the discovery leads when there is one, and
+    the routine case leads with the delta rather than a list of policy names.
+    """
+    prefixes = new_service_prefixes(changes)
+    discoveries = sorted(
+        (c for c in changes if policy_diff.is_discovery(c)),
+        key=policy_diff.discovery_rank,
+    )
+    added, removed = batch_actions(changes)
+    escalations = iam_metadata.permissions_management(added)
+
+    fields = []
+    if discoveries:
+        lead = discoveries[0]
+        new_actions = ordered_new_actions(lead)
+        named = [iam_metadata.label_service(p) for p in prefixes]
+        url = policy_url(lead["name"])
+        color = discord.COLOR_WARNING
+
+        if prefixes:
+            title = policy_diff.sentence(policy_diff.new_service_phrase(prefixes))
+            # Past a handful, the names belong in a field: a paragraph of them
+            # pushes the finding itself off the top of the embed.
+            if len(named) <= 3:
+                subject = f"**{', '.join(named)}**"
+            else:
+                subject = policy_diff.plural(
+                    len(named), "service prefix", "service prefixes"
+                )
+                fields.append(("New AWS services", _discord_field(named), False))
+            description = (
+                f"{subject} appeared in an AWS managed IAM policy for the first "
+                f"time, in {lead['name']}."
+            )
         else:
-            color = "#24292e"
+            title = policy_diff.sentence(
+                policy_diff.never_before_seen(len(new_actions))
+            )
+            services = ", ".join(
+                iam_metadata.label_service(p)
+                for p in iam_metadata.services_of(new_actions)
+            )
+            description = f"On {services}, first seen in {lead['name']}."
 
-        escaped = (
-            line.replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
+        if new_actions:
+            fields.append(
+                ("Never-before-seen actions", _discord_field(new_actions), False)
+            )
+        if len(discoveries) > 1:
+            fields.append(
+                (
+                    "Other discoveries in this run",
+                    _discord_field([c["name"] for c in discoveries[1:]]),
+                    False,
+                )
+            )
+        # The discovery is the headline, but the reader still wants to know how
+        # big the run was. Bluesky has no room for both; Discord does.
+        fields.append(("This run", batch_summary(changes, policy_names), False))
+    else:
+        title = (
+            policy_diff.plural(
+                len(policy_names), "AWS managed IAM policy", "AWS managed IAM policies"
+            )
+            + " updated"
         )
-        html_lines.append(f'<span style="color:{color};">{escaped}</span>')
+        description = policy_diff.sentence(
+            policy_diff.action_delta_phrase(added, removed)
+        )
+        color = discord.COLOR_INFO
+        url = f"{SITE_URL}/policies"
 
-    joined = "\n".join(html_lines)
-    suffix = ""
-    if truncated:
-        suffix = f'\n<a href="{commit_url}" style="color:#2563eb;font-size:12px;">View full diff on GitHub →</a>'
+    if escalations:
+        fields.append(
+            ("Permissions management", _discord_field(escalations), False)
+        )
 
+    services = [
+        iam_metadata.label_service(p)
+        for p in iam_metadata.services_of(added + removed)
+    ]
+    if services:
+        fields.append(("Services", _discord_field(services), False))
+
+    fields.append(("Policies", _discord_field(policy_names), False))
+    if commit_url:
+        fields.append(("Commit", f"[View the diff]({commit_url})", True))
+
+    # Discord rejects the whole embed over an empty field value, which is the
+    # one way a single absurdly long name could cost us the post entirely.
+    return {
+        "title": title[:DISCORD_TITLE_LIMIT],
+        "description": description[:DISCORD_DESC_LIMIT],
+        "color": color,
+        "fields": [f for f in fields if f[1]],
+        "footer": "IAM policies",
+        "url": url,
+    }
+
+
+def build_subject(changes):
+    """A never-before-seen service outranks any count of routine updates."""
+    prefixes = new_service_prefixes(changes)
+    if len(prefixes) == 1:
+        return f"IAMTrail: {policy_diff.new_service_phrase(prefixes)}"
+    if prefixes:
+        return (
+            f"IAMTrail: {policy_diff.new_service_phrase(prefixes)} - "
+            f"{', '.join(prefixes[:3])}"
+        )
     return (
-        f'<pre style="background:#f6f8fa;padding:12px;border-radius:6px;'
-        f'font-size:12px;line-height:1.4;overflow-x:auto;font-family:monospace;">'
-        f"{joined}{suffix}</pre>"
+        "IAMTrail Alert: "
+        f"{policy_diff.summarize_counts(changes, brief=True)} just changed"
     )
 
 
 def build_email_html(subscriber, policy_changes):
-    """Compose the instant notification email HTML.
+    """Compose the instant notification email from resolved change records."""
+    prefixes = new_service_prefixes(policy_changes)
+    if prefixes:
+        summary = (
+            f"Never seen before in any AWS managed policy: {', '.join(prefixes)}"
+        )
+    else:
+        summary = f"{policy_diff.summarize_counts(policy_changes)} just changed"
 
-    policy_changes is a list of dicts with keys:
-      policy_name, commit_url, commit_sha
-    """
-    manage_url = f"{SITE_URL}/manage?token={subscriber['manage_token']}"
-    unsubscribe_url = f"{SITE_URL}/manage?token={subscriber['manage_token']}&action=unsubscribe"
-
-    policy_sections = []
-    for change in policy_changes:
-        policy_name = change["policy_name"]
-        p_commit_url = change.get("commit_url", "")
-        p_commit_sha = change.get("commit_sha", "")
-        policy_url = f"{SITE_URL}/policies/{policy_name}"
-
-        diff_html = ""
-        if p_commit_sha:
-            diff_lines, truncated = fetch_diff(p_commit_sha, policy_name=policy_name)
-            diff_html = format_diff_html(diff_lines, truncated, p_commit_url)
-
-        section = f"""
-        <div style="margin-bottom:12px;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
-            <div style="background:#f8fafc;padding:12px 16px;border-bottom:1px solid #e2e8f0;">
-                <a href="{policy_url}" style="color:#2563eb;font-weight:600;text-decoration:none;font-size:14px;">
-                    {policy_name}
-                </a>
-                {f' &middot; <a href="{p_commit_url}" style="color:#64748b;font-size:12px;text-decoration:none;">view commit</a>' if p_commit_url else ''}
-            </div>
-            {f'<div style="padding:12px 16px;">{diff_html}</div>' if diff_html else ''}
-        </div>
-        """
-        policy_sections.append(section)
-
-    policies_html = "".join(policy_sections)
-    change_count = len(policy_changes)
-
-    return f"""
-    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:640px;margin:0 auto;color:#1e293b;">
-        <div style="padding:24px 0;border-bottom:2px solid #f59e0b;">
-            <h1 style="margin:0;font-size:24px;color:#1e293b;">
-                IAMTrail Instant Alert
-            </h1>
-            <p style="margin:8px 0 0;color:#64748b;font-size:14px;">
-                {change_count} {'policy' if change_count == 1 else 'policies'} just changed
-            </p>
-        </div>
-
-        <div style="padding:24px 0;">
-            {policies_html}
-        </div>
-
-        <div style="border-top:1px solid #e2e8f0;padding:24px 0;text-align:center;">
-            <p style="color:#94a3b8;font-size:12px;margin:0 0 8px;">
-                You're receiving this instant alert because you subscribed to IAMTrail policy change notifications.
-            </p>
-            <p style="margin:0;">
-                <a href="{manage_url}" style="color:#2563eb;font-size:12px;">Manage subscription</a>
-                &nbsp;&middot;&nbsp;
-                <a href="{unsubscribe_url}" style="color:#94a3b8;font-size:12px;">Unsubscribe</a>
-            </p>
-            <p style="color:#cbd5e1;font-size:11px;margin:12px 0 0;">
-                <a href="{SITE_URL}" style="color:#94a3b8;">IAMTrail</a> by <a href="https://zoph.io" style="color:#94a3b8;">zoph.io</a>
-            </p>
-        </div>
-    </div>
-    """
+    return policy_diff.render_email(
+        title="IAMTrail Instant Alert",
+        summary=summary,
+        accent="#f59e0b",
+        body_html=policy_diff.render_policy_section(policy_changes, SITE_URL),
+        site_url=SITE_URL,
+        manage_token=subscriber["manage_token"],
+        intro="You're receiving this instant alert because you subscribed to IAMTrail policy change notifications.",
+    )
 
 
 def get_instant_subscribers():
-    """Scan for confirmed instant subscribers that track IAM policies."""
+    """Scan for confirmed instant subscribers that want policy or discovery alerts."""
     items = []
     scan_kwargs = {
         "FilterExpression": "confirmed = :c AND frequency = :f",
@@ -188,7 +459,7 @@ def get_instant_subscribers():
         scan_kwargs["ExclusiveStartKey"] = result["LastEvaluatedKey"]
     return [
         s for s in items
-        if "iam_policies" in s.get("topics", ["iam_policies"])
+        if {"iam_policies", "discoveries"} & set(s.get("topics", ["iam_policies"]))
     ]
 
 
@@ -197,7 +468,7 @@ def handler(event, context):
 
     for record in event.get("Records", []):
         try:
-            _diff_cache.clear()
+            policy_diff.clear_cache()
             body = json.loads(record["body"])
             message_str = body.get("Message", body)
             if isinstance(message_str, str):
@@ -221,21 +492,39 @@ def handler(event, context):
                 print("No policy names found in message, skipping")
                 continue
 
-            policy_changes = []
+            print(f"Processing instant notifications for {len(policy_names)} policies")
+
+            rows = []
             for name in policy_names:
                 p_sha = commit_map.get(name, commit_sha)
-                p_url = (
-                    f"{repo_base_url}/commit/{p_sha}"
-                    if p_sha and repo_base_url
-                    else commit_url
-                )
-                policy_changes.append({
-                    "policy_name": name,
+                rows.append({
+                    "name": name,
                     "commit_sha": p_sha,
-                    "commit_url": p_url,
+                    "commit_url": (
+                        f"{repo_base_url}/commit/{p_sha}"
+                        if p_sha and repo_base_url
+                        else commit_url
+                    ),
                 })
 
-            print(f"Processing instant notifications for {len(policy_names)} policies")
+            # Waiting on the newest SHA covers the whole batch, since every
+            # entry in CommitMap is one of its ancestors.
+            if commit_sha and not policy_diff.wait_for_commit(commit_sha):
+                print(
+                    f"Commit {commit_sha[:8]} is not on GitHub, "
+                    "sending without diffs"
+                )
+
+            policy_changes = policy_diff.resolve_changes(rows)
+            action_registry.classify(policy_changes)
+
+            # Public feeds go out before the subscriber check, otherwise they
+            # would fall silent whenever nobody holds an instant subscription.
+            bluesky_publisher.post(build_bluesky_post(policy_changes, policy_names))
+            telegram_publisher.post(build_telegram_post(policy_changes))
+            discord.send_public(
+                **build_discord_public(policy_changes, policy_names, commit_url)
+            )
 
             subscribers = get_instant_subscribers()
             if not subscribers:
@@ -250,21 +539,24 @@ def handler(event, context):
                 if "*" in subscribed_policies:
                     matching = policy_changes
                 else:
-                    matching = [c for c in policy_changes if c["policy_name"] in subscribed_policies]
+                    matching = [c for c in policy_changes if c["name"] in subscribed_policies]
+
+                # Someone who asked for discoveries but not every policy change
+                # only hears about the never-before-seen ones.
+                topics = set(subscriber.get("topics", ["iam_policies"]))
+                if "iam_policies" not in topics:
+                    matching = [c for c in matching if policy_diff.is_discovery(c)]
 
                 if not matching:
                     continue
 
                 try:
                     html = build_email_html(subscriber, matching)
-                    change_count = len(matching)
                     ses.send_email(
                         Source=SENDER_EMAIL,
                         Destination={"ToAddresses": [subscriber["email"]]},
                         Message={
-                            "Subject": {
-                                "Data": f"IAMTrail Alert: {change_count} {'policy' if change_count == 1 else 'policies'} just changed"
-                            },
+                            "Subject": {"Data": build_subject(matching)},
                             "Body": {"Html": {"Data": html}},
                         },
                     )
@@ -289,6 +581,9 @@ def handler(event, context):
                 ("Emails Sent", str(sent_count), True),
                 ("Policies", str(len(policy_names)), True),
             ]
+            prefixes = new_service_prefixes(policy_changes)
+            if prefixes:
+                fields.append(("New Services", ", ".join(prefixes), False))
             if commit_url:
                 fields.append(("Commit", f"[View]({commit_url})", True))
             if fail_count:
